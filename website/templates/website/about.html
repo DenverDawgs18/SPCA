@@ -34,7 +34,8 @@
           REAL IMAGE: A photo of the facility exterior or of animals in care.
           Path: {% static 'images/facility-exterior.jpg' %}
         -->
-        <img src="https://placehold.co/640x400/1B3958/FFFFFF?text=Facility+Photo" alt="Medina County SPCA facility" />
+        <img src="{% static 'images/about-facility.jpg' %}"
+          onerror="this.src='https://placehold.co/640x400/1B3958/FFFFFF?text=Drop+in+static/images/about-facility.jpg'" alt="Medina County SPCA facility" />
       </div>
     </div>
   </div>
@@ -60,7 +61,8 @@
           REAL IMAGE: Replace with actual staff photo.
           Path: {% static 'images/team/[name].jpg' %}
         -->
-        <img src="https://placehold.co/200x200/DDD8CF/6B6B6B?text=Photo" alt="Team member" />
+        <img src="{% static 'images/team/placeholder.jpg' %}"
+          onerror="this.src='https://placehold.co/200x200/DDD8CF/6B6B6B?text=Team+Photo'" alt="Team member" />
         <h4>Team Member Name</h4>
         <p>Title / Role</p>
       </div>
@@ -83,7 +85,8 @@
           REAL IMAGE: Interior or aerial facility photo.
           Path: {% static 'images/facility-inside.jpg' %}
         -->
-        <img src="https://placehold.co/640x420/2D6A4F/FFFFFF?text=Facility+Interior" alt="Shelter interior" />
+        <img src="{% static 'images/facility-inside.jpg' %}"
+          onerror="this.src='https://placehold.co/640x420/2D6A4F/FFFFFF?text=Drop+in+static/images/facility-inside.jpg'" alt="Shelter interior" />
       </div>
       <div class="info-text">
         <span class="eyebrow" style="color:var(--amber);">Visit Us</span>

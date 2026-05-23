@@ -158,6 +158,34 @@ h1, h2, h3, h4 {
   height: 44px;
   width: auto;
 }
+
+/* Logo with drag-and-drop image support */
+.logo-img-wrap {
+  display: flex;
+  align-items: center;
+}
+.nav-logo-img {
+  height: 44px;
+  width: auto;
+  display: block;
+}
+.nav-logo-fallback {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--amber);
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: 900;
+  font-family: var(--font-serif);
+  display: none;              /* hidden by default; JS enables if logo missing */
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+/* JS adds .logo-missing when logo.svg returns 404 */
+.logo-img-wrap.logo-missing .nav-logo-img    { display: none; }
+.logo-img-wrap.logo-missing .nav-logo-fallback { display: flex; }
 .nav-logo-text {
   display: flex;
   flex-direction: column;

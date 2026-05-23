@@ -1,0 +1,77 @@
+MEDINA COUNTY SPCA — IMAGES NEEDED
+=====================================
+Drop files into their listed paths. The site falls back to a colored
+placeholder automatically if a file is missing — no code changes needed.
+
+HOW THE LOGO WORKS
+------------------
+  static/images/logo.svg          <- drag your logo here, done.
+  static/images/logo.png          <- PNG also works (update src in base.html if using .png)
+
+  The site shows a navy "M" circle until a logo file is present.
+
+
+SITE-WIDE IMAGES
+-----------------
+  static/images/hero-home.jpg
+    Homepage hero background. Wide landscape shot of animals or the facility.
+    Ideal dimensions: 1920 x 640 px. Shot will be darkened by overlay, so
+    vibrant colors show through nicely (a dog or cat looking at camera works great).
+
+  static/images/about-mission.jpg
+    Shown on the homepage "About" split section and the About page.
+    A warm photo of staff or volunteers with animals. 680 x 400 px.
+
+  static/images/about-facility.jpg
+    Exterior or aerial shot of the 13-acre Seville property. 640 x 400 px.
+
+  static/images/facility-inside.jpg
+    Interior kennel or cat room photo for the "Visit Our Facility" section. 640 x 420 px.
+
+  static/images/volunteer-action.jpg
+    A volunteer walking a dog or socializing with cats at the shelter. 640 x 420 px.
+
+  static/images/foster-home.jpg
+    A foster family at home with a foster pet (couch, living room setting). 640 x 420 px.
+
+  static/images/donations.jpg
+    Bags of food or cleaning supplies being dropped off at the shelter. 640 x 420 px.
+
+  static/images/pavers.jpg
+    The memorial paver walkway on the shelter grounds. 640 x 420 px.
+
+  static/images/microchipping.jpg
+    A staff member or vet microchipping a calm dog or cat. 640 x 420 px.
+
+  static/images/cruelty-response.jpg
+    A tasteful rescue or care image (animal being gently held or examined). 640 x 420 px.
+
+
+ANIMAL PHOTOS  (match the 5 sample pets in the database)
+----------------------------------------------------------
+  static/images/animals/buddy.jpg      <- black Lab mix, adult male
+  static/images/animals/luna.jpg       <- gray tabby cat, adult female
+  static/images/animals/max.jpg        <- German Shepherd mix, adult male
+  static/images/animals/daisy.jpg      <- tricolor Beagle mix, adult female
+  static/images/animals/oliver.jpg     <- orange tabby kitten, male
+
+  Format: JPG or PNG. Ideal: square crop, 600 x 600 px minimum.
+  When you add real adoptable animals through the Django admin (/admin/),
+  you can upload a photo directly or paste an external URL — no file needed here.
+
+
+TEAM / STAFF PHOTOS
+--------------------
+  static/images/team/
+    Name files after each person: firstname-lastname.jpg  (e.g. jane-smith.jpg)
+    These are referenced in about.html once real staff info is filled in.
+    Format: square, 200 x 200 px minimum, friendly headshot.
+
+
+NOTES
+------
+- All formats accepted: .jpg, .png, .svg, .webp
+- Max recommended file size: 500 KB for page images, 100 KB for team photos
+- The logo (logo.svg) is the only file that causes an instant visible change
+  on every page — prioritize getting that one in first.
+- Run "python manage.py collectstatic" after adding images if deploying to Fly.io.

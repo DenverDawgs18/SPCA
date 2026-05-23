@@ -19,11 +19,19 @@
 
     <a href="/" class="nav-logo">
       <!--
-        REAL IMAGE: Replace the placeholder below with the actual SPCA logo.
-        Suggested path: {% static 'images/logo.png' %}
-        Current logo can be found at https://www.medinacountyspca.com/
+        LOGO: Drop logo.svg into static/images/ and it shows here automatically.
+        The amber "M" circle is the fallback shown when no logo file is present.
+        Using a .png instead? Change the src filename below to logo.png.
       -->
-      <div style="width:44px;height:44px;border-radius:50%;background:var(--amber);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.2rem;font-weight:900;font-family:var(--font-serif);">M</div>
+      <div class="logo-img-wrap">
+        <img
+          src="{% static 'images/logo.svg' %}"
+          alt="Medina County SPCA"
+          class="nav-logo-img"
+          onerror="this.closest('.logo-img-wrap').classList.add('logo-missing')"
+        />
+        <div class="nav-logo-fallback">M</div>
+      </div>
       <div class="nav-logo-text">
         <span class="org-name">Medina County SPCA</span>
         <span class="org-sub">Seville, Ohio</span>

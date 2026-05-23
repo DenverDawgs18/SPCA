@@ -22,7 +22,8 @@
           REAL IMAGE: Photo of a vet or staff member microchipping a pet.
           Recommended size: 640x420px. Path: {% static 'images/microchipping.jpg' %}
         -->
-        <img src="https://placehold.co/640x420/1B3958/FFFFFF?text=Microchipping+Photo" alt="Microchipping a pet" />
+        <img src="{% static 'images/microchipping.jpg' %}"
+        onerror="this.src='https://placehold.co/640x420/1B3958/FFFFFF?text=Drop+in+static/images/microchipping.jpg'" alt="Microchipping a pet" />
       </div>
       <div class="info-text">
         <span class="eyebrow" style="color:var(--amber);">Protect Your Pet</span>

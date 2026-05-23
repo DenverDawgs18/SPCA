@@ -1,0 +1,112 @@
+[
+  {
+    "model": "website.animal",
+    "pk": 1,
+    "fields": {
+      "name": "Buddy",
+      "species": "dog",
+      "breed": "Labrador Mix",
+      "age_years": 3,
+      "age_months": null,
+      "gender": "M",
+      "description": "Buddy came to us as a stray and has blossomed into one of the most social dogs in the shelter. He loves tennis balls, car rides, and napping on the couch. He walks nicely on a leash and knows sit, stay, and shake.",
+      "photo": "",
+      "photo_url": "/static/images/animals/buddy.jpg",
+      "status": "available",
+      "intake_date": "2026-03-15",
+      "is_featured": true,
+      "is_good_with_kids": true,
+      "is_good_with_dogs": true,
+      "is_good_with_cats": false,
+      "created_at": "2026-03-15T12:00:00Z"
+    }
+  },
+  {
+    "model": "website.animal",
+    "pk": 2,
+    "fields": {
+      "name": "Luna",
+      "species": "cat",
+      "breed": "Domestic Shorthair",
+      "age_years": 1,
+      "age_months": null,
+      "gender": "F",
+      "description": "Luna is a laid-back gray tabby who loves sunny windows and slow chin scratches. She warms up quickly and will be curled up in your lap before you know it. Gets along well with calm dogs.",
+      "photo": "",
+      "photo_url": "/static/images/animals/luna.jpg",
+      "status": "available",
+      "intake_date": "2026-02-20",
+      "is_featured": true,
+      "is_good_with_kids": true,
+      "is_good_with_dogs": true,
+      "is_good_with_cats": true,
+      "created_at": "2026-02-20T10:00:00Z"
+    }
+  },
+  {
+    "model": "website.animal",
+    "pk": 3,
+    "fields": {
+      "name": "Max",
+      "species": "dog",
+      "breed": "German Shepherd Mix",
+      "age_years": 5,
+      "age_months": null,
+      "gender": "M",
+      "description": "Max is a calm, loyal dog looking for a patient adopter who will stick to a routine with him. He can be shy at first but opens up beautifully once he trusts you. He would do best as the only pet in the home.",
+      "photo": "",
+      "photo_url": "/static/images/animals/max.jpg",
+      "status": "available",
+      "intake_date": "2026-04-01",
+      "is_featured": true,
+      "is_good_with_kids": true,
+      "is_good_with_dogs": false,
+      "is_good_with_cats": false,
+      "created_at": "2026-04-01T09:00:00Z"
+    }
+  },
+  {
+    "model": "website.animal",
+    "pk": 4,
+    "fields": {
+      "name": "Daisy",
+      "species": "dog",
+      "breed": "Beagle Mix",
+      "age_years": 2,
+      "age_months": null,
+      "gender": "F",
+      "description": "Daisy is a scent hound through and through. She loves following her nose on long walks and is endlessly enthusiastic about treats. She does great with other dogs and is wonderful with children.",
+      "photo": "",
+      "photo_url": "/static/images/animals/daisy.jpg",
+      "status": "available",
+      "intake_date": "2026-04-10",
+      "is_featured": false,
+      "is_good_with_kids": true,
+      "is_good_with_dogs": true,
+      "is_good_with_cats": null,
+      "created_at": "2026-04-10T11:00:00Z"
+    }
+  },
+  {
+    "model": "website.animal",
+    "pk": 5,
+    "fields": {
+      "name": "Oliver",
+      "species": "cat",
+      "breed": "Domestic Shorthair",
+      "age_years": 0,
+      "age_months": 6,
+      "gender": "M",
+      "description": "Oliver is a fearless, playful orange tabby kitten who has never met a toy he didn't love. He gets along with everyone and would thrive in a home with another young cat to wrestle with.",
+      "photo": "",
+      "photo_url": "/static/images/animals/oliver.jpg",
+      "status": "available",
+      "intake_date": "2026-04-28",
+      "is_featured": false,
+      "is_good_with_kids": true,
+      "is_good_with_dogs": true,
+      "is_good_with_cats": true,
+      "created_at": "2026-04-28T14:00:00Z"
+    }
+  }
+]

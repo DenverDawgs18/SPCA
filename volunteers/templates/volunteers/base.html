@@ -15,7 +15,15 @@
 <div style="background:var(--navy);border-bottom:1px solid rgba(255,255,255,0.1);">
   <div style="max-width:var(--max-w);margin:auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:var(--header-h);">
     <a href="/" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
-      <div style="width:36px;height:36px;border-radius:50%;background:var(--amber);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:1rem;">M</div>
+      <div class="logo-img-wrap" style="width:36px;height:36px;">
+        <img
+          src="{% static 'images/logo.svg' %}"
+          alt="Medina County SPCA"
+          style="height:36px;width:auto;display:block;"
+          onerror="this.closest('.logo-img-wrap').classList.add('logo-missing')"
+        />
+        <div class="nav-logo-fallback" style="width:36px;height:36px;font-size:1rem;">M</div>
+      </div>
       <div>
         <div style="font-family:var(--font-serif);font-size:0.9rem;color:#fff;font-weight:700;line-height:1.1;">Medina County SPCA</div>
         <div style="font-size:0.68rem;color:rgba(255,255,255,0.5);letter-spacing:0.06em;text-transform:uppercase;">Volunteer Portal</div>

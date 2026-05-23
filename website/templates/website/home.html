@@ -8,14 +8,14 @@
 <!-- ===== HERO ===== -->
 <section class="hero">
   <!--
-    REAL IMAGE: Replace with a high-quality photo of animals at the shelter.
-    Recommended: a warm, well-lit photo of a dog or cat looking at the camera.
-    Dimensions: 1920×640px minimum. Place at {% static 'images/hero-home.jpg' %}
+    HERO IMAGE: Drop hero-home.jpg into static/images/ and it shows here.
+    Ideal: 1920x640px, a warm photo of animals or the facility.
   -->
   <img
-    src="https://placehold.co/1920x640/1B3958/2D6A4F?text=Hero+Photo"
+    src="{% static 'images/hero-home.jpg' %}"
     alt="Animals at Medina County SPCA"
     class="hero-bg"
+    onerror="this.src='https://placehold.co/1920x640/1B3958/2D6A4F?text=Drop+in+static/images/hero-home.jpg'"
   />
   <div class="hero-overlay"></div>
   <div class="container">
@@ -58,7 +58,11 @@
       {% for animal in featured %}
       <div class="animal-card">
         {% if animal.photo_src %}
-          <img src="{{ animal.photo_src }}" alt="{{ animal.name }}" class="animal-card-img" loading="lazy" />
+          <img src="{{ animal.photo_src }}" alt="{{ animal.name }}" class="animal-card-img" loading="lazy"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+          <div class="animal-card-img-placeholder" style="display:none;">
+            {% if animal.species == 'dog' %}🐶{% elif animal.species == 'cat' %}🐱{% else %}🐾{% endif %}
+          </div>
         {% else %}
           <div class="animal-card-img-placeholder">
             {% if animal.species == 'dog' %}🐶{% elif animal.species == 'cat' %}🐱{% else %}🐾{% endif %}
@@ -84,7 +88,11 @@
       {% for animal in recent %}
       <div class="animal-card">
         {% if animal.photo_src %}
-          <img src="{{ animal.photo_src }}" alt="{{ animal.name }}" class="animal-card-img" loading="lazy" />
+          <img src="{{ animal.photo_src }}" alt="{{ animal.name }}" class="animal-card-img" loading="lazy"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+          <div class="animal-card-img-placeholder" style="display:none;">
+            {% if animal.species == 'dog' %}🐶{% elif animal.species == 'cat' %}🐱{% else %}🐾{% endif %}
+          </div>
         {% else %}
           <div class="animal-card-img-placeholder">
             {% if animal.species == 'dog' %}🐶{% elif animal.species == 'cat' %}🐱{% else %}🐾{% endif %}
@@ -190,12 +198,13 @@
     <div class="about-split">
       <div>
         <!--
-          REAL IMAGE: Replace with a photo of the facility or staff with animals.
-          Recommended size: 680×400px. Place at {% static 'images/about-facility.jpg' %}
+          ABOUT IMAGE: Drop about-mission.jpg into static/images/ and it shows here.
+          Ideal: 680x400px, staff or volunteers with animals.
         -->
         <img
-          src="https://placehold.co/680x400/2D6A4F/FFFFFF?text=Our+Facility"
+          src="{% static 'images/about-mission.jpg' %}"
           alt="Medina County SPCA facility"
+          onerror="this.src='https://placehold.co/680x400/2D6A4F/FFFFFF?text=Drop+in+static/images/about-mission.jpg'"
         />
       </div>
       <div class="about-text">

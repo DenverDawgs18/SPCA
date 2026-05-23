@@ -21,7 +21,8 @@
           REAL IMAGE: Photo of a volunteer with animals at the shelter.
           Recommended size: 640×420px. Path: {% static 'images/volunteer-photo.jpg' %}
         -->
-        <img src="https://placehold.co/640x420/1B3958/FFFFFF?text=Volunteers+in+Action" alt="Volunteers at the SPCA" />
+        <img src="{% static 'images/volunteer-action.jpg' %}"
+        onerror="this.src='https://placehold.co/640x420/1B3958/FFFFFF?text=Drop+in+static/images/volunteer-action.jpg'" alt="Volunteers at the SPCA" />
       </div>
       <div class="info-text">
         <span class="eyebrow" style="color:var(--amber);">Make a Difference</span>

@@ -33,7 +33,11 @@
       {% for animal in animals %}
       <div class="animal-card">
         {% if animal.photo_src %}
-          <img src="{{ animal.photo_src }}" alt="{{ animal.name }}" class="animal-card-img" loading="lazy" />
+          <img src="{{ animal.photo_src }}" alt="{{ animal.name }}" class="animal-card-img" loading="lazy"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+          <div class="animal-card-img-placeholder" style="display:none;">
+            {% if animal.species == 'dog' %}🐶{% elif animal.species == 'cat' %}🐱{% else %}🐾{% endif %}
+          </div>
         {% else %}
           <div class="animal-card-img-placeholder">
             {% if animal.species == 'dog' %}🐶{% elif animal.species == 'cat' %}🐱{% else %}🐾{% endif %}

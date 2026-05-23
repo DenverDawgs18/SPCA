@@ -76,7 +76,8 @@
           REAL IMAGE: Photo of donations or supply drop-off.
           Path: {% static 'images/donations.jpg' %}
         -->
-        <img src="https://placehold.co/640x420/1B3958/FFFFFF?text=Donation+Drop-Off+Photo" alt="Donation drop-off" />
+        <img src="{% static 'images/donations.jpg' %}"
+          onerror="this.src='https://placehold.co/640x420/1B3958/FFFFFF?text=Drop+in+static/images/donations.jpg'" alt="Donation drop-off" />
       </div>
     </div>
   </div>
@@ -91,7 +92,8 @@
           REAL IMAGE: A photo of the memorial paver pathway at the facility.
           Path: {% static 'images/pavers.jpg' %}
         -->
-        <img src="https://placehold.co/640x420/2D6A4F/FFFFFF?text=Memorial+Pavers" alt="Memorial pavers at Medina County SPCA" />
+        <img src="{% static 'images/pavers.jpg' %}"
+          onerror="this.src='https://placehold.co/640x420/2D6A4F/FFFFFF?text=Drop+in+static/images/pavers.jpg'" alt="Memorial pavers at Medina County SPCA" />
       </div>
       <div class="info-text">
         <span class="eyebrow" style="color:var(--amber);">Leave a Lasting Mark</span>
