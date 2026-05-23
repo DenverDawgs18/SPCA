@@ -1,0 +1,105 @@
+{% extends "volunteers/base.html" %}
+
+{% block title %}Manager Dashboard — Volunteer Portal{% endblock %}
+{% block sa_mgr_dash %}active{% endblock %}
+
+{% block content %}
+<div class="portal-header">
+  <div>
+    <h1 class="portal-title">Manager Dashboard</h1>
+    <p class="portal-subtitle">Overview of volunteer activity and pending tasks.</p>
+  </div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;">
+    <a href="{% url 'mgr_pending' %}" class="btn btn-outline btn-sm">⏳ Pending ({{ pending_count }})</a>
+    <a href="{% url 'mgr_volunteer_list' %}?status=inactive" class="btn btn-outline btn-sm" style="{% if inactive_count %}border-color:#c0392b;color:#c0392b;{% endif %}">
+      ⚠️ Inactive ({{ inactive_count }})
+    </a>
+  </div>
+</div>
+
+<!-- Stat cards -->
+<div class="stat-cards">
+  <div class="stat-card">
+    <span class="num">{{ total_volunteers }}</span>
+    <span class="lbl">Approved Volunteers</span>
+  </div>
+  <div class="stat-card green">
+    <span class="num">{{ active_count }}</span>
+    <span class="lbl">Active ({{ settings.inactivity_min_visits }}+ visits / {{ settings.inactivity_days }} days)</span>
+  </div>
+  <div class="stat-card {% if inactive_count %}red{% endif %}">
+    <span class="num">{{ inactive_count }}</span>
+    <span class="lbl">Inactive</span>
+  </div>
+  <div class="stat-card {% if pending_count %}amber{% endif %}">
+    <span class="num">{{ pending_count }}</span>
+    <span class="lbl">Pending Approval</span>
+  </div>
+</div>
+
+{% if pending_count %}
+<div style="background:var(--amber-light);border:1px solid #f5c48c;border-radius:var(--radius);padding:14px 18px;margin-bottom:20px;font-size:0.9rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+  <span>⏳ <strong>{{ pending_count }} application{{ pending_count|pluralize }}</strong> waiting for your review.</span>
+  <a href="{% url 'mgr_pending' %}" class="btn btn-amber btn-sm" style="background:var(--amber);color:#fff;">Review Now</a>
+</div>
+{% endif %}
+
+<!-- Recent visits -->
+<div class="panel">
+  <div class="panel-header">
+    <h3>Recent Visits (All Volunteers)</h3>
+    <a href="{% url 'mgr_volunteer_list' %}" class="btn btn-outline btn-sm">All Volunteers</a>
+  </div>
+  {% if recent_visits %}
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Volunteer</th>
+        <th>Date</th>
+        <th>Activity</th>
+        <th>Hours</th>
+        <th>Logged By</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for visit in recent_visits %}
+      <tr>
+        <td>
+          <a href="{% url 'mgr_volunteer_detail' visit.volunteer.pk %}" class="td-name">
+            {{ visit.volunteer }}
+          </a>
+        </td>
+        <td>{{ visit.visit_date|date:"M j, Y" }}</td>
+        <td>{{ visit.get_activity_type_display }}</td>
+        <td>{{ visit.hours }}h</td>
+        <td class="td-muted">{{ visit.logged_by.get_full_name|default:visit.logged_by.username|default:"—" }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="portal-empty">
+    <div class="icon">📋</div>
+    <h3>No visits logged yet</h3>
+  </div>
+  {% endif %}
+</div>
+
+<!-- Inactive shortcut panel -->
+{% if inactive_count %}
+<div class="panel">
+  <div class="panel-header">
+    <h3 style="color:#c0392b;">⚠️ Inactive Volunteers Require Attention</h3>
+    <a href="{% url 'mgr_volunteer_list' %}?status=inactive" class="btn btn-sm" style="background:#fde8e8;color:#c0392b;border:1px solid #f5c6c6;">
+      View All Inactive ({{ inactive_count }})
+    </a>
+  </div>
+  <div class="panel-body" style="font-size:0.88rem;color:var(--text-muted);">
+    Volunteers are marked inactive when they have fewer than <strong>{{ settings.inactivity_min_visits }}</strong> visit(s)
+    in the past <strong>{{ settings.inactivity_days }}</strong> days.
+    You can adjust this threshold in <a href="{% url 'mgr_settings' %}">Settings</a>.
+  </div>
+</div>
+{% endif %}
+
+{% endblock %}

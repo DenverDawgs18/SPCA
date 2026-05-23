@@ -1,0 +1,201 @@
+{% extends "volunteers/base.html" %}
+
+{% block title %}{{ volunteer }} — Manager Portal{% endblock %}
+{% block sa_vol_list %}active{% endblock %}
+
+{% block content %}
+<div class="portal-header">
+  <div>
+    <div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:4px;">
+      <a href="{% url 'mgr_volunteer_list' %}" style="color:var(--navy);">Volunteers</a> › {{ volunteer }}
+    </div>
+    <h1 class="portal-title">{{ volunteer }}</h1>
+    <p class="portal-subtitle">{{ volunteer.user.email }} · {{ volunteer.phone }}</p>
+  </div>
+  <div style="display:flex;gap:8px;align-items:center;">
+    {% if is_active %}
+    <span class="status-pill status-active" style="font-size:0.85rem;padding:6px 14px;">Active</span>
+    {% else %}
+    <span class="status-pill status-inactive" style="font-size:0.85rem;padding:6px 14px;">Inactive</span>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Stats -->
+<div class="stat-cards" style="grid-template-columns:repeat(auto-fill,minmax(150px,1fr));margin-bottom:24px;">
+  <div class="stat-card {% if is_active %}green{% else %}red{% endif %}">
+    <span class="num">{{ window_visits }}</span>
+    <span class="lbl">Visits ({{ settings.inactivity_days }}d)</span>
+  </div>
+  <div class="stat-card">
+    <span class="num">{{ total_hours }}</span>
+    <span class="lbl">Total Hours</span>
+  </div>
+  <div class="stat-card">
+    <span class="num">{{ visits|length }}</span>
+    <span class="lbl">Total Visits</span>
+  </div>
+  <div class="stat-card">
+    <span class="num">{% if last_visit %}{{ last_visit.visit_date|date:"M j" }}{% else %}—{% endif %}</span>
+    <span class="lbl">Last Visit</span>
+  </div>
+</div>
+
+<div class="vol-detail-grid">
+
+  <!-- Left column: info + notes -->
+  <div>
+    <!-- Profile info -->
+    <div class="panel">
+      <div class="panel-header"><h3>Profile</h3></div>
+      <div class="panel-body">
+        <ul class="info-list">
+          <li><span class="key">Full Name</span><span class="val">{{ volunteer.user.get_full_name }}</span></li>
+          <li><span class="key">Username</span><span class="val">{{ volunteer.user.username }}</span></li>
+          <li><span class="key">Email</span><span class="val"><a href="mailto:{{ volunteer.user.email }}">{{ volunteer.user.email }}</a></span></li>
+          <li><span class="key">Phone</span><span class="val"><a href="tel:{{ volunteer.phone }}">{{ volunteer.phone }}</a></span></li>
+          <li><span class="key">Address</span><span class="val">{{ volunteer.address|default:"—" }}</span></li>
+          <li><span class="key">T-Shirt</span><span class="val">{{ volunteer.t_shirt_size|default:"—" }}</span></li>
+          <li><span class="key">Member Since</span><span class="val">{{ volunteer.created_at|date:"N j, Y" }}</span></li>
+          {% if volunteer.approved_at %}
+          <li><span class="key">Approved</span><span class="val">{{ volunteer.approved_at|date:"N j, Y" }} by {{ volunteer.approved_by.get_full_name|default:volunteer.approved_by.username }}</span></li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+
+    <!-- Availability + Skills -->
+    <div class="panel">
+      <div class="panel-header"><h3>Availability &amp; Skills</h3></div>
+      <div class="panel-body" style="font-size:0.88rem;">
+        {% if volunteer.availability %}
+        <p style="font-weight:600;margin-bottom:6px;">Available:</p>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;">
+          {% for slot in volunteer.availability_display %}
+          <span class="badge badge-navy">{{ slot }}</span>
+          {% endfor %}
+        </div>
+        {% else %}
+        <p style="color:var(--text-muted);">No availability specified.</p>
+        {% endif %}
+        {% if volunteer.skills %}
+        <p style="font-weight:600;margin-bottom:4px;">Skills:</p>
+        <p style="color:var(--text-muted);">{{ volunteer.skills }}</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Emergency contact -->
+    <div class="panel">
+      <div class="panel-header"><h3>Emergency Contact</h3></div>
+      <div class="panel-body">
+        <ul class="info-list">
+          <li><span class="key">Name</span><span class="val">{{ volunteer.emergency_contact_name }}</span></li>
+          <li><span class="key">Phone</span><span class="val"><a href="tel:{{ volunteer.emergency_contact_phone }}">{{ volunteer.emergency_contact_phone }}</a></span></li>
+          {% if volunteer.emergency_contact_relationship %}
+          <li><span class="key">Relationship</span><span class="val">{{ volunteer.emergency_contact_relationship }}</span></li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+
+    <!-- Manager notes -->
+    <div class="panel">
+      <div class="panel-header"><h3>Manager Notes <span style="font-weight:400;color:var(--text-muted);font-size:0.8rem;">(not visible to volunteer)</span></h3></div>
+      <div class="panel-body">
+        <form method="post" class="portal-form">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="save_notes" />
+          <div class="form-group">
+            <textarea name="notes" rows="4" placeholder="Internal notes about this volunteer…">{{ volunteer.notes }}</textarea>
+          </div>
+          <button type="submit" class="btn btn-navy btn-sm">Save Notes</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right column: visits -->
+  <div>
+    <!-- Log a visit as manager -->
+    <div class="panel">
+      <div class="panel-header"><h3>Log a Visit for {{ volunteer.user.first_name }}</h3></div>
+      <div class="panel-body">
+        <form method="post" class="portal-form">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="log_visit" />
+          <input type="hidden" name="volunteer" value="{{ volunteer.pk }}" />
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div class="form-group">
+              <label>Date</label>
+              <input type="date" name="visit_date" value="{{ log_form.visit_date.value|date:'Y-m-d' }}" required />
+            </div>
+            <div class="form-group">
+              <label>Hours</label>
+              <input type="number" name="hours" step="0.5" min="0.5" max="24" value="2.0" required />
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Activity</label>
+            <select name="activity_type" required>
+              {% for value, label in log_form.fields.activity_type.choices %}
+              <option value="{{ value }}">{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Notes (optional)</label>
+            <textarea name="notes" rows="2"></textarea>
+          </div>
+          <button type="submit" class="btn btn-green btn-sm">Log Visit</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Visit history table -->
+    <div class="panel">
+      <div class="panel-header">
+        <h3>Visit History</h3>
+        <span style="font-size:0.82rem;color:var(--text-muted);">{{ visits|length }} total · {{ total_hours }}h</span>
+      </div>
+      {% if visits %}
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Activity</th>
+            <th>Hrs</th>
+            <th>Notes</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for visit in visits %}
+          <tr>
+            <td class="td-name">{{ visit.visit_date|date:"M j, Y" }}</td>
+            <td>{{ visit.get_activity_type_display }}</td>
+            <td>{{ visit.hours }}h</td>
+            <td class="td-muted" style="font-size:0.8rem;">{{ visit.notes|default:"—"|truncatechars:40 }}</td>
+            <td>
+              <form method="post" style="display:inline;" onsubmit="return confirm('Delete this visit?');">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="delete_visit" />
+                <input type="hidden" name="visit_id" value="{{ visit.pk }}" />
+                <button type="submit" class="btn btn-sm" style="background:transparent;border:none;color:#c0392b;cursor:pointer;padding:4px 8px;" title="Delete">✕</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <div class="portal-empty">
+        <div class="icon">📋</div>
+        <h3>No visits yet</h3>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+</div>
+{% endblock %}

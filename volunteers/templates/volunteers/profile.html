@@ -1,0 +1,98 @@
+{% extends "volunteers/base.html" %}
+
+{% block title %}My Profile — Volunteer Portal{% endblock %}
+{% block sa_profile %}active{% endblock %}
+
+{% block content %}
+<div class="portal-header">
+  <div>
+    <h1 class="portal-title">My Profile</h1>
+    <p class="portal-subtitle">Keep your information up to date so we can reach you.</p>
+  </div>
+</div>
+
+<div class="panel" style="max-width:680px;">
+  <div class="panel-body">
+    <form method="post" class="portal-form">
+      {% csrf_token %}
+
+      <h4 style="font-size:0.85rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:14px;">Personal Information</h4>
+      <div class="form-row">
+        <div class="form-group">
+          <label>First Name</label>
+          <input type="text" name="first_name" value="{{ form.first_name.value|default:'' }}" required />
+        </div>
+        <div class="form-group">
+          <label>Last Name</label>
+          <input type="text" name="last_name" value="{{ form.last_name.value|default:'' }}" required />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" name="email" value="{{ form.email.value|default:'' }}" required />
+        </div>
+        <div class="form-group">
+          <label>Phone</label>
+          <input type="tel" name="phone" value="{{ form.phone.value|default:'' }}" />
+          {% if form.phone.errors %}<p class="help-text" style="color:#c0392b;">{{ form.phone.errors|join:", " }}</p>{% endif %}
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Address</label>
+        <textarea name="address" rows="2">{{ form.address.value|default:'' }}</textarea>
+      </div>
+
+      <h4 style="font-size:0.85rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin:22px 0 14px;">Availability</h4>
+      <div class="checkbox-grid">
+        {% for value, label in form.fields.availability.choices %}
+        <label>
+          <input type="checkbox" name="availability" value="{{ value }}"
+            {% if value in form.availability.value %}checked{% endif %} />
+          <span>{{ label }}</span>
+        </label>
+        {% endfor %}
+      </div>
+
+      <div class="form-group" style="margin-top:18px;">
+        <label>Skills / Experience</label>
+        <textarea name="skills" rows="2">{{ form.skills.value|default:'' }}</textarea>
+      </div>
+
+      <h4 style="font-size:0.85rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin:22px 0 14px;">Emergency Contact</h4>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Name</label>
+          <input type="text" name="emergency_contact_name" value="{{ form.emergency_contact_name.value|default:'' }}" required />
+        </div>
+        <div class="form-group">
+          <label>Phone</label>
+          <input type="tel" name="emergency_contact_phone" value="{{ form.emergency_contact_phone.value|default:'' }}" required />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Relationship</label>
+          <input type="text" name="emergency_contact_relationship" value="{{ form.emergency_contact_relationship.value|default:'' }}" />
+        </div>
+        <div class="form-group">
+          <label>T-Shirt Size</label>
+          <select name="t_shirt_size">
+            <option value="">—</option>
+            {% for value, label in form.fields.t_shirt_size.choices %}
+            {% if value %}
+            <option value="{{ value }}" {% if form.t_shirt_size.value == value %}selected{% endif %}>{{ label }}</option>
+            {% endif %}
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:12px;margin-top:8px;">
+        <button type="submit" class="btn btn-navy">Save Changes</button>
+        <a href="{% url 'vol_dashboard' %}" class="btn btn-outline">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

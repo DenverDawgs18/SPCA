@@ -1,0 +1,104 @@
+{% extends "volunteers/base.html" %}
+
+{% block title %}Volunteers — Manager Portal{% endblock %}
+{% block sa_vol_list %}active{% endblock %}
+
+{% block content %}
+<div class="portal-header">
+  <div>
+    <h1 class="portal-title">Volunteers</h1>
+    <p class="portal-subtitle">{{ volunteers|length }} volunteer{{ volunteers|length|pluralize }} shown
+      {% if inactive_count %} · <span style="color:#c0392b;font-weight:600;">{{ inactive_count }} inactive</span>{% endif %}
+    </p>
+  </div>
+</div>
+
+<!-- Filter toolbar -->
+<form method="get" style="margin-bottom:0;">
+  <div class="filter-toolbar">
+    <input type="search" name="q" placeholder="Search by name, email, or phone…" value="{{ search }}" />
+
+    <a href="{% url 'mgr_volunteer_list' %}{% if search %}?q={{ search }}{% endif %}"
+       class="filter-btn {% if not status_filter %}active{% endif %}">All</a>
+    <a href="?status=active{% if search %}&q={{ search }}{% endif %}"
+       class="filter-btn {% if status_filter == 'active' %}active{% endif %}">✅ Active</a>
+    <a href="?status=inactive{% if search %}&q={{ search }}{% endif %}"
+       class="filter-btn {% if status_filter == 'inactive' %}active{% endif %}"
+       style="{% if status_filter == 'inactive' %}border-color:#c0392b;color:#c0392b;background:#fde8e8;{% endif %}">
+      ⚠️ Inactive{% if inactive_count %} ({{ inactive_count }}){% endif %}
+    </a>
+
+    <button type="submit" class="btn btn-navy btn-sm">Search</button>
+  </div>
+</form>
+
+<div class="panel">
+  {% if volunteers %}
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email / Phone</th>
+        <th>Status</th>
+        <th>Visits ({{ settings.inactivity_days }}d)</th>
+        <th>Last Visit</th>
+        <th>Total Hrs</th>
+        <th>Member Since</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for vol in volunteers %}
+      <tr>
+        <td>
+          <a href="{% url 'mgr_volunteer_detail' vol.pk %}" class="td-name">
+            {{ vol.user.get_full_name|default:vol.user.username }}
+          </a>
+        </td>
+        <td class="td-muted">
+          <div>{{ vol.user.email }}</div>
+          <div style="font-size:0.8rem;">{{ vol.phone }}</div>
+        </td>
+        <td>
+          {% if vol._is_active %}
+          <span class="status-pill status-active">Active</span>
+          {% else %}
+          <span class="status-pill status-inactive">Inactive</span>
+          {% endif %}
+        </td>
+        <td style="font-weight:600;{% if not vol._is_active %}color:#c0392b;{% else %}color:var(--green);{% endif %}">
+          {{ vol._window_visits }}
+          <span style="font-weight:400;color:var(--text-muted);font-size:0.8rem;">/ {{ settings.inactivity_min_visits }} req</span>
+        </td>
+        <td class="td-muted">
+          {% if vol._last_visit %}
+            {{ vol._last_visit.visit_date|date:"M j, Y" }}
+          {% else %}
+            <span style="color:#c0392b;">Never</span>
+          {% endif %}
+        </td>
+        <td class="td-muted">{{ vol.total_hours }}h</td>
+        <td class="td-muted" style="font-size:0.8rem;">{{ vol.created_at|date:"M Y" }}</td>
+        <td>
+          <a href="{% url 'mgr_volunteer_detail' vol.pk %}" class="btn btn-outline btn-sm">View</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="portal-empty">
+    <div class="icon">👥</div>
+    <h3>No volunteers found</h3>
+    <p>{% if search %}Try a different search term or <a href="{% url 'mgr_volunteer_list' %}">clear filters</a>.{% else %}No approved volunteers yet.{% endif %}</p>
+  </div>
+  {% endif %}
+</div>
+
+<p style="font-size:0.8rem;color:var(--text-muted);margin-top:-8px;">
+  Inactivity rule: fewer than {{ settings.inactivity_min_visits }} visit(s) in {{ settings.inactivity_days }} days.
+  <a href="{% url 'mgr_settings' %}">Change in Settings</a>.
+  Inactive volunteers are sorted to the top by default.
+</p>
+
+{% endblock %}

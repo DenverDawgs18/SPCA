@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Volunteer Portal — Medina County SPCA{% endblock %}</title>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/main.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/volunteer.css' %}" />
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+<!-- Slim top bar linking back to main site -->
+<div style="background:var(--navy);border-bottom:1px solid rgba(255,255,255,0.1);">
+  <div style="max-width:var(--max-w);margin:auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:var(--header-h);">
+    <a href="/" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
+      <div style="width:36px;height:36px;border-radius:50%;background:var(--amber);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:1rem;">M</div>
+      <div>
+        <div style="font-family:var(--font-serif);font-size:0.9rem;color:#fff;font-weight:700;line-height:1.1;">Medina County SPCA</div>
+        <div style="font-size:0.68rem;color:rgba(255,255,255,0.5);letter-spacing:0.06em;text-transform:uppercase;">Volunteer Portal</div>
+      </div>
+    </a>
+    <a href="/" style="font-size:0.82rem;color:rgba(255,255,255,0.6);">← Back to main site</a>
+  </div>
+</div>
+
+{% if messages %}
+<div style="padding:0 24px;background:var(--cream);border-bottom:1px solid var(--border);">
+  <div style="max-width:var(--max-w);margin:auto;padding:10px 0;">
+    {% for msg in messages %}
+    <div class="alert alert-{% if msg.tags == 'error' %}error{% else %}success{% endif %}">
+      {{ msg }}
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+{% block full_page %}
+<div class="portal-layout">
+
+  {% block sidebar %}
+  {% if user.is_authenticated %}
+  <nav class="portal-sidebar">
+
+    {% if user.is_staff %}
+    <div class="sidebar-label">Manager</div>
+    <div class="sidebar-section">
+      <a href="{% url 'mgr_dashboard' %}" class="sidebar-link {% block sa_mgr_dash %}{% endblock %}">
+        <span class="icon">📊</span> Dashboard
+      </a>
+      <a href="{% url 'mgr_volunteer_list' %}" class="sidebar-link {% block sa_vol_list %}{% endblock %}">
+        <span class="icon">👥</span> Volunteers
+      </a>
+      <a href="{% url 'mgr_pending' %}" class="sidebar-link {% block sa_pending %}{% endblock %}">
+        <span class="icon">⏳</span> Pending Approvals
+      </a>
+      <a href="{% url 'mgr_settings' %}" class="sidebar-link {% block sa_settings %}{% endblock %}">
+        <span class="icon">⚙️</span> Settings
+      </a>
+    </div>
+    <hr class="sidebar-divider">
+    <div class="sidebar-label">Volunteer view</div>
+    {% endif %}
+
+    <div class="sidebar-section">
+      <a href="{% url 'vol_dashboard' %}" class="sidebar-link {% block sa_dash %}{% endblock %}">
+        <span class="icon">🏠</span> My Dashboard
+      </a>
+      <a href="{% url 'vol_log_visit' %}" class="sidebar-link {% block sa_log %}{% endblock %}">
+        <span class="icon">✏️</span> Log a Visit
+      </a>
+      <a href="{% url 'vol_visit_history' %}" class="sidebar-link {% block sa_history %}{% endblock %}">
+        <span class="icon">📋</span> Visit History
+      </a>
+      <a href="{% url 'vol_profile' %}" class="sidebar-link {% block sa_profile %}{% endblock %}">
+        <span class="icon">👤</span> My Profile
+      </a>
+    </div>
+
+    <div class="sidebar-user">
+      <span class="name">{{ user.get_full_name|default:user.username }}</span>
+      <span class="email">{{ user.email }}</span>
+      <a href="{% url 'vol_logout' %}">Sign out</a>
+    </div>
+  </nav>
+  {% endif %}
+  {% endblock %}
+
+  <main class="portal-main">
+    {% block content %}{% endblock %}
+  </main>
+</div>
+{% endblock %}
+
+<script src="{% static 'js/main.js' %}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

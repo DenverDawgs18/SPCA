@@ -1,0 +1,134 @@
+{% extends "website/base.html" %}
+{% load static %}
+
+{% block title %}Contact Us — Medina County SPCA{% endblock %}
+
+{% block content %}
+
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="/">Home</a><span>›</span> Contact</div>
+    <h1>Get in Touch</h1>
+    <p>Questions about adopting, volunteering, surrendering a pet, or anything else — we're here to help.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="contact-grid">
+
+      <!-- Contact info column -->
+      <div class="contact-info">
+        <h3>Find Us</h3>
+
+        <div class="contact-detail">
+          <span class="contact-detail-icon">📍</span>
+          <div class="contact-detail-text">
+            <strong>Address</strong>
+            <!-- REAL DATA: Verify full address -->
+            8790 Guilford Road<br>
+            Seville, OH 44273
+          </div>
+        </div>
+
+        <div class="contact-detail">
+          <span class="contact-detail-icon">📞</span>
+          <div class="contact-detail-text">
+            <strong>Phone</strong>
+            <a href="tel:+13307237722">(330) 723-7722</a>
+          </div>
+        </div>
+
+        <div class="contact-detail">
+          <span class="contact-detail-icon">✉️</span>
+          <div class="contact-detail-text">
+            <strong>Email</strong>
+            <a href="mailto:info@medinacountyspca.com">info@medinacountyspca.com</a>
+          </div>
+        </div>
+
+        <div class="contact-detail">
+          <span class="contact-detail-icon">📘</span>
+          <div class="contact-detail-text">
+            <strong>Facebook</strong>
+            <a href="https://www.facebook.com/MedinaSPCA/" target="_blank" rel="noopener">@MedinaSPCA</a>
+          </div>
+        </div>
+
+        <h3 style="margin:28px 0 14px;">Hours</h3>
+        <!-- REAL DATA: Confirm hours with the organization -->
+        <table class="hours-table">
+          <tr><td>Tuesday</td><td>12:00 – 4:00 pm</td></tr>
+          <tr><td>Wednesday</td><td>Closed</td></tr>
+          <tr><td>Thursday</td><td>12:00 – 4:00 pm</td></tr>
+          <tr><td>Friday</td><td>12:00 – 4:00 pm</td></tr>
+          <tr><td>Saturday</td><td>12:00 – 4:00 pm</td></tr>
+          <tr><td>Sunday</td><td>12:00 – 4:00 pm</td></tr>
+          <tr><td>Monday</td><td>Closed</td></tr>
+        </table>
+        <p style="font-size:0.82rem;color:var(--text-muted);margin-top:10px;">Donations accepted 7 days a week, 9 am–4 pm</p>
+
+        <!-- Map embed placeholder -->
+        <div style="margin-top:24px;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);">
+          <!--
+            REAL EMBED: Replace with a Google Maps embed for the actual address.
+            Go to maps.google.com, search the address, click Share > Embed a map, copy the iframe.
+          -->
+          <div style="background:var(--cream);height:200px;display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:0.88rem;">
+            📍 Google Maps embed goes here<br>
+            <a href="https://maps.google.com/?q=8790+Guilford+Road+Seville+OH+44273" target="_blank" rel="noopener" style="display:block;margin-top:8px;">Open in Google Maps</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact form column -->
+      <div>
+        <h3 style="margin-bottom:20px;">Send Us a Message</h3>
+
+        <form class="contact-form" method="post" action="/contact/">
+          {% csrf_token %}
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="name">Your Name *</label>
+              <input type="text" id="name" name="name" required placeholder="Jane Smith" />
+            </div>
+            <div class="form-group">
+              <label for="email">Email Address *</label>
+              <input type="email" id="email" name="email" required placeholder="jane@example.com" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="phone">Phone (optional)</label>
+              <input type="tel" id="phone" name="phone" placeholder="(330) 555-0000" />
+            </div>
+            <div class="form-group">
+              <label for="subject">Subject *</label>
+              <select id="subject" name="subject" required>
+                <option value="">— Select a topic —</option>
+                <option value="Adoption Inquiry">Adoption Inquiry</option>
+                <option value="Foster Program Inquiry">Foster Program Inquiry</option>
+                <option value="Volunteer Inquiry">Volunteer Inquiry</option>
+                <option value="Pet Surrender Inquiry">Pet Surrender Inquiry</option>
+                <option value="Donation Question">Donation Question</option>
+                <option value="General Question">General Question</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="message">Message *</label>
+            <textarea id="message" name="message" required placeholder="Tell us how we can help..."></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-navy btn-lg" style="width:100%;">Send Message</button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,71 @@
+{% extends "volunteers/base.html" %}
+
+{% block title %}Pending Approvals — Manager Portal{% endblock %}
+{% block sa_pending %}active{% endblock %}
+
+{% block content %}
+<div class="portal-header">
+  <div>
+    <h1 class="portal-title">Pending Applications</h1>
+    <p class="portal-subtitle">{{ pending|length }} application{{ pending|length|pluralize }} waiting for review.</p>
+  </div>
+</div>
+
+{% if pending %}
+{% for vol in pending %}
+<div class="panel">
+  <div class="panel-header">
+    <h3>{{ vol.user.get_full_name }} <span style="font-weight:400;color:var(--text-muted);">— Applied {{ vol.created_at|date:"N j, Y" }}</span></h3>
+    <span class="status-pill status-pending">Pending</span>
+  </div>
+  <div class="panel-body">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:18px;">
+      <ul class="info-list">
+        <li><span class="key">Email</span><span class="val"><a href="mailto:{{ vol.user.email }}">{{ vol.user.email }}</a></span></li>
+        <li><span class="key">Phone</span><span class="val"><a href="tel:{{ vol.phone }}">{{ vol.phone }}</a></span></li>
+        <li><span class="key">Address</span><span class="val">{{ vol.address|default:"—" }}</span></li>
+        <li><span class="key">T-Shirt</span><span class="val">{{ vol.t_shirt_size|default:"—" }}</span></li>
+      </ul>
+      <ul class="info-list">
+        <li><span class="key">Emergency</span><span class="val">{{ vol.emergency_contact_name }} ({{ vol.emergency_contact_phone }})</span></li>
+        {% if vol.skills %}
+        <li><span class="key">Skills</span><span class="val">{{ vol.skills }}</span></li>
+        {% endif %}
+        {% if vol.availability %}
+        <li>
+          <span class="key">Availability</span>
+          <span class="val">
+            {% for slot in vol.availability_display %}{{ slot }}{% if not forloop.last %}, {% endif %}{% endfor %}
+          </span>
+        </li>
+        {% endif %}
+      </ul>
+    </div>
+
+    <div class="action-row">
+      <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="volunteer_id" value="{{ vol.pk }}" />
+        <input type="hidden" name="action" value="approve" />
+        <button type="submit" class="btn btn-green">✓ Approve</button>
+      </form>
+      <form method="post" onsubmit="return confirm('Deny and permanently delete this application?');">
+        {% csrf_token %}
+        <input type="hidden" name="volunteer_id" value="{{ vol.pk }}" />
+        <input type="hidden" name="action" value="deny" />
+        <button type="submit" class="btn btn-sm" style="background:#fde8e8;color:#c0392b;border:1px solid #f5c6c6;">✕ Deny &amp; Remove</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endfor %}
+
+{% else %}
+<div class="portal-empty">
+  <div class="icon">✅</div>
+  <h3>No pending applications</h3>
+  <p>All applications have been reviewed. New ones will appear here automatically.</p>
+</div>
+{% endif %}
+
+{% endblock %}

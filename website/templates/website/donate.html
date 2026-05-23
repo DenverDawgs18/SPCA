@@ -1,0 +1,107 @@
+{% extends "website/base.html" %}
+{% load static %}
+
+{% block title %}Donate — Medina County SPCA{% endblock %}
+
+{% block content %}
+
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="/">Home</a><span>›</span> Donate</div>
+    <h1>Support Our Animals</h1>
+    <p>Your tax-deductible donation directly funds food, medical care, and shelter for animals in our care. Every dollar matters.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="donate-options">
+      <div class="donate-card">
+        <span class="donate-card-icon">💳</span>
+        <h3>One-Time Donation</h3>
+        <p>Give any amount and make an immediate impact. Online donations are processed securely.</p>
+        <!--
+          REAL LINK: Replace # with the organization's online donation processor URL.
+          They may use PayPal, Stripe, Network for Good, Bloomerang, etc.
+        -->
+        <a href="#" class="btn btn-navy">Donate Online</a>
+      </div>
+      <div class="donate-card">
+        <span class="donate-card-icon">🔁</span>
+        <h3>Monthly Giving</h3>
+        <p>A recurring gift helps us plan ahead for the animals in our care all year long. Even $10/month adds up.</p>
+        <!-- REAL LINK: Link to recurring donation setup -->
+        <a href="#" class="btn btn-green">Become a Monthly Donor</a>
+      </div>
+      <div class="donate-card">
+        <span class="donate-card-icon">📦</span>
+        <h3>Amazon Wishlist</h3>
+        <p>Send supplies directly to us from our Amazon Wishlist — food, cleaning supplies, toys, and more.</p>
+        <!--
+          REAL LINK: Replace # with the organization's Amazon Wishlist URL.
+          Find it on their website or ask the organization for the link.
+        -->
+        <a href="#" class="btn btn-outline">View Wishlist</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt" id="wishlist">
+  <div class="container">
+    <div class="info-block">
+      <div class="info-text">
+        <span class="eyebrow" style="color:var(--amber);">In-Kind Donations</span>
+        <h2>What we always need</h2>
+        <p>In addition to financial donations, we accept gently used items and new supplies. Drop-offs are accepted 7 days a week, 9 am–4 pm.</p>
+        <ul>
+          <li>Dog and cat food (dry and canned)</li>
+          <li>Blankets, towels, and bedding</li>
+          <li>Cleaning supplies (dish soap, bleach, paper towels)</li>
+          <li>Cat litter</li>
+          <li>Toys and enrichment items</li>
+          <li>Leashes, collars, and harnesses</li>
+          <li>Postage stamps and office supplies</li>
+        </ul>
+        <a href="/contact/" class="btn btn-navy">Ask About Drop-Offs</a>
+      </div>
+      <div>
+        <!--
+          REAL IMAGE: Photo of donations or supply drop-off.
+          Path: {% static 'images/donations.jpg' %}
+        -->
+        <img src="https://placehold.co/640x420/1B3958/FFFFFF?text=Donation+Drop-Off+Photo" alt="Donation drop-off" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-dark" id="events">
+  <div class="container">
+    <div class="section-header">
+      <h2>Fundraising Events</h2>
+      <p>Join us at our upcoming events — a great way to support the SPCA and have fun doing it.</p>
+    </div>
+    <!--
+      REAL DATA: Replace placeholder events with actual upcoming events.
+      Consider connecting this to a Django Event model for easy management.
+    -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;max-width:900px;margin-inline:auto;">
+      <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:var(--radius-lg);padding:24px;">
+        <p style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--amber);margin-bottom:6px;">Upcoming</p>
+        <h3 style="color:#fff;font-size:1.1rem;margin-bottom:8px;">Annual Mutt Strut Walk</h3>
+        <p style="color:rgba(255,255,255,0.7);font-size:0.88rem;">A fun walk/run fundraiser welcoming dogs of all kinds. Details TBD — check back soon.</p>
+      </div>
+      <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:var(--radius-lg);padding:24px;">
+        <p style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--amber);margin-bottom:6px;">Upcoming</p>
+        <h3 style="color:#fff;font-size:1.1rem;margin-bottom:8px;">Adoption Event at PetSmart</h3>
+        <p style="color:rgba(255,255,255,0.7);font-size:0.88rem;">Meet adoptable animals at our partner location. Dates posted on our Facebook page.</p>
+      </div>
+    </div>
+    <p style="text-align:center;margin-top:28px;font-size:0.88rem;color:rgba(255,255,255,0.55);">
+      Follow us on <a href="https://www.facebook.com/MedinaSPCA/" style="color:var(--amber);" target="_blank" rel="noopener">Facebook</a> for event updates.
+    </p>
+  </div>
+</section>
+
+{% endblock %}

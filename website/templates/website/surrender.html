@@ -1,0 +1,52 @@
+{% extends "website/base.html" %}
+{% load static %}
+
+{% block title %}Surrender a Pet — Medina County SPCA{% endblock %}
+
+{% block content %}
+
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="/">Home</a><span>›</span> Surrender a Pet</div>
+    <h1>Pet Surrender Services</h1>
+    <p>We understand that life circumstances change. We're here to help — with compassion, not judgment.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container" style="max-width:800px;margin-inline:auto;">
+
+    <div style="background:var(--amber-light);border-left:4px solid var(--amber);border-radius:var(--radius);padding:18px 22px;margin-bottom:40px;">
+      <strong style="color:var(--amber);">Please contact us before coming in.</strong>
+      <p style="font-size:0.93rem;color:var(--text);margin-top:4px;">
+        Surrenders are by appointment only so we can properly prepare for your animal's arrival. Call us at
+        <a href="tel:+13307237722" style="color:var(--navy);font-weight:600;">(330) 723-7722</a>
+        or use the contact form below.
+      </p>
+    </div>
+
+    <div class="info-text">
+      <h2 style="margin-bottom:14px;">We accept dogs, cats, and small animals</h2>
+      <p>Our intake process is designed to be as stress-free as possible for you and your pet. A surrender fee may apply to help offset the cost of care. No animal is turned away due to inability to pay — please talk to us.</p>
+      <p>Before surrendering, we encourage you to consider:</p>
+      <ul style="margin:0 0 24px 20px;color:var(--text-muted);">
+        <li>Reaching out to friends, family, or breed-specific rescue groups</li>
+        <li>Posting on local community boards or social media</li>
+        <li>Our <a href="/foster/">foster network</a> — sometimes a temporary break is all a family needs</li>
+      </ul>
+      <h3 style="margin-bottom:10px;">What to bring</h3>
+      <ul style="margin:0 0 28px 20px;color:var(--text-muted);">
+        <li>Any vet records you have</li>
+        <li>A favorite toy or blanket (helps with the transition)</li>
+        <li>Information about the animal's behavior, likes, dislikes, and history</li>
+      </ul>
+
+      <div style="display:flex;gap:16px;flex-wrap:wrap;">
+        <a href="/contact/?subject=Pet Surrender Inquiry" class="btn btn-navy">Schedule a Surrender</a>
+        <a href="tel:+13307237722" class="btn btn-outline">Call (330) 723-7722</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

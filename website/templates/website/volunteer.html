@@ -1,0 +1,84 @@
+{% extends "website/base.html" %}
+{% load static %}
+
+{% block title %}Volunteer — Medina County SPCA{% endblock %}
+
+{% block content %}
+
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="/">Home</a><span>›</span> Volunteer</div>
+    <h1>Volunteer With Us</h1>
+    <p>Our volunteers are the heart of the SPCA. With your time, we can do so much more for the animals in our care.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="info-block">
+      <div>
+        <!--
+          REAL IMAGE: Photo of a volunteer with animals at the shelter.
+          Recommended size: 640×420px. Path: {% static 'images/volunteer-photo.jpg' %}
+        -->
+        <img src="https://placehold.co/640x420/1B3958/FFFFFF?text=Volunteers+in+Action" alt="Volunteers at the SPCA" />
+      </div>
+      <div class="info-text">
+        <span class="eyebrow" style="color:var(--amber);">Make a Difference</span>
+        <h2>What volunteers do</h2>
+        <p>From walking dogs to helping at adoption events, there are many ways to give your time — whatever your schedule or skills allow.</p>
+        <ul>
+          <li>Dog walking and socialization</li>
+          <li>Cat socialization and enrichment</li>
+          <li>Kennel cleaning and maintenance</li>
+          <li>Adoption counseling and meet-and-greets</li>
+          <li>Fundraising and events</li>
+          <li>Administrative support</li>
+          <li>Animal transport</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">Getting Started</span>
+      <h2>How to become a volunteer</h2>
+    </div>
+    <div class="steps">
+      <div class="step-card">
+        <h4>Create a Portal Account</h4>
+        <p>Sign up on our Volunteer Portal to submit your application and track your visits.</p>
+      </div>
+      <div class="step-card">
+        <h4>Approval &amp; Orientation</h4>
+        <p>A volunteer manager will review your application and invite you to our next orientation session.</p>
+      </div>
+      <div class="step-card">
+        <h4>Schedule Your Shifts</h4>
+        <p>Use the portal to log your visits and track your hours. We appreciate every minute you give.</p>
+      </div>
+      <div class="step-card">
+        <h4>Make a Difference</h4>
+        <p>Show up, have fun, and change the lives of the animals who need you most.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container" style="text-align:center;">
+    <h2 style="margin-bottom:14px;">Ready to Join?</h2>
+    <p style="color:var(--text-muted);margin-bottom:28px;max-width:500px;margin-inline:auto;">
+      Create a free account on our Volunteer Portal to apply, log visits, and stay connected with the team.
+    </p>
+    <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+      <a href="/portal/register/" class="btn btn-navy btn-lg">Create an Account</a>
+      <a href="/portal/login/" class="btn btn-outline btn-lg">Already a Volunteer? Log In</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

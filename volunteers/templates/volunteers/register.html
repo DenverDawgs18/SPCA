@@ -1,0 +1,132 @@
+{% extends "volunteers/base.html" %}
+{% load static %}
+
+{% block title %}Apply to Volunteer — Medina County SPCA{% endblock %}
+
+{% block sidebar %}{% endblock %}
+
+{% block full_page %}
+<div class="auth-wrap" style="align-items:flex-start;padding-top:40px;">
+  <div class="auth-card wide">
+    <div class="auth-logo">
+      <div class="org">Medina County SPCA</div>
+      <div class="portal-label">Volunteer Application</div>
+    </div>
+
+    <h2>Apply to Volunteer</h2>
+    <p class="sub">Fill out this short form and a volunteer manager will review your application within a few days.</p>
+
+    {% if form.errors %}
+    <div class="alert alert-error">Please correct the errors below.</div>
+    {% endif %}
+
+    <form method="post" class="portal-form">
+      {% csrf_token %}
+
+      <h4 style="font-size:0.9rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:14px;">Personal Information</h4>
+      <div class="form-row">
+        <div class="form-group">
+          <label>First Name *</label>
+          <input type="text" name="first_name" required value="{{ form.first_name.value|default:'' }}" />
+          {% if form.first_name.errors %}<p class="help-text" style="color:#c0392b;">{{ form.first_name.errors|join:", " }}</p>{% endif %}
+        </div>
+        <div class="form-group">
+          <label>Last Name *</label>
+          <input type="text" name="last_name" required value="{{ form.last_name.value|default:'' }}" />
+          {% if form.last_name.errors %}<p class="help-text" style="color:#c0392b;">{{ form.last_name.errors|join:", " }}</p>{% endif %}
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Email Address *</label>
+          <input type="email" name="email" required value="{{ form.email.value|default:'' }}" />
+          {% if form.email.errors %}<p class="help-text" style="color:#c0392b;">{{ form.email.errors|join:", " }}</p>{% endif %}
+        </div>
+        <div class="form-group">
+          <label>Phone *</label>
+          <input type="tel" name="phone" required value="{{ form.phone.value|default:'' }}" placeholder="(330) 555-0000" />
+          {% if form.phone.errors %}<p class="help-text" style="color:#c0392b;">{{ form.phone.errors|join:", " }}</p>{% endif %}
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Home Address (optional)</label>
+        <textarea name="address" rows="2">{{ form.address.value|default:'' }}</textarea>
+      </div>
+
+      <h4 style="font-size:0.9rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin:24px 0 14px;">Account Login</h4>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Choose a Username *</label>
+          <input type="text" name="username" required value="{{ form.username.value|default:'' }}" />
+          {% if form.username.errors %}<p class="help-text" style="color:#c0392b;">{{ form.username.errors|join:", " }}</p>{% endif %}
+        </div>
+        <div class="form-group">
+          <label>T-Shirt Size</label>
+          <select name="t_shirt_size">
+            <option value="">— Select —</option>
+            <option value="XS" {% if form.t_shirt_size.value == 'XS' %}selected{% endif %}>XS</option>
+            <option value="S"  {% if form.t_shirt_size.value == 'S'  %}selected{% endif %}>S</option>
+            <option value="M"  {% if form.t_shirt_size.value == 'M'  %}selected{% endif %}>M</option>
+            <option value="L"  {% if form.t_shirt_size.value == 'L'  %}selected{% endif %}>L</option>
+            <option value="XL" {% if form.t_shirt_size.value == 'XL' %}selected{% endif %}>XL</option>
+            <option value="XXL"{% if form.t_shirt_size.value == 'XXL'%}selected{% endif %}>XXL</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Password *</label>
+          <input type="password" name="password" required />
+          {% if form.password.errors %}<p class="help-text" style="color:#c0392b;">{{ form.password.errors|join:", " }}</p>{% endif %}
+        </div>
+        <div class="form-group">
+          <label>Confirm Password *</label>
+          <input type="password" name="password2" required />
+          {% if form.password2.errors %}<p class="help-text" style="color:#c0392b;">{{ form.password2.errors|join:", " }}</p>{% endif %}
+        </div>
+      </div>
+
+      <h4 style="font-size:0.9rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin:24px 0 14px;">Availability</h4>
+      <p class="help-text" style="margin-bottom:10px;">Check all times that generally work for you:</p>
+      <div class="checkbox-grid">
+        {% for value, label in form.fields.availability.choices %}
+        <label>
+          <input type="checkbox" name="availability" value="{{ value }}"
+            {% if value in form.availability.value %}checked{% endif %} />
+          <span>{{ label }}</span>
+        </label>
+        {% endfor %}
+      </div>
+
+      <div class="form-group" style="margin-top:18px;">
+        <label>Skills or Relevant Experience (optional)</label>
+        <textarea name="skills" rows="2" placeholder="e.g. dog training, vet tech, event planning, carpentry">{{ form.skills.value|default:'' }}</textarea>
+      </div>
+
+      <h4 style="font-size:0.9rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin:24px 0 14px;">Emergency Contact</h4>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Contact Name *</label>
+          <input type="text" name="emergency_contact_name" required value="{{ form.emergency_contact_name.value|default:'' }}" />
+          {% if form.emergency_contact_name.errors %}<p class="help-text" style="color:#c0392b;">{{ form.emergency_contact_name.errors|join:", " }}</p>{% endif %}
+        </div>
+        <div class="form-group">
+          <label>Contact Phone *</label>
+          <input type="tel" name="emergency_contact_phone" required value="{{ form.emergency_contact_phone.value|default:'' }}" placeholder="(330) 555-0000" />
+          {% if form.emergency_contact_phone.errors %}<p class="help-text" style="color:#c0392b;">{{ form.emergency_contact_phone.errors|join:", " }}</p>{% endif %}
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Relationship (optional)</label>
+        <input type="text" name="emergency_contact_relationship" placeholder="e.g. Spouse, Parent" value="{{ form.emergency_contact_relationship.value|default:'' }}" />
+      </div>
+
+      <button type="submit" class="btn btn-navy btn-lg" style="width:100%;margin-top:8px;">Submit Application</button>
+    </form>
+
+    <p style="text-align:center;margin-top:16px;font-size:0.88rem;color:var(--text-muted);">
+      Already have an account? <a href="{% url 'vol_login' %}" style="color:var(--navy);font-weight:600;">Sign in</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends "volunteers/base.html" %}
+
+{% block title %}Visit History — Volunteer Portal{% endblock %}
+{% block sa_history %}active{% endblock %}
+
+{% block content %}
+<div class="portal-header">
+  <div>
+    <h1 class="portal-title">Visit History</h1>
+    <p class="portal-subtitle">All of your logged volunteer visits.</p>
+  </div>
+  <a href="{% url 'vol_log_visit' %}" class="btn btn-navy">✏️ Log a Visit</a>
+</div>
+
+<div class="stat-cards" style="grid-template-columns:repeat(auto-fill,minmax(160px,1fr));max-width:500px;margin-bottom:24px;">
+  <div class="stat-card">
+    <span class="num">{{ visits|length }}</span>
+    <span class="lbl">Total Visits</span>
+  </div>
+  <div class="stat-card green">
+    <span class="num">{{ total_hours }}</span>
+    <span class="lbl">Total Hours</span>
+  </div>
+</div>
+
+<div class="panel">
+  {% if visits %}
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Activity</th>
+        <th>Hours</th>
+        <th>Notes</th>
+        <th>Logged</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for visit in visits %}
+      <tr>
+        <td class="td-name">{{ visit.visit_date|date:"M j, Y" }}</td>
+        <td>{{ visit.get_activity_type_display }}</td>
+        <td>{{ visit.hours }}h</td>
+        <td class="td-muted">{{ visit.notes|default:"—"|truncatechars:80 }}</td>
+        <td class="td-muted" style="font-size:0.8rem;">{{ visit.created_at|date:"M j" }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="portal-empty">
+    <div class="icon">📋</div>
+    <h3>No visits logged yet</h3>
+    <p>Every hour you give makes a difference!</p>
+    <br>
+    <a href="{% url 'vol_log_visit' %}" class="btn btn-navy">Log Your First Visit</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

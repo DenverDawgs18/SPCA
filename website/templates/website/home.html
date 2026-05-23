@@ -1,0 +1,225 @@
+{% extends "website/base.html" %}
+{% load static %}
+
+{% block title %}Medina County SPCA — Pet Adoption, Rescue & Care{% endblock %}
+
+{% block content %}
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <!--
+    REAL IMAGE: Replace with a high-quality photo of animals at the shelter.
+    Recommended: a warm, well-lit photo of a dog or cat looking at the camera.
+    Dimensions: 1920×640px minimum. Place at {% static 'images/hero-home.jpg' %}
+  -->
+  <img
+    src="https://placehold.co/1920x640/1B3958/2D6A4F?text=Hero+Photo"
+    alt="Animals at Medina County SPCA"
+    class="hero-bg"
+  />
+  <div class="hero-overlay"></div>
+  <div class="container">
+    <div class="hero-content">
+      <h1>Every animal deserves<br>a loving home.</h1>
+      <p>We've been caring for and rehoming animals in Medina County since 1913. Come meet your new best friend.</p>
+      <div class="hero-actions">
+        <a href="/adopt/" class="btn btn-primary btn-lg">Meet Our Animals</a>
+        <a href="/adopt/#process" class="btn btn-secondary btn-lg">How to Adopt</a>
+      </div>
+      <div class="hero-badge-strip">
+        <div class="hero-stat">
+          <span class="num">1,200+</span>
+          <span class="lbl">Animals saved last year</span>
+        </div>
+        <div class="hero-stat">
+          <span class="num">13</span>
+          <span class="lbl">Acres of facility</span>
+        </div>
+        <div class="hero-stat">
+          <span class="num">100+</span>
+          <span class="lbl">Active volunteers</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FEATURED ANIMALS ===== -->
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">Ready to go home</span>
+      <h2>Meet Some of Our Animals</h2>
+      <p>These loving animals are waiting for their forever families. Browse all available pets to find your match.</p>
+    </div>
+
+    {% if featured or recent %}
+    <div class="animal-grid">
+      {% for animal in featured %}
+      <div class="animal-card">
+        {% if animal.photo_src %}
+          <img src="{{ animal.photo_src }}" alt="{{ animal.name }}" class="animal-card-img" loading="lazy" />
+        {% else %}
+          <div class="animal-card-img-placeholder">
+            {% if animal.species == 'dog' %}🐶{% elif animal.species == 'cat' %}🐱{% else %}🐾{% endif %}
+          </div>
+        {% endif %}
+        <div class="animal-card-body">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <h3>{{ animal.name }}</h3>
+            <span class="badge badge-green">Featured</span>
+          </div>
+          <p class="animal-card-meta">
+            {{ animal.get_species_display }} · {{ animal.breed|default:"Mixed breed" }} · {{ animal.age_display }} · {{ animal.get_gender_display }}
+          </p>
+          <p class="animal-card-desc">{{ animal.description }}</p>
+          <div class="animal-card-footer">
+            <a href="/adopt/" class="btn btn-navy btn-sm">Learn More</a>
+            <span class="badge badge-green">Available</span>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+
+      {% for animal in recent %}
+      <div class="animal-card">
+        {% if animal.photo_src %}
+          <img src="{{ animal.photo_src }}" alt="{{ animal.name }}" class="animal-card-img" loading="lazy" />
+        {% else %}
+          <div class="animal-card-img-placeholder">
+            {% if animal.species == 'dog' %}🐶{% elif animal.species == 'cat' %}🐱{% else %}🐾{% endif %}
+          </div>
+        {% endif %}
+        <div class="animal-card-body">
+          <h3>{{ animal.name }}</h3>
+          <p class="animal-card-meta">
+            {{ animal.get_species_display }} · {{ animal.breed|default:"Mixed breed" }} · {{ animal.age_display }} · {{ animal.get_gender_display }}
+          </p>
+          <p class="animal-card-desc">{{ animal.description }}</p>
+          <div class="animal-card-footer">
+            <a href="/adopt/" class="btn btn-outline btn-sm">Learn More</a>
+            <span class="badge badge-navy">{{ animal.get_status_display }}</span>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <!-- Placeholder cards shown when no animals are in the database yet -->
+    <div class="animal-grid">
+      {% for i in "123" %}
+      <div class="animal-card">
+        <div class="animal-card-img-placeholder">🐾</div>
+        <div class="animal-card-body">
+          <h3>Coming Soon</h3>
+          <p class="animal-card-meta">Check back or call us at (330) 723-7722</p>
+          <p class="animal-card-desc">Add animals through the Django admin panel to display them here.</p>
+          <div class="animal-card-footer">
+            <a href="/contact/" class="btn btn-outline btn-sm">Contact Us</a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <div style="text-align:center;margin-top:36px;">
+      <a href="/adopt/" class="btn btn-navy btn-lg">View All Available Animals</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== THREE ACTION CARDS ===== -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="action-cards">
+      <div class="action-card adopt-card">
+        <div class="action-card-icon">🏠</div>
+        <h3>Adopt</h3>
+        <p>Give a shelter animal the permanent, loving home they deserve. Dogs, cats, and more are waiting for you.</p>
+        <a href="/adopt/" class="btn btn-secondary">Browse Animals</a>
+      </div>
+      <div class="action-card foster-card">
+        <div class="action-card-icon">🤝</div>
+        <h3>Foster</h3>
+        <p>Not ready to commit? Foster a pet temporarily and make a huge difference while they wait for their forever home.</p>
+        <a href="/foster/" class="btn btn-secondary">Learn About Fostering</a>
+      </div>
+      <div class="action-card donate-card">
+        <div class="action-card-icon">❤️</div>
+        <h3>Donate</h3>
+        <p>Your tax-deductible gift directly funds food, medical care, and shelter for animals in our care.</p>
+        <a href="/donate/" class="btn btn-secondary">Give Today</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== IMPACT ===== -->
+<section class="section section-dark">
+  <div class="container">
+    <div class="section-header">
+      <h2>Our Impact</h2>
+      <p>Every donation, adoption, and volunteer hour adds up to real lives saved.</p>
+    </div>
+    <!-- REAL DATA: Update these numbers with current statistics from the organization -->
+    <div class="impact-grid">
+      <div class="impact-item">
+        <span class="num">1,200+</span>
+        <span class="lbl">Animals Rehomed</span>
+      </div>
+      <div class="impact-item">
+        <span class="num">95%</span>
+        <span class="lbl">Live Release Rate</span>
+      </div>
+      <div class="impact-item">
+        <span class="num">100+</span>
+        <span class="lbl">Active Volunteers</span>
+      </div>
+      <div class="impact-item">
+        <span class="num">1913</span>
+        <span class="lbl">Serving Since</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ABOUT SNIPPET ===== -->
+<section class="section">
+  <div class="container">
+    <div class="about-split">
+      <div>
+        <!--
+          REAL IMAGE: Replace with a photo of the facility or staff with animals.
+          Recommended size: 680×400px. Place at {% static 'images/about-facility.jpg' %}
+        -->
+        <img
+          src="https://placehold.co/680x400/2D6A4F/FFFFFF?text=Our+Facility"
+          alt="Medina County SPCA facility"
+        />
+      </div>
+      <div class="about-text">
+        <span class="eyebrow">Our Story</span>
+        <h2>A community shelter for over 110 years</h2>
+        <p>Since 1913, the Medina County SPCA has been the backbone of humane animal care in our region. Located on 13 acres in Seville, Ohio, our facility provides a safe haven for dogs, cats, and small animals in need.</p>
+        <p>We are a 501(c)(3) nonprofit that relies entirely on donations, adoptions, and the generous time of our volunteers. Every animal who comes through our doors receives proper veterinary care, socialization, and love.</p>
+        <a href="/about/" class="btn btn-navy">Learn More About Us</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== VOLUNTEER CTA ===== -->
+<section class="section section-alt">
+  <div class="container" style="text-align:center;">
+    <span class="eyebrow">Get Involved</span>
+    <h2 style="margin-bottom:14px;">Make a difference with your time</h2>
+    <p style="color:var(--text-muted);max-width:520px;margin:0 auto 28px;">Whether you can give one hour a month or one day a week, our volunteers are the heart of the SPCA. Walk dogs, socialize cats, or help with events.</p>
+    <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+      <a href="/volunteer/" class="btn btn-navy btn-lg">Volunteer With Us</a>
+      <a href="/portal/register/" class="btn btn-outline btn-lg">Sign Up for the Portal</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

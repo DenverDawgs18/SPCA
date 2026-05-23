@@ -1,0 +1,111 @@
+{% extends "volunteers/base.html" %}
+
+{% block title %}My Dashboard — Volunteer Portal{% endblock %}
+{% block sa_dash %}active{% endblock %}
+
+{% block content %}
+<div class="portal-header">
+  <div>
+    <h1 class="portal-title">Hello, {{ user.first_name|default:user.username }}!</h1>
+    <p class="portal-subtitle">Welcome to your volunteer dashboard.</p>
+  </div>
+  <a href="{% url 'vol_log_visit' %}" class="btn btn-navy">✏️ Log a Visit</a>
+</div>
+
+{% if volunteer %}
+
+<!-- Status + stats -->
+<div class="stat-cards">
+  <div class="stat-card {% if is_active %}green{% else %}red{% endif %}">
+    <span class="num">{% if is_active %}Active{% else %}Inactive{% endif %}</span>
+    <span class="lbl">Your Status</span>
+  </div>
+  <div class="stat-card">
+    <span class="num">{{ visit_window_count }}</span>
+    <span class="lbl">Visits (last {{ settings.inactivity_days }} days)</span>
+  </div>
+  <div class="stat-card amber">
+    <span class="num">{{ total_hours }}</span>
+    <span class="lbl">Total Hours</span>
+  </div>
+</div>
+
+{% if not is_active %}
+<div style="background:#fde8e8;border:1px solid #f5c6c6;border-radius:var(--radius);padding:14px 18px;margin-bottom:20px;font-size:0.9rem;color:#c0392b;">
+  ⚠️ You are currently marked <strong>inactive</strong> — you need at least {{ settings.inactivity_min_visits }} visit(s) within the last {{ settings.inactivity_days }} days to be considered active.
+  <a href="{% url 'vol_log_visit' %}" style="color:#c0392b;font-weight:700;margin-left:8px;">Log a visit →</a>
+</div>
+{% endif %}
+
+<!-- Recent visits -->
+<div class="panel">
+  <div class="panel-header">
+    <h3>Recent Visits</h3>
+    <a href="{% url 'vol_visit_history' %}" class="btn btn-outline btn-sm">View All</a>
+  </div>
+  {% if recent_visits %}
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Activity</th>
+        <th>Hours</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for visit in recent_visits %}
+      <tr>
+        <td class="td-name">{{ visit.visit_date|date:"M j, Y" }}</td>
+        <td>{{ visit.get_activity_type_display }}</td>
+        <td>{{ visit.hours }}h</td>
+        <td class="td-muted">{{ visit.notes|default:"—"|truncatechars:60 }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="portal-empty">
+    <div class="icon">📋</div>
+    <h3>No visits logged yet</h3>
+    <p>Start by logging your first visit!</p>
+    <br>
+    <a href="{% url 'vol_log_visit' %}" class="btn btn-navy">Log a Visit</a>
+  </div>
+  {% endif %}
+</div>
+
+<!-- Quick links -->
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;">
+  <a href="{% url 'vol_log_visit' %}" class="panel" style="display:flex;align-items:center;gap:12px;padding:18px;text-decoration:none;transition:box-shadow 0.2s;">
+    <span style="font-size:1.6rem;">✏️</span>
+    <div>
+      <div style="font-weight:700;color:var(--navy);font-size:0.93rem;">Log a Visit</div>
+      <div style="font-size:0.8rem;color:var(--text-muted);">Record today's hours</div>
+    </div>
+  </a>
+  <a href="{% url 'vol_visit_history' %}" class="panel" style="display:flex;align-items:center;gap:12px;padding:18px;text-decoration:none;transition:box-shadow 0.2s;">
+    <span style="font-size:1.6rem;">📋</span>
+    <div>
+      <div style="font-weight:700;color:var(--navy);font-size:0.93rem;">Visit History</div>
+      <div style="font-size:0.8rem;color:var(--text-muted);">All your logged visits</div>
+    </div>
+  </a>
+  <a href="{% url 'vol_profile' %}" class="panel" style="display:flex;align-items:center;gap:12px;padding:18px;text-decoration:none;transition:box-shadow 0.2s;">
+    <span style="font-size:1.6rem;">👤</span>
+    <div>
+      <div style="font-weight:700;color:var(--navy);font-size:0.93rem;">My Profile</div>
+      <div style="font-size:0.8rem;color:var(--text-muted);">Update your info</div>
+    </div>
+  </a>
+</div>
+
+{% else %}
+<div class="portal-empty">
+  <div class="icon">⚠️</div>
+  <h3>Profile not found</h3>
+  <p>Please contact a volunteer manager at <a href="mailto:info@medinacountyspca.com">info@medinacountyspca.com</a>.</p>
+</div>
+{% endif %}
+
+{% endblock %}

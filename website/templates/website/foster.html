@@ -1,0 +1,80 @@
+{% extends "website/base.html" %}
+{% load static %}
+
+{% block title %}Foster a Pet — Medina County SPCA{% endblock %}
+
+{% block content %}
+
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="/">Home</a><span>›</span> Foster a Pet</div>
+    <h1>Become a Foster Family</h1>
+    <p>Open your home temporarily — and make a permanent difference in an animal's life.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="info-block">
+      <div>
+        <!--
+          REAL IMAGE: Photo of a foster family with a pet at home.
+          Recommended size: 640×420px. Path: {% static 'images/foster-home.jpg' %}
+        -->
+        <img src="https://placehold.co/640x420/2D6A4F/FFFFFF?text=Foster+Family+Photo" alt="Foster family with a pet" />
+      </div>
+      <div class="info-text">
+        <span class="eyebrow" style="color:var(--amber);">Why Foster?</span>
+        <h2>The animals who need fostering most</h2>
+        <p>Some animals need a quieter, more personal environment to thrive — particularly young kittens, animals recovering from surgery, or those who are stressed by the shelter environment. Fostering saves lives that we otherwise couldn't save.</p>
+        <ul>
+          <li>Puppies and kittens too young to be adopted</li>
+          <li>Animals recovering from illness or surgery</li>
+          <li>Nursing mothers with litters</li>
+          <li>Animals needing socialization and confidence-building</li>
+        </ul>
+        <a href="/contact/?subject=Foster Program Inquiry" class="btn btn-green">Apply to Foster</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">What We Provide</span>
+      <h2>We support you every step of the way</h2>
+    </div>
+    <div class="action-cards">
+      <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px 22px;text-align:center;">
+        <div style="font-size:2rem;margin-bottom:12px;">🏥</div>
+        <h4 style="font-size:1rem;margin-bottom:8px;">All Medical Costs Covered</h4>
+        <p style="font-size:0.88rem;color:var(--text-muted);">We cover all veterinary expenses. You provide the love; we handle the bills.</p>
+      </div>
+      <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px 22px;text-align:center;">
+        <div style="font-size:2rem;margin-bottom:12px;">🍽️</div>
+        <h4 style="font-size:1rem;margin-bottom:8px;">Food &amp; Supplies Provided</h4>
+        <p style="font-size:0.88rem;color:var(--text-muted);">We supply food, crates, bedding, and anything the animal needs during their stay.</p>
+      </div>
+      <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px 22px;text-align:center;">
+        <div style="font-size:2rem;margin-bottom:12px;">📞</div>
+        <h4 style="font-size:1rem;margin-bottom:8px;">24/7 Staff Support</h4>
+        <p style="font-size:0.88rem;color:var(--text-muted);">Our staff are always available to answer questions, handle emergencies, and support you.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container" style="max-width:760px;margin-inline:auto;text-align:center;">
+    <span class="eyebrow">Ready to Help?</span>
+    <h2 style="margin-bottom:14px;">Become a Foster Today</h2>
+    <p style="color:var(--text-muted);margin-bottom:28px;">
+      <!-- REAL LINK: If there's an online foster application, link to it here -->
+      Fill out our contact form and mention you're interested in fostering. We'll reach out to discuss current needs and get you set up.
+    </p>
+    <a href="/contact/?subject=Foster Program Inquiry" class="btn btn-navy btn-lg">Get in Touch</a>
+  </div>
+</section>
+
+{% endblock %}

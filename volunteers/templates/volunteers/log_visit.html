@@ -1,0 +1,60 @@
+{% extends "volunteers/base.html" %}
+
+{% block title %}Log a Visit — Volunteer Portal{% endblock %}
+{% block sa_log %}active{% endblock %}
+
+{% block content %}
+<div class="portal-header">
+  <div>
+    <h1 class="portal-title">Log a Visit</h1>
+    <p class="portal-subtitle">Record your volunteer hours. Thank you for your time!</p>
+  </div>
+</div>
+
+<div class="panel" style="max-width:560px;">
+  <div class="panel-body">
+    <form method="post" class="portal-form">
+      {% csrf_token %}
+
+      <div class="form-group">
+        <label for="visit_date">Date of Visit *</label>
+        <input type="date" id="visit_date" name="visit_date"
+          value="{{ form.visit_date.value|date:'Y-m-d' }}" required />
+        {% if form.visit_date.errors %}
+        <p class="help-text" style="color:#c0392b;">{{ form.visit_date.errors|join:", " }}</p>
+        {% endif %}
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="activity_type">Activity *</label>
+          <select id="activity_type" name="activity_type" required>
+            {% for value, label in form.fields.activity_type.choices %}
+            <option value="{{ value }}" {% if form.activity_type.value == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="hours">Hours *</label>
+          <input type="number" id="hours" name="hours" step="0.5" min="0.5" max="24"
+            value="{{ form.hours.value|default:'2.0' }}" required />
+          {% if form.hours.errors %}
+          <p class="help-text" style="color:#c0392b;">{{ form.hours.errors|join:", " }}</p>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="notes">Notes (optional)</label>
+        <textarea id="notes" name="notes" rows="3"
+          placeholder="Anything to note about this visit?">{{ form.notes.value|default:'' }}</textarea>
+      </div>
+
+      <div style="display:flex;gap:12px;">
+        <button type="submit" class="btn btn-navy">Save Visit</button>
+        <a href="{% url 'vol_dashboard' %}" class="btn btn-outline">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

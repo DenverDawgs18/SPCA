@@ -1,0 +1,116 @@
+{% extends "website/base.html" %}
+{% load static %}
+
+{% block title %}About Us — Medina County SPCA{% endblock %}
+
+{% block content %}
+
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="/">Home</a><span>›</span> About Us</div>
+    <h1>About Medina County SPCA</h1>
+    <p>Over 110 years of humane care, advocacy, and community service in Medina County, Ohio.</p>
+  </div>
+</section>
+
+<!-- Mission -->
+<section class="section">
+  <div class="container">
+    <div class="about-split">
+      <div class="about-text">
+        <span class="eyebrow">Our Mission</span>
+        <h2>Committed to the humane care of animals</h2>
+        <p>
+          The Medina County SPCA is a 501(c)(3) nonprofit organization dedicated to the humane treatment, care, and adoption of companion animals in Medina County, Ohio. We believe every animal deserves a safe, loving home.
+        </p>
+        <p>
+          Founded in 1913, we operate a 13-acre facility in Seville, Ohio, and serve thousands of animals each year through our adoption, foster, and surrender programs. We are not affiliated with the national ASPCA or HSUS — we are a fully independent, locally operated organization.
+        </p>
+        <!-- REAL DATA: Add actual mission statement from the organization's materials -->
+      </div>
+      <div>
+        <!--
+          REAL IMAGE: A photo of the facility exterior or of animals in care.
+          Path: {% static 'images/facility-exterior.jpg' %}
+        -->
+        <img src="https://placehold.co/640x400/1B3958/FFFFFF?text=Facility+Photo" alt="Medina County SPCA facility" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Team -->
+<section class="section section-alt" id="team">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">The People Behind the Work</span>
+      <h2>Our Board &amp; Team</h2>
+      <p>Our dedicated staff and board members work every day to ensure our animals are well cared for.</p>
+    </div>
+    <!--
+      REAL DATA: Replace these placeholders with actual staff/board member info.
+      Photos should be square, approx 200×200px.
+      Source names and titles from: https://www.medinacountyspca.com/board-and-team
+    -->
+    <div class="team-grid">
+      {% for member in "12345678" %}
+      <div class="team-card">
+        <!--
+          REAL IMAGE: Replace with actual staff photo.
+          Path: {% static 'images/team/[name].jpg' %}
+        -->
+        <img src="https://placehold.co/200x200/DDD8CF/6B6B6B?text=Photo" alt="Team member" />
+        <h4>Team Member Name</h4>
+        <p>Title / Role</p>
+      </div>
+      {% endfor %}
+    </div>
+    <p style="text-align:center;margin-top:24px;font-size:0.88rem;color:var(--text-muted);">
+      View the full board and team at
+      <a href="https://www.medinacountyspca.com/board-and-team" target="_blank" rel="noopener">medinacountyspca.com/board-and-team</a>
+      (current site).
+    </p>
+  </div>
+</section>
+
+<!-- Facility -->
+<section class="section" id="facility">
+  <div class="container">
+    <div class="info-block">
+      <div>
+        <!--
+          REAL IMAGE: Interior or aerial facility photo.
+          Path: {% static 'images/facility-inside.jpg' %}
+        -->
+        <img src="https://placehold.co/640x420/2D6A4F/FFFFFF?text=Facility+Interior" alt="Shelter interior" />
+      </div>
+      <div class="info-text">
+        <span class="eyebrow" style="color:var(--amber);">Visit Us</span>
+        <h2>Our Facility</h2>
+        <p>Located on 13 peaceful acres in Seville, Ohio, our shelter is built around the animals' wellbeing. We have separate wings for dogs and cats, quiet rooms for shy animals, and outdoor yards for exercise.</p>
+
+        <!-- REAL DATA: Verify hours, address, and driving directions -->
+        <h4 style="margin:20px 0 10px;font-size:1rem;">Hours of Operation</h4>
+        <table class="hours-table" style="margin-bottom:20px;">
+          <tr><td><strong>Tuesday</strong></td><td>12:00 – 4:00 pm</td></tr>
+          <tr><td><strong>Wednesday</strong></td><td>Closed</td></tr>
+          <tr><td><strong>Thursday</strong></td><td>12:00 – 4:00 pm</td></tr>
+          <tr><td><strong>Friday</strong></td><td>12:00 – 4:00 pm</td></tr>
+          <tr><td><strong>Saturday</strong></td><td>12:00 – 4:00 pm</td></tr>
+          <tr><td><strong>Sunday</strong></td><td>12:00 – 4:00 pm</td></tr>
+          <tr><td><strong>Monday</strong></td><td>Closed</td></tr>
+        </table>
+        <p style="font-size:0.85rem;color:var(--text-muted);">
+          Donation drop-offs: 7 days a week, 9 am–4 pm
+        </p>
+
+        <div style="display:flex;gap:12px;margin-top:20px;flex-wrap:wrap;">
+          <a href="/contact/" class="btn btn-navy">Get Directions</a>
+          <a href="tel:+13307237722" class="btn btn-outline">(330) 723-7722</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

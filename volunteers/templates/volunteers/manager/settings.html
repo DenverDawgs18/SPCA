@@ -1,0 +1,55 @@
+{% extends "volunteers/base.html" %}
+
+{% block title %}Settings — Manager Portal{% endblock %}
+{% block sa_settings %}active{% endblock %}
+
+{% block content %}
+<div class="portal-header">
+  <div>
+    <h1 class="portal-title">Portal Settings</h1>
+    <p class="portal-subtitle">Configure the inactivity threshold and other portal-wide settings.</p>
+  </div>
+</div>
+
+<div class="panel" style="max-width:520px;">
+  <div class="panel-header"><h3>Volunteer Inactivity Rule</h3></div>
+  <div class="panel-body">
+    <p style="font-size:0.88rem;color:var(--text-muted);margin-bottom:20px;">
+      A volunteer is considered <strong>inactive</strong> if they have fewer than the minimum number of visits
+      within the look-back window. Currently:
+      <strong style="color:var(--navy);">{{ settings.inactivity_min_visits }} visit(s) in {{ settings.inactivity_days }} days</strong>.
+    </p>
+
+    <form method="post" class="portal-form">
+      {% csrf_token %}
+      <div class="form-row">
+        <div class="form-group">
+          <label for="inactivity_days">Look-back Window (days)</label>
+          <input type="number" id="inactivity_days" name="inactivity_days"
+            min="1" max="365" value="{{ settings.inactivity_days }}" required />
+          <p class="help-text">How far back to look for visits (e.g. 90 = last 3 months).</p>
+        </div>
+        <div class="form-group">
+          <label for="inactivity_min_visits">Minimum Visits Required</label>
+          <input type="number" id="inactivity_min_visits" name="inactivity_min_visits"
+            min="1" max="100" value="{{ settings.inactivity_min_visits }}" required />
+          <p class="help-text">Volunteers with fewer visits than this are flagged inactive.</p>
+        </div>
+      </div>
+      <div style="background:var(--cream);border-radius:var(--radius);padding:12px 16px;margin-bottom:18px;font-size:0.85rem;color:var(--text-muted);">
+        <strong>Current rule:</strong> A volunteer must have at least {{ settings.inactivity_min_visits }} visit(s) in the last {{ settings.inactivity_days }} days to be "active."
+      </div>
+      <button type="submit" class="btn btn-navy">Save Settings</button>
+    </form>
+  </div>
+</div>
+
+<div class="panel" style="max-width:520px;">
+  <div class="panel-header"><h3>Django Admin</h3></div>
+  <div class="panel-body" style="font-size:0.88rem;color:var(--text-muted);">
+    <p>For advanced management (editing users, bulk operations, raw data), use the Django admin panel.</p>
+    <a href="/admin/" class="btn btn-outline btn-sm" style="margin-top:12px;">Open Django Admin</a>
+  </div>
+</div>
+
+{% endblock %}
