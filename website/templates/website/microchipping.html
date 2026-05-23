@@ -1,0 +1,81 @@
+{% extends "website/base.html" %}
+{% load static %}
+
+{% block title %}Microchipping Services — Medina County SPCA{% endblock %}
+{% block meta_desc %}Low-cost microchipping for pets at Medina County SPCA in Seville, Ohio. $25 per pet, includes registration, by appointment.{% endblock %}
+
+{% block content %}
+
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="/">Home</a><span>›</span> <a href="/about/" style="color:rgba(255,255,255,0.6);">About</a><span>›</span> Microchipping</div>
+    <h1>Microchipping Services</h1>
+    <p>One of the simplest things you can do to protect your pet. A microchip gives lost animals a way home.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="info-block">
+      <div>
+        <!--
+          REAL IMAGE: Photo of a vet or staff member microchipping a pet.
+          Recommended size: 640x420px. Path: {% static 'images/microchipping.jpg' %}
+        -->
+        <img src="https://placehold.co/640x420/1B3958/FFFFFF?text=Microchipping+Photo" alt="Microchipping a pet" />
+      </div>
+      <div class="info-text">
+        <span class="eyebrow" style="color:var(--amber);">Protect Your Pet</span>
+        <h2>Fast, safe, and affordable</h2>
+        <p>
+          A microchip is a permanent form of identification about the size of a grain of rice, implanted just beneath the skin between your pet's shoulder blades. When a lost pet is scanned at a shelter or vet clinic, the chip reveals your contact information.
+        </p>
+        <p>
+          Collars and tags can fall off. A microchip lasts a lifetime.
+        </p>
+
+        <div style="background:var(--green-light);border-radius:var(--radius-lg);padding:22px 24px;margin:20px 0;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;font-size:0.9rem;">
+            <div>
+              <strong style="display:block;color:var(--green);font-size:1.1rem;margin-bottom:2px;">$25</strong>
+              <span style="color:var(--text-muted);">Per pet, includes chip + registration</span>
+            </div>
+            <div>
+              <strong style="display:block;color:var(--navy);margin-bottom:2px;">By Appointment</strong>
+              <span style="color:var(--text-muted);">Monday through Friday</span>
+            </div>
+          </div>
+        </div>
+
+        <h4 style="margin-bottom:8px;font-size:1rem;">What's included</h4>
+        <ul style="margin:0 0 20px 20px;color:var(--text-muted);">
+          <li>ISO-compatible 15-digit microchip implantation</li>
+          <li>Registration in a national pet recovery database</li>
+          <li>Documentation for your records</li>
+        </ul>
+
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <a href="/contact/?subject=Microchipping+Appointment" class="btn btn-navy">Schedule an Appointment</a>
+          <a href="tel:+13307237722" class="btn btn-outline">(330) 723-7722</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container" style="max-width:720px;margin-inline:auto;text-align:center;">
+    <span class="eyebrow">Already Chipped?</span>
+    <h2 style="margin-bottom:14px;">Keep your registration current</h2>
+    <p style="color:var(--text-muted);margin-bottom:20px;">
+      A microchip only works if your contact information is up to date in the registry. If you've moved or changed your phone number, log in to your pet's registry account and update it right away.
+    </p>
+    <p style="color:var(--text-muted);">
+      Not sure which registry your pet is in? Use the
+      <a href="https://www.petmicrochiplookup.org/" target="_blank" rel="noopener" style="color:var(--navy);">AAHA Universal Pet Microchip Lookup</a>
+      to search by chip number.
+    </p>
+  </div>
+</section>
+
+{% endblock %}

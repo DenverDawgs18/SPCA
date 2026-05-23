@@ -15,7 +15,7 @@
 {% for vol in pending %}
 <div class="panel">
   <div class="panel-header">
-    <h3>{{ vol.user.get_full_name }} <span style="font-weight:400;color:var(--text-muted);">— Applied {{ vol.created_at|date:"N j, Y" }}</span></h3>
+    <h3>{{ vol.user.get_full_name }} <span style="font-weight:400;color:var(--text-muted);">Applied {{ vol.created_at|date:"N j, Y" }}</span></h3>
     <span class="status-pill status-pending">Pending</span>
   </div>
   <div class="panel-body">

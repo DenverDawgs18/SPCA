@@ -10,5 +10,7 @@ urlpatterns = [
     path("donate/", views.donate, name="donate"),
     path("about/", views.about, name="about"),
     path("faq/", views.faq, name="faq"),
+    path("microchipping/", views.microchipping, name="microchipping"),
+    path("report-cruelty/", views.report_cruelty, name="report_cruelty"),
     path("contact/", views.contact, name="contact"),
 ]

@@ -15,7 +15,7 @@
 
 <section class="section">
   <div class="container">
-    <div class="donate-options">
+    <div class="donate-options" style="grid-template-columns:repeat(auto-fill,minmax(240px,1fr));">
       <div class="donate-card">
         <span class="donate-card-icon">💳</span>
         <h3>One-Time Donation</h3>
@@ -36,12 +36,18 @@
       <div class="donate-card">
         <span class="donate-card-icon">📦</span>
         <h3>Amazon Wishlist</h3>
-        <p>Send supplies directly to us from our Amazon Wishlist — food, cleaning supplies, toys, and more.</p>
+        <p>Send supplies directly to us from our Amazon Wishlist: food, cleaning supplies, toys, and more.</p>
         <!--
           REAL LINK: Replace # with the organization's Amazon Wishlist URL.
           Find it on their website or ask the organization for the link.
         -->
         <a href="#" class="btn btn-outline">View Wishlist</a>
+      </div>
+      <div class="donate-card">
+        <span class="donate-card-icon">🧱</span>
+        <h3>Memorial Pavers</h3>
+        <p>Honor a person or pet with an engraved brick paver placed permanently on our beautiful 13-acre property.</p>
+        <a href="/donate/#pavers" class="btn btn-outline">Learn More</a>
       </div>
     </div>
   </div>
@@ -76,11 +82,52 @@
   </div>
 </section>
 
+<!-- ===== MEMORIAL PAVERS ===== -->
+<section class="section" id="pavers">
+  <div class="container">
+    <div class="info-block">
+      <div>
+        <!--
+          REAL IMAGE: A photo of the memorial paver pathway at the facility.
+          Path: {% static 'images/pavers.jpg' %}
+        -->
+        <img src="https://placehold.co/640x420/2D6A4F/FFFFFF?text=Memorial+Pavers" alt="Memorial pavers at Medina County SPCA" />
+      </div>
+      <div class="info-text">
+        <span class="eyebrow" style="color:var(--amber);">Leave a Lasting Mark</span>
+        <h2>Memorial Pavers</h2>
+        <p>
+          Honor a friend, family member, or beloved pet with a personalized engraved brick paver placed permanently on the grounds of our 13-acre property in Seville. Pavers are a meaningful gift that lives on long after you're gone.
+        </p>
+        <p>Great for memorials, tributes, or simply showing your love for the animals we care for.</p>
+        <h4 style="margin:18px 0 8px;font-size:1rem;">How to order</h4>
+        <ol style="margin:0 0 20px 20px;color:var(--text-muted);line-height:1.8;">
+          <li>Download and complete the paver order form (link below).</li>
+          <li>Mail or email it back to us along with payment.</li>
+          <li>If you'd like us to notify someone of your order, include their name and contact info.</li>
+        </ol>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <!--
+            REAL LINK: Replace # with the actual paver order form PDF download link.
+            The form is referenced on the "More Ways to Give" page of the current site.
+            Contact the org at info@medinacountyspca.com to obtain it.
+          -->
+          <a href="#" class="btn btn-navy">Download Order Form</a>
+          <a href="/contact/?subject=Memorial+Paver+Order" class="btn btn-outline">Contact Us About Pavers</a>
+        </div>
+        <p style="font-size:0.82rem;color:var(--text-muted);margin-top:14px;">
+          Questions? Call <a href="tel:+13307237722">(330) 723-7722</a> or email <a href="mailto:info@medinacountyspca.com">info@medinacountyspca.com</a>.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section class="section section-dark" id="events">
   <div class="container">
     <div class="section-header">
       <h2>Fundraising Events</h2>
-      <p>Join us at our upcoming events — a great way to support the SPCA and have fun doing it.</p>
+      <p>Our fundraising events are a great way to support the SPCA while having fun with fellow animal lovers.</p>
     </div>
     <!--
       REAL DATA: Replace placeholder events with actual upcoming events.
@@ -90,7 +137,7 @@
       <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:var(--radius-lg);padding:24px;">
         <p style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--amber);margin-bottom:6px;">Upcoming</p>
         <h3 style="color:#fff;font-size:1.1rem;margin-bottom:8px;">Annual Mutt Strut Walk</h3>
-        <p style="color:rgba(255,255,255,0.7);font-size:0.88rem;">A fun walk/run fundraiser welcoming dogs of all kinds. Details TBD — check back soon.</p>
+        <p style="color:rgba(255,255,255,0.7);font-size:0.88rem;">A fun walk/run fundraiser welcoming dogs of all kinds. Details are still being finalized, so check back soon.</p>
       </div>
       <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:var(--radius-lg);padding:24px;">
         <p style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--amber);margin-bottom:6px;">Upcoming</p>

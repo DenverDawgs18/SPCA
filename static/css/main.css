@@ -208,14 +208,15 @@ h1, h2, h3, h4 {
 .nav-links .dropdown-menu {
   display: none;
   position: absolute;
-  top: calc(100% + 8px);
+  top: 100%;            /* no gap — the padding-top below creates the visual breathing room */
   left: 0;
-  min-width: 200px;
+  min-width: 210px;
   background: #fff;
   border-radius: var(--radius);
   box-shadow: var(--shadow-lg);
-  padding: 6px 0;
+  padding: 10px 0 6px;  /* top padding acts as the visual gap without creating a hover dead-zone */
   border: 1px solid var(--border);
+  border-top: 3px solid var(--amber);
 }
 .nav-links .dropdown:hover .dropdown-menu,
 .nav-links .dropdown:focus-within .dropdown-menu { display: block; }

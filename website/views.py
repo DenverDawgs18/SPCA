@@ -41,6 +41,14 @@ def faq(request):
     return render(request, "website/faq.html")
 
 
+def microchipping(request):
+    return render(request, "website/microchipping.html")
+
+
+def report_cruelty(request):
+    return render(request, "website/report_cruelty.html")
+
+
 def contact(request):
     if request.method == "POST":
         name = request.POST.get("name", "").strip()

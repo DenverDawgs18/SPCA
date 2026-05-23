@@ -1,0 +1,117 @@
+{% extends "website/base.html" %}
+{% load static %}
+
+{% block title %}Report Animal Cruelty — Medina County SPCA{% endblock %}
+{% block meta_desc %}Report suspected animal abuse or neglect in Medina County, Ohio. Our humane officers investigate cruelty complaints and work with law enforcement.{% endblock %}
+
+{% block content %}
+
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="/">Home</a><span>›</span> <a href="/about/" style="color:rgba(255,255,255,0.6);">About</a><span>›</span> Report Animal Cruelty</div>
+    <h1>Report Animal Cruelty</h1>
+    <p>If you suspect an animal is being abused or neglected in Medina County, please report it. Every call matters.</p>
+  </div>
+</section>
+
+<!-- Emergency callout -->
+<section style="background:var(--amber);padding:20px 0;">
+  <div class="container" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+    <div>
+      <strong style="color:#fff;font-size:1rem;">Is this an emergency involving immediate danger to an animal?</strong>
+      <p style="color:rgba(255,255,255,0.88);font-size:0.9rem;margin-top:2px;">Call 911 first, then contact us.</p>
+    </div>
+    <a href="tel:+13307237722" class="btn btn-secondary" style="border-color:#fff;color:#fff;white-space:nowrap;">Call (330) 723-7722</a>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="info-block">
+      <div class="info-text">
+        <span class="eyebrow" style="color:var(--amber);">Our Role</span>
+        <h2>How cruelty investigations work</h2>
+        <p>
+          The Medina County SPCA employs humane agents who are authorized under Ohio law to investigate complaints of animal abuse and neglect. Our officers work closely with local law enforcement and can confiscate animals in danger and pursue criminal charges when necessary.
+        </p>
+        <p>
+          When you make a report, a humane agent will assess the situation. Not every case is clear-cut, and our first goal is always to educate owners and resolve situations peacefully. When that isn't enough, we have the authority to act.
+        </p>
+        <h4 style="margin:20px 0 8px;font-size:1rem;">What to include in your report</h4>
+        <ul style="margin:0 0 20px 20px;color:var(--text-muted);">
+          <li>The address or location of the animal</li>
+          <li>A description of what you observed and when</li>
+          <li>Photos or video, if you have them and can share safely</li>
+          <li>Any information about the owner (name, vehicle, etc.)</li>
+        </ul>
+        <p style="color:var(--text-muted);font-size:0.9rem;">
+          Reports can be made anonymously, though providing your contact information helps us follow up if we have questions.
+        </p>
+      </div>
+      <div>
+        <!--
+          REAL IMAGE: A tasteful image of an animal being cared for/rescued.
+          Path: {% static 'images/cruelty-response.jpg' %}
+        -->
+        <img src="https://placehold.co/640x420/1B3958/FFFFFF?text=Animal+Rescue+Photo" alt="Animal rescue" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container">
+    <div class="contact-grid" style="max-width:900px;margin-inline:auto;">
+      <!-- How to report -->
+      <div>
+        <h3 style="margin-bottom:16px;">How to make a report</h3>
+        <div class="contact-detail">
+          <span class="contact-detail-icon">📞</span>
+          <div class="contact-detail-text">
+            <strong>By phone (preferred)</strong>
+            <a href="tel:+13307237722">(330) 723-7722</a><br>
+            <!-- REAL DATA: Verify if there's a second cruelty-specific line -->
+            <a href="tel:+13304414624">(330) 441-4624</a>
+          </div>
+        </div>
+        <div class="contact-detail">
+          <span class="contact-detail-icon">✉️</span>
+          <div class="contact-detail-text">
+            <strong>By email</strong>
+            <a href="mailto:info@medinacountyspca.com">info@medinacountyspca.com</a>
+          </div>
+        </div>
+        <div class="contact-detail">
+          <span class="contact-detail-icon">📋</span>
+          <div class="contact-detail-text">
+            <strong>Contact form</strong>
+            <a href="/contact/?subject=Report+Animal+Cruelty">Submit a report online</a>
+          </div>
+        </div>
+        <p style="font-size:0.85rem;color:var(--text-muted);margin-top:16px;">
+          For life-threatening emergencies, always call 911 first. After the immediate danger is addressed, please also contact us so we can follow up on the animal's welfare.
+        </p>
+      </div>
+
+      <!-- What qualifies -->
+      <div>
+        <h3 style="margin-bottom:16px;">What counts as cruelty or neglect?</h3>
+        <p style="font-size:0.88rem;color:var(--text-muted);margin-bottom:12px;">Common situations our officers investigate include:</p>
+        <ul style="margin:0 0 16px 20px;color:var(--text-muted);font-size:0.88rem;line-height:1.9;">
+          <li>Animals left outside without adequate shelter, food, or water</li>
+          <li>Visible injuries with no apparent veterinary care</li>
+          <li>Animals confined in unsanitary or dangerous conditions</li>
+          <li>Animals left in a hot vehicle</li>
+          <li>Physical abuse witnessed or suspected</li>
+          <li>Hoarding situations with multiple animals in poor condition</li>
+          <li>Chained or tethered animals in unsafe conditions</li>
+        </ul>
+        <p style="font-size:0.85rem;color:var(--text-muted);">
+          If you're unsure whether what you're seeing qualifies, call us anyway. It's always better to report and let a trained officer assess the situation.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

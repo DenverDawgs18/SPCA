@@ -9,7 +9,7 @@ Both the main website and the volunteer portal run as a single Django applicatio
 - [Fly.io account](https://fly.io/app/sign-up) (free tier works)
 - [flyctl CLI](https://fly.io/docs/hands-on/install-flyctl/) installed
 - Python 3.12+ and pip (for local dev)
-- PostgreSQL (for local dev, optional — SQLite also works locally)
+- PostgreSQL (for local dev, optional; SQLite works fine locally)
 
 ---
 
@@ -34,24 +34,50 @@ cp .env.example .env
 Edit `.env`:
 
 ```
-SECRET_KEY=your-long-random-secret-key
+SECRET_KEY=any-long-random-string-for-local-dev
 DEBUG=True
 ALLOWED_HOSTS=localhost,127.0.0.1
-DATABASE_URL=sqlite:///db.sqlite3   # or your local Postgres URL
+DATABASE_URL=sqlite:///db.sqlite3
 ```
 
-### 3. Run migrations and create a superuser
+> **Note:** Leave `DATABASE_URL` as SQLite for local development. No Postgres installation needed.
+
+### 3. Create the database tables
+
+Migration files are already committed to the repo. Just run:
 
 ```bash
 python manage.py migrate
+```
+
+This creates all tables including `volunteers_sitesettings`, `volunteers_volunteer`,
+`volunteers_volunteervisit`, `website_animal`, and `website_contactmessage`.
+
+> **Troubleshooting:** If you see an error like `no such table: volunteers_sitesettings`,
+> it means migrations haven't been applied yet. Run `python manage.py migrate` and the
+> error will go away. Do **not** run `makemigrations` unless you've changed a model.
+
+### 4. Create a superuser (admin + volunteer manager)
+
+```bash
 python manage.py createsuperuser
 ```
 
-The superuser account can:
-- Access Django admin at `/admin/`
-- Access the volunteer manager portal at `/portal/manager/`
+This account gives you access to:
+- Django admin at `/admin/` (manage animals, contact messages, volunteers)
+- Volunteer manager portal at `/portal/manager/` (approve volunteers, view activity)
 
-### 4. Start the dev server
+### 5. Initialize the inactivity settings
+
+The volunteer inactivity rule (default: 2 visits / 90 days) is stored in the database.
+It's created automatically the first time someone visits the manager portal, but you can
+also seed it manually:
+
+```bash
+python manage.py shell -c "from volunteers.models import SiteSettings; SiteSettings.objects.get_or_create(pk=1)"
+```
+
+### 6. Start the dev server
 
 ```bash
 python manage.py runserver

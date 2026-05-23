@@ -32,7 +32,7 @@
 
 {% if not is_active %}
 <div style="background:#fde8e8;border:1px solid #f5c6c6;border-radius:var(--radius);padding:14px 18px;margin-bottom:20px;font-size:0.9rem;color:#c0392b;">
-  ⚠️ You are currently marked <strong>inactive</strong> — you need at least {{ settings.inactivity_min_visits }} visit(s) within the last {{ settings.inactivity_days }} days to be considered active.
+  ⚠️ You are currently marked <strong>inactive</strong>. To stay active, you need at least {{ settings.inactivity_min_visits }} visit(s) in the last {{ settings.inactivity_days }} days.
   <a href="{% url 'vol_log_visit' %}" style="color:#c0392b;font-weight:700;margin-left:8px;">Log a visit →</a>
 </div>
 {% endif %}
