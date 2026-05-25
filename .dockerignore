@@ -1,0 +1,30 @@
+# flyctl launch added from .gitignore
+**/__pycache__
+**/*.py[cod]
+**/*.so
+**/*.egg
+**/*.egg-info
+**/dist
+**/build
+**/.eggs
+**/.env
+**/.env.*
+!**/.env.example
+**/*.sqlite3
+**/db.sqlite3
+**/media
+**/staticfiles
+**/.DS_Store
+**/*.log
+**/.venv
+**/venv
+**/env
+**/node_modules
+**/.idea
+**/.vscode
+**/*.swp
+**/*.swo
+
+# flyctl launch added from .venv/.gitignore
+.venv/**/*
+fly.toml
