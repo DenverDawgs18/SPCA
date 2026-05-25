@@ -1,6 +1,8 @@
 # Deployment Guide — Medina County SPCA
 
-Both the main website and the volunteer portal run as a single Django application on Fly.io with a managed Postgres database.
+The website runs as a single Django application on Fly.io with a managed Postgres database.
+
+The volunteer portal code is archived in `_volunteer_portal/` and is not part of this deployment. See `_volunteer_portal/README.md` if you ever want to re-activate it.
 
 ---
 
@@ -9,7 +11,6 @@ Both the main website and the volunteer portal run as a single Django applicatio
 - [Fly.io account](https://fly.io/app/sign-up) (free tier works)
 - [flyctl CLI](https://fly.io/docs/hands-on/install-flyctl/) installed
 - Python 3.12+ and pip (for local dev)
-- PostgreSQL (for local dev, optional; SQLite works fine locally)
 
 ---
 
@@ -31,7 +32,7 @@ pip install -r requirements.txt
 cp .env.example .env
 ```
 
-Edit `.env`:
+Edit `.env` — for local development these defaults are fine:
 
 ```
 SECRET_KEY=any-long-random-string-for-local-dev
@@ -40,42 +41,29 @@ ALLOWED_HOSTS=localhost,127.0.0.1
 DATABASE_URL=sqlite:///db.sqlite3
 ```
 
-> **Note:** Leave `DATABASE_URL` as SQLite for local development. No Postgres installation needed.
-
 ### 3. Create the database tables
 
-Migration files are already committed to the repo. Just run:
+Migration files are already committed. Just run:
 
 ```bash
 python manage.py migrate
 ```
 
-This creates all tables including `volunteers_sitesettings`, `volunteers_volunteer`,
-`volunteers_volunteervisit`, `website_animal`, and `website_contactmessage`.
+### 4. (Optional) Load sample animals
 
-> **Troubleshooting:** If you see an error like `no such table: volunteers_sitesettings`,
-> it means migrations haven't been applied yet. Run `python manage.py migrate` and the
-> error will go away. Do **not** run `makemigrations` unless you've changed a model.
+```bash
+python manage.py loaddata sample_pets
+```
 
-### 4. Create a superuser (admin + volunteer manager)
+This seeds 5 placeholder animals (Buddy, Luna, Max, Daisy, Oliver) so the homepage and adopt page are not empty on first run.
+
+### 5. Create a superuser
 
 ```bash
 python manage.py createsuperuser
 ```
 
-This account gives you access to:
-- Django admin at `/admin/` (manage animals, contact messages, volunteers)
-- Volunteer manager portal at `/portal/manager/` (approve volunteers, view activity)
-
-### 5. Initialize the inactivity settings
-
-The volunteer inactivity rule (default: 2 visits / 90 days) is stored in the database.
-It's created automatically the first time someone visits the manager portal, but you can
-also seed it manually:
-
-```bash
-python manage.py shell -c "from volunteers.models import SiteSettings; SiteSettings.objects.get_or_create(pk=1)"
-```
+Gives you access to `/admin/` to manage animals and contact messages.
 
 ### 6. Start the dev server
 
@@ -85,7 +73,6 @@ python manage.py runserver
 
 Visit:
 - Main website: http://localhost:8000/
-- Volunteer portal: http://localhost:8000/portal/
 - Django admin: http://localhost:8000/admin/
 
 ---
@@ -98,9 +85,9 @@ Visit:
 fly auth login
 ```
 
-### 2. Edit fly.toml
+### 2. Set your app name
 
-Open `fly.toml` and change the `app` field to a unique name (must be globally unique on Fly.io):
+Open `fly.toml` and change the `app` field to a name that's globally unique on Fly.io:
 
 ```toml
 app = "your-unique-app-name"
@@ -112,7 +99,7 @@ app = "your-unique-app-name"
 fly launch --no-deploy
 ```
 
-When prompted, choose **not** to overwrite `fly.toml` (you already have one).
+When prompted, choose **not** to overwrite `fly.toml`.
 
 ### 4. Create the Postgres database
 
@@ -121,7 +108,7 @@ fly postgres create --name spca-db
 fly postgres attach spca-db
 ```
 
-This automatically sets the `DATABASE_URL` secret on your app.
+This automatically sets `DATABASE_URL` as a secret on your app.
 
 ### 5. Set required secrets
 
@@ -132,6 +119,8 @@ fly secrets set ALLOWED_HOSTS="your-unique-app-name.fly.dev"
 ```
 
 ### 6. Create a persistent volume for media uploads
+
+Animal photos uploaded through the admin are stored here.
 
 ```bash
 fly volumes create spca_media --size 1 --region ord
@@ -155,38 +144,35 @@ fly ssh console -C "python manage.py migrate"
 fly ssh console -C "python manage.py createsuperuser"
 ```
 
-### 10. Verify
+### 10. (Optional) Load sample animals
+
+```bash
+fly ssh console -C "python manage.py loaddata sample_pets"
+```
+
+### 11. Verify
 
 Visit `https://your-unique-app-name.fly.dev` — you should see the main website.
 
 ---
 
-## Post-Deployment Setup
-
-### Create the SiteSettings object (inactivity rule)
-
-The volunteer inactivity threshold is stored in the database. After first deploy:
-
-```bash
-fly ssh console -C "python manage.py shell -c \"from volunteers.models import SiteSettings; SiteSettings.objects.get_or_create(pk=1)\""
-```
-
-Then visit `/portal/manager/settings/` to adjust the threshold (default: 2 visits / 90 days).
-
-### Add animals to the site
+## Managing Animals
 
 Go to `/admin/` → Website → Animals → Add Animal.
-- Upload a photo or paste an external photo URL.
-- Check "Is featured" to show the animal on the homepage.
 
-### Create volunteer manager accounts
+- Upload a photo or paste an external photo URL in the "Photo URL" field.
+- Check **Is featured** to show the animal on the homepage (aim for 3 featured).
+- The adopt page shows all animals with status "Available".
 
-Managers are Django staff users. To promote an existing user:
+---
 
-1. Go to `/admin/` → Auth → Users
-2. Click the user → check "Staff status" → Save
+## Adding Real Images
 
-Or create a new staff user directly in the admin.
+Drop image files into `static/images/` matching the names in `static/images/IMAGES.txt`. No code changes are needed — the templates pick them up automatically.
+
+The logo is the simplest example: drop `logo.svg` into `static/images/` and the navbar logo appears.
+
+After adding images locally, run `python manage.py collectstatic` before deploying.
 
 ---
 
@@ -200,16 +186,18 @@ fly ssh console -C "python manage.py migrate"   # only if models changed
 
 ---
 
-## Domain (Custom URL)
-
-To add a custom domain like `volunteers.medinacountyspca.com`:
+## Custom Domain
 
 ```bash
-fly certs add volunteers.medinacountyspca.com
+fly certs add medinacountyspca.com
+fly certs add www.medinacountyspca.com
 ```
 
-Then add a CNAME record in your DNS pointing to `your-app-name.fly.dev`.
-Also add the new domain to your `ALLOWED_HOSTS` secret.
+Add CNAME (or A/AAAA) records in your DNS pointing to your app. Also update `ALLOWED_HOSTS`:
+
+```bash
+fly secrets set ALLOWED_HOSTS="your-unique-app-name.fly.dev,medinacountyspca.com,www.medinacountyspca.com"
+```
 
 ---
 
@@ -217,16 +205,16 @@ Also add the new domain to your `ALLOWED_HOSTS` secret.
 
 | Resource | Fly.io Free Tier |
 |---|---|
-| App (shared-cpu-1x, 256MB) | Free |
-| Postgres (1GB) | ~$0/mo on free tier |
-| Volume (1GB media) | ~$0.15/GB/mo |
-| Outbound bandwidth | 100GB free/mo |
+| App (shared-cpu-1x, 256 MB) | Free |
+| Postgres (1 GB) | ~$0/mo on free tier |
+| Volume (1 GB media) | ~$0.15/GB/mo |
+| Outbound bandwidth | 100 GB free/mo |
 
 For a small nonprofit, costs should be near **$0–$3/month**.
 
 ---
 
-## Architecture Summary
+## Architecture
 
 ```
 Browser
@@ -236,12 +224,11 @@ Fly.io (HTTPS)
   │
   ▼
 Gunicorn (Django)
-  ├── /               → Main website (website app)
-  ├── /portal/        → Volunteer portal (volunteers app)
-  ├── /admin/         → Django admin
-  └── /static/        → WhiteNoise serves CSS/JS/images
+  ├── /          → Main website (website app)
+  ├── /admin/    → Django admin
+  └── /static/   → WhiteNoise serves CSS/JS/images
          │
          ▼
     PostgreSQL (Fly.io managed)
-    Volume mount at /app/media  (animal photos)
+    Volume mount at /app/media  (uploaded animal photos)
 ```
