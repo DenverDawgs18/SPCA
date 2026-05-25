@@ -32,10 +32,10 @@ primary_region = "ord"              # Chicago — closest to Seville, OH
 
   [[services.http_checks]]
     interval = "15s"
-    timeout = "5s"
-    grace_period = "30s"
+    timeout = "10s"
+    grace_period = "60s"
     method = "GET"
-    path = "/"
+    path = "/health/"
 
 [[mounts]]
   source = "spca_media"

@@ -1,6 +1,11 @@
 from django.shortcuts import render, redirect
+from django.http import HttpResponse
 from django.contrib import messages
 from .models import Animal, ContactMessage
+
+
+def health(request):
+    return HttpResponse("ok")
 
 
 def home(request):
