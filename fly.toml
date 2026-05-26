@@ -7,9 +7,14 @@ primary_region = 'ord'
 [build]
   dockerfile = 'Dockerfile'
 
+[deploy]
+  release_command = 'python manage.py migrate --noinput'
+
 [env]
   DEBUG = 'False'
   DJANGO_SETTINGS_MODULE = 'spca_project.settings'
+  ALLOWED_HOSTS = 'medina-county-spca.fly.dev'
+  CSRF_TRUSTED_ORIGINS = 'https://medina-county-spca.fly.dev'
 
 [[mounts]]
   source = 'spca_media'
@@ -28,6 +33,8 @@ primary_region = 'ord'
     method = "GET"
     path = "/health/"
     timeout = "10s"
+    [http_service.checks.headers]
+      Host = "medina-county-spca.fly.dev"
 
 [[vm]]
   memory = '1gb'
