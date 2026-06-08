@@ -508,13 +508,13 @@ def mgr_shifts(request):
     upcoming = (
         Shift.objects
         .filter(date__gte=today)
-        .prefetch_related("shiftsignup_set__volunteer__user")
+        .prefetch_related("signups__volunteer__user")
         .order_by("date", "start_time")
     )
     past = (
         Shift.objects
         .filter(date__lt=today)
-        .prefetch_related("shiftsignup_set__volunteer__user")
+        .prefetch_related("signups__volunteer__user")
         .order_by("-date")[:30]
     )
 

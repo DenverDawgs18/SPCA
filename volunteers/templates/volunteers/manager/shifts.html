@@ -32,7 +32,7 @@
         </thead>
         <tbody>
           {% for shift in upcoming %}
-          {% for signup in shift.shiftsignup_set.all %}
+          {% for signup in shift.signups.all %}
           {% if not signup.is_cancelled %}
           <tr>
             <td>{{ signup.volunteer.full_name }}</td>
@@ -69,7 +69,7 @@
         </thead>
         <tbody>
           {% for shift in past %}
-          {% for signup in shift.shiftsignup_set.all %}
+          {% for signup in shift.signups.all %}
           {% if not signup.is_cancelled %}
           <tr>
             <td>{{ signup.volunteer.full_name }}</td>
