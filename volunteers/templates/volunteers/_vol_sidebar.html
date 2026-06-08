@@ -10,7 +10,7 @@
     <span class="sidebar-icon">&#9632;</span> Dashboard
   </a>
   <a href="{% url 'volunteers:schedule' %}" class="{% if request.resolver_match.url_name == 'schedule' %}active{% endif %}">
-    <span class="sidebar-icon">&#128197;</span> Browse Shifts
+    <span class="sidebar-icon">&#128197;</span> Schedule a Shift
   </a>
   <a href="{% url 'volunteers:my_shifts' %}" class="{% if request.resolver_match.url_name == 'my_shifts' %}active{% endif %}">
     <span class="sidebar-icon">&#10003;</span> My Shifts

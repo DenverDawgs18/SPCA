@@ -64,13 +64,13 @@
         </div>
         {% endfor %}
       </div>
-      <a href="{% url 'volunteers:schedule' %}" class="btn btn-outline btn-sm" style="margin-top:12px;">Browse All Shifts</a>
+      <a href="{% url 'volunteers:schedule' %}" class="btn btn-outline btn-sm" style="margin-top:12px;">Schedule a Shift</a>
     </div>
     {% else %}
     <div class="portal-section">
       <h2>Upcoming Shifts</h2>
       <p style="color:var(--text-muted);">You haven't signed up for any upcoming shifts yet.</p>
-      <a href="{% url 'volunteers:schedule' %}" class="btn btn-primary btn-sm">Browse Available Shifts</a>
+      <a href="{% url 'volunteers:schedule' %}" class="btn btn-primary btn-sm">Schedule a Shift</a>
     </div>
     {% endif %}
 

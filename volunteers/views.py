@@ -36,7 +36,9 @@ from .forms import (
     ShiftForm,
     SiteSettingsForm,
     VolunteerImportForm,
+    VolunteerScheduleForm,
 )
+from .models import ACTIVITY_CHOICES
 from .models import (
     AdminNotificationPreference,
     GroupEmailRecord,
@@ -199,56 +201,38 @@ def vol_schedule(request):
         messages.error(request, "Volunteer profile not found.")
         return redirect("volunteers:dashboard")
 
-    today = timezone.now().date()
-    shifts = (
-        Shift.objects
-        .filter(date__gte=today, is_cancelled=False)
-        .order_by("date", "start_time")
-    )
+    form = VolunteerScheduleForm(request.POST or None)
 
-    # Annotate each shift with whether this volunteer is signed up
-    signed_up_ids = set(
+    if request.method == "POST" and form.is_valid():
+        activity = form.cleaned_data["activity_type"]
+        activity_label = dict(ACTIVITY_CHOICES).get(activity, activity)
+        shift = Shift.objects.create(
+            title=activity_label,
+            description=form.cleaned_data.get("notes", ""),
+            date=form.cleaned_data["date"],
+            start_time=form.cleaned_data["start_time"],
+            end_time=form.cleaned_data["end_time"],
+            activity_type=activity,
+            capacity=1,
+            created_by=request.user,
+        )
+        ShiftSignup.objects.create(volunteer=volunteer, shift=shift)
+        messages.success(request, f"Shift scheduled for {shift.date}!")
+        return redirect("volunteers:my_shifts")
+
+    today = timezone.now().date()
+    upcoming = (
         ShiftSignup.objects
-        .filter(volunteer=volunteer, is_cancelled=False)
-        .values_list("shift_id", flat=True)
+        .filter(volunteer=volunteer, is_cancelled=False, shift__date__gte=today)
+        .select_related("shift")
+        .order_by("shift__date", "shift__start_time")
     )
-    for shift in shifts:
-        shift.volunteer_signed_up = shift.pk in signed_up_ids
 
     return render(request, "volunteers/schedule.html", {
         "volunteer": volunteer,
-        "shifts": shifts,
+        "form": form,
+        "upcoming": upcoming,
     })
-
-
-@login_required(login_url="/portal/login/")
-def vol_shift_signup(request, shift_id):
-    if request.method != "POST":
-        return redirect("volunteers:schedule")
-
-    volunteer = _get_volunteer_or_redirect(request)
-    if volunteer is None:
-        messages.error(request, "Volunteer profile not found.")
-        return redirect("volunteers:dashboard")
-
-    shift = get_object_or_404(Shift, pk=shift_id, is_cancelled=False)
-
-    if shift.is_full:
-        messages.error(request, f"Sorry, '{shift.title}' is full.")
-        return redirect("volunteers:schedule")
-
-    signup, created = ShiftSignup.objects.get_or_create(volunteer=volunteer, shift=shift)
-    if not created and signup.is_cancelled:
-        signup.is_cancelled = False
-        signup.cancelled_at = None
-        signup.save()
-        messages.success(request, f"You've re-signed up for '{shift.title}'.")
-    elif created:
-        messages.success(request, f"You're signed up for '{shift.title}' on {shift.date}!")
-    else:
-        messages.info(request, "You're already signed up for that shift.")
-
-    return redirect("volunteers:schedule")
 
 
 @login_required(login_url="/portal/login/")

@@ -1,7 +1,7 @@
 {% extends "website/base.html" %}
 {% load static %}
 
-{% block title %}Browse Shifts — Volunteer Portal{% endblock %}
+{% block title %}Schedule a Shift — Volunteer Portal{% endblock %}
 
 {% block extra_head %}
 <link rel="stylesheet" href="{% static 'css/volunteer.css' %}" />
@@ -14,57 +14,69 @@
   </aside>
   <main class="portal-main">
     <div class="portal-page-header">
-      <h1>Browse Upcoming Shifts</h1>
+      <h1>Schedule a Shift</h1>
     </div>
 
-    {% if shifts %}
-    <div class="shift-grid">
-      {% for shift in shifts %}
-      <div class="shift-card {% if shift.volunteer_signed_up %}shift-card--signed-up{% endif %}">
-        <div class="shift-card-header">
-          <strong>{{ shift.title }}</strong>
-          <span class="shift-activity-badge">{{ shift.get_activity_type_display }}</span>
-        </div>
-        <div class="shift-card-meta">
-          <span>{{ shift.date|date:"D, N j, Y" }}</span>
-          <span>{{ shift.start_time|time:"g:i A" }} – {{ shift.end_time|time:"g:i A" }}</span>
-        </div>
-        {% if shift.description %}
-        <p class="shift-description">{{ shift.description }}</p>
-        {% endif %}
-        <div class="shift-card-footer">
-          <div class="shift-spots">
-            {% if shift.is_full %}
-            <span class="status-pill inactive">Full</span>
-            {% else %}
-            <span class="status-pill active">{{ shift.spots_left }} spot{{ shift.spots_left|pluralize }} left</span>
-            {% endif %}
-          </div>
-          <div class="shift-action">
-            {% if shift.volunteer_signed_up %}
-            <span class="status-pill approved">&#10003; Signed Up</span>
-            <form method="post" action="{% url 'volunteers:shift_cancel' shift.pk %}" style="display:inline;">
-              {% csrf_token %}
-              <button type="submit" class="btn btn-outline btn-sm" onclick="return confirm('Cancel this shift signup?')">Cancel</button>
-            </form>
-            {% elif not shift.is_full %}
-            <form method="post" action="{% url 'volunteers:shift_signup' shift.pk %}">
-              {% csrf_token %}
-              <button type="submit" class="btn btn-primary btn-sm">Sign Up</button>
-            </form>
-            {% else %}
-            <button class="btn btn-outline btn-sm" disabled>Full</button>
-            {% endif %}
-          </div>
-        </div>
-      </div>
+    {% if messages %}
+    <div class="messages">
+      {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
       {% endfor %}
     </div>
-    {% else %}
-    <div class="empty-state">
-      <p>No upcoming shifts are available right now. Check back soon!</p>
-    </div>
     {% endif %}
+
+    <div class="portal-section">
+      <h2>Add a New Shift</h2>
+      <form method="post" class="form-card">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="form-group {% if field.errors %}has-error{% endif %}">
+          <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+          {{ field }}
+          {% if field.errors %}
+          <ul class="form-errors">
+            {% for error in field.errors %}<li>{{ error }}</li>{% endfor %}
+          </ul>
+          {% endif %}
+        </div>
+        {% endfor %}
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Save Shift</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="portal-section">
+      <h2>Your Upcoming Shifts</h2>
+      {% if upcoming %}
+      <div class="shift-grid">
+        {% for signup in upcoming %}
+        <div class="shift-card shift-card--signed-up">
+          <div class="shift-card-header">
+            <strong>{{ signup.shift.title }}</strong>
+            <span class="shift-activity-badge">{{ signup.shift.get_activity_type_display }}</span>
+          </div>
+          <div class="shift-card-meta">
+            <span>{{ signup.shift.date|date:"D, N j, Y" }}</span>
+            <span>{{ signup.shift.start_time|time:"g:i A" }} – {{ signup.shift.end_time|time:"g:i A" }}</span>
+          </div>
+          {% if signup.shift.description %}
+          <p class="shift-description">{{ signup.shift.description }}</p>
+          {% endif %}
+          <div class="shift-card-footer">
+            <form method="post" action="{% url 'volunteers:shift_cancel' signup.shift.pk %}">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-outline btn-sm" data-confirm="Cancel this shift?">Cancel</button>
+            </form>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p style="color:var(--text-muted);">No upcoming shifts scheduled.</p>
+      {% endif %}
+    </div>
+
   </main>
 </div>
 {% endblock %}

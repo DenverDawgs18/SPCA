@@ -22,7 +22,6 @@ urlpatterns = [
     # Volunteer pages
     path("dashboard/", views.vol_dashboard, name="dashboard"),
     path("schedule/", views.vol_schedule, name="schedule"),
-    path("schedule/<int:shift_id>/signup/", views.vol_shift_signup, name="shift_signup"),
     path("schedule/<int:shift_id>/cancel/", views.vol_shift_cancel, name="shift_cancel"),
     path("my-shifts/", views.vol_my_shifts, name="my_shifts"),
     path("profile/", views.vol_profile, name="profile"),
