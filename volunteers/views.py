@@ -505,8 +505,18 @@ def mgr_toggle_active(request, vol_id):
 @_require_manager
 def mgr_shifts(request):
     today = timezone.now().date()
-    upcoming = Shift.objects.filter(date__gte=today).order_by("date", "start_time")
-    past = Shift.objects.filter(date__lt=today).order_by("-date")[:30]
+    upcoming = (
+        Shift.objects
+        .filter(date__gte=today)
+        .prefetch_related("shiftsignup_set__volunteer__user")
+        .order_by("date", "start_time")
+    )
+    past = (
+        Shift.objects
+        .filter(date__lt=today)
+        .prefetch_related("shiftsignup_set__volunteer__user")
+        .order_by("-date")[:30]
+    )
 
     return render(request, "volunteers/manager/shifts.html", {
         "upcoming": upcoming,

@@ -32,6 +32,13 @@
     <span class="sidebar-icon">&#9881;</span> Settings
   </a>
   <div class="sidebar-divider"></div>
+  <a href="{% url 'volunteers:schedule' %}" class="{% if request.resolver_match.url_name == 'schedule' %}active{% endif %}" style="font-size:0.82rem;opacity:0.85;">
+    <span class="sidebar-icon">&#128197;</span> My Schedule
+  </a>
+  <a href="{% url 'volunteers:my_shifts' %}" class="{% if request.resolver_match.url_name == 'my_shifts' %}active{% endif %}" style="font-size:0.82rem;opacity:0.85;">
+    <span class="sidebar-icon">&#10003;</span> My Shifts
+  </a>
+  <div class="sidebar-divider"></div>
   <a href="{% url 'volunteers:log_hours' %}" style="opacity:0.7;font-size:0.82rem;">Kiosk: Log Hours</a>
   <div class="sidebar-divider"></div>
   <form method="post" action="{% url 'volunteers:logout' %}" style="margin:0;">

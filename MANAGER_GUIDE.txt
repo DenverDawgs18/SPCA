@@ -121,23 +121,31 @@ IMPORTING EXISTING VOLUNTEERS FROM A CSV FILE
 
 SHIFTS
 ------
-Shifts are scheduled work sessions that volunteers can sign up for.
+Volunteers schedule their own shifts — they pick the date, time, and activity
+type themselves. You do not need to create shifts in advance.
 
-CREATING A SHIFT
-  1. Click "Shifts" in the sidebar, then "Create New Shift."
-  2. Fill in the title, date, start time, end time, activity type, and capacity
-     (maximum number of volunteers who can sign up).
-  3. Click Save. The shift immediately appears on the volunteer-facing schedule.
+VOLUNTEER SELF-SCHEDULING
+  When a volunteer logs in they see "Schedule a Shift" in the sidebar.
+  They fill in:
+    - Date (must be today or future)
+    - Start time and End time
+    - Activity type (e.g., Dog Walking, Cat Socialization)
+    - Optional notes
+  After saving, the shift appears on their "My Shifts" page. They can
+  cancel an upcoming shift from there at any time.
 
-MANAGING A SHIFT
-  Click any shift title to open its detail page. From there you can:
-    - See who has signed up.
-    - Edit the shift details.
-    - Cancel the shift (removes it from the schedule; existing sign-ups are
-      not automatically notified, so send a group email if needed).
+MANAGER VIEW OF ALL SHIFTS
+  Click "Shifts" in your sidebar to see every shift that has been scheduled
+  across all volunteers — upcoming and the last 30 past shifts. This is a
+  read-only oversight view; it links to each volunteer's detail page.
 
-Volunteers sign themselves up and can cancel their own sign-ups from their
-portal. You do not need to manage sign-ups manually.
+SCHEDULING YOUR OWN SHIFTS (if you are also a volunteer)
+  Your sidebar has two extra links below the main navigation:
+    "My Schedule" — opens the same self-schedule form volunteers use.
+                    Pick a date, time, and activity and save.
+    "My Shifts"   — shows all shifts you have personally scheduled,
+                    upcoming and past. You can cancel upcoming ones here.
+  These work exactly the same as the volunteer-facing pages.
 
 
 HOUR LOGS

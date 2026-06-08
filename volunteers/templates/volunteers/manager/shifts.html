@@ -1,7 +1,7 @@
 {% extends "website/base.html" %}
 {% load static %}
 
-{% block title %}Shifts — Manager Portal{% endblock %}
+{% block title %}All Shifts — Manager Portal{% endblock %}
 
 {% block extra_head %}
 <link rel="stylesheet" href="{% static 'css/volunteer.css' %}" />
@@ -14,86 +14,76 @@
   </aside>
   <main class="portal-main">
     <div class="portal-page-header">
-      <h1>Shifts</h1>
-      <a href="{% url 'volunteers:mgr_shift_create' %}" class="btn btn-primary">+ Create Shift</a>
+      <h1>All Scheduled Shifts</h1>
     </div>
 
     <div class="portal-section">
-      <h2>Upcoming Shifts</h2>
+      <h2>Upcoming</h2>
       {% if upcoming %}
-      <table class="data-table">
+      <table class="data-table sortable">
         <thead>
           <tr>
-            <th>Shift</th>
-            <th>Date</th>
-            <th>Time</th>
-            <th>Activity</th>
-            <th>Signups</th>
-            <th>Status</th>
+            <th data-sort>Volunteer</th>
+            <th data-sort>Activity</th>
+            <th data-sort>Date</th>
+            <th data-sort>Time</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           {% for shift in upcoming %}
+          {% for signup in shift.shiftsignup_set.all %}
+          {% if not signup.is_cancelled %}
           <tr>
-            <td><a href="{% url 'volunteers:mgr_shift_detail' shift.pk %}">{{ shift.title }}</a></td>
+            <td>{{ signup.volunteer.full_name }}</td>
+            <td>{{ shift.get_activity_type_display }}</td>
             <td>{{ shift.date|date:"N j, Y" }}</td>
             <td>{{ shift.start_time|time:"g:i A" }} – {{ shift.end_time|time:"g:i A" }}</td>
-            <td>{{ shift.get_activity_type_display }}</td>
-            <td>{{ shift.signup_count }} / {{ shift.capacity }}</td>
             <td>
-              {% if shift.is_cancelled %}
-              <span class="status-pill denied">Cancelled</span>
-              {% elif shift.is_full %}
-              <span class="status-pill inactive">Full</span>
-              {% else %}
-              <span class="status-pill active">Open</span>
-              {% endif %}
-            </td>
-            <td style="white-space:nowrap;">
-              <a href="{% url 'volunteers:mgr_shift_edit' shift.pk %}" class="btn btn-outline btn-sm">Edit</a>
-              <form method="post" action="{% url 'volunteers:mgr_shift_delete' shift.pk %}" style="display:inline;">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-outline btn-sm"
-                        onclick="return confirm('Cancel this shift?')" style="color:var(--red);border-color:var(--red);">Cancel</button>
-              </form>
+              <a href="{% url 'volunteers:mgr_volunteer_detail' signup.volunteer.pk %}" class="btn btn-outline btn-sm">View Volunteer</a>
             </td>
           </tr>
+          {% endif %}
+          {% endfor %}
           {% endfor %}
         </tbody>
       </table>
       {% else %}
       <div class="empty-state">
-        <p>No upcoming shifts. <a href="{% url 'volunteers:mgr_shift_create' %}">Create one</a>.</p>
+        <p>No upcoming shifts scheduled. Volunteers schedule their own shifts from their portal.</p>
       </div>
       {% endif %}
     </div>
 
     <div class="portal-section">
-      <h2>Past Shifts</h2>
+      <h2>Past (last 30)</h2>
       {% if past %}
       <table class="data-table">
         <thead>
           <tr>
-            <th>Shift</th>
-            <th>Date</th>
+            <th>Volunteer</th>
             <th>Activity</th>
-            <th>Signups</th>
+            <th>Date</th>
+            <th>Time</th>
           </tr>
         </thead>
         <tbody>
           {% for shift in past %}
+          {% for signup in shift.shiftsignup_set.all %}
+          {% if not signup.is_cancelled %}
           <tr>
-            <td><a href="{% url 'volunteers:mgr_shift_detail' shift.pk %}">{{ shift.title }}</a></td>
-            <td>{{ shift.date|date:"N j, Y" }}</td>
+            <td>{{ signup.volunteer.full_name }}</td>
             <td>{{ shift.get_activity_type_display }}</td>
-            <td>{{ shift.signup_count }} / {{ shift.capacity }}</td>
+            <td>{{ shift.date|date:"N j, Y" }}</td>
+            <td>{{ shift.start_time|time:"g:i A" }} – {{ shift.end_time|time:"g:i A" }}</td>
           </tr>
+          {% endif %}
+          {% endfor %}
           {% endfor %}
         </tbody>
       </table>
       {% else %}
-      <p style="color:var(--text-muted);">No past shifts.</p>
+      <p style="color:var(--text-muted);">No past shifts on record.</p>
       {% endif %}
     </div>
   </main>

@@ -122,6 +122,8 @@ Then rebuild and deploy:
 [ ] Approve the test application (approval email goes out if SMTP is configured)
 [ ] Try Send Email in manager portal → confirm the copy-paste screen appears
 [ ] Log in as the test volunteer at /portal/login/
+[ ] As the volunteer, schedule a test shift via "Schedule a Shift" in the sidebar
+[ ] Confirm the shift appears on "My Shifts"
 [ ] /admin/ accessible with the superuser account
 
 
