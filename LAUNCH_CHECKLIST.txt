@@ -1,0 +1,142 @@
+LAUNCH CHECKLIST
+Medina County SPCA — from current state to sent
+================================================
+
+
+1. MERGE & DEPLOY
+-----------------
+Merge the feature branch into main and push to Fly.io.
+
+  git checkout main
+  git merge claude/relaxed-mendel-e3cY6
+  git push origin main
+  fly deploy
+
+That's one deploy. Migrations run automatically as part of fly deploy
+(the release_command in fly.toml handles it).
+
+
+2. SET EMAIL SECRETS ON FLY
+----------------------------
+The volunteer portal sends real emails in production. Pick one option.
+
+Option A — SendGrid (recommended, free up to 100 emails/day)
+  Sign up at sendgrid.com, create an API key with "Mail Send" permission, then:
+
+  fly secrets set EMAIL_BACKEND="django.core.mail.backends.smtp.EmailBackend"
+  fly secrets set EMAIL_HOST="smtp.sendgrid.net"
+  fly secrets set EMAIL_PORT="587"
+  fly secrets set EMAIL_USE_TLS="True"
+  fly secrets set EMAIL_HOST_USER="apikey"
+  fly secrets set EMAIL_HOST_PASSWORD="SG.your-api-key-here"
+  fly secrets set DEFAULT_FROM_EMAIL="Medina County SPCA <noreply@medinacountyspca.com>"
+
+Option B — Gmail App Password
+  Go to myaccount.google.com/apppasswords, create an App Password, then:
+
+  fly secrets set EMAIL_BACKEND="django.core.mail.backends.smtp.EmailBackend"
+  fly secrets set EMAIL_HOST="smtp.gmail.com"
+  fly secrets set EMAIL_PORT="587"
+  fly secrets set EMAIL_USE_TLS="True"
+  fly secrets set EMAIL_HOST_USER="theiraddress@gmail.com"
+  fly secrets set EMAIL_HOST_PASSWORD="xxxx xxxx xxxx xxxx"
+  fly secrets set DEFAULT_FROM_EMAIL="Medina County SPCA <theiraddress@gmail.com>"
+
+Skip this step if you want to test everything first and add email later.
+Without it, the site works fine — emails just don't go out.
+
+
+3. CREATE THE FIRST MANAGER ACCOUNT
+-------------------------------------
+This person will log in to the volunteer portal as a manager.
+
+  fly ssh console -C "python manage.py createsuperuser"
+
+Enter a username, email, and password when prompted. This account gets
+access to both /portal/manager/ AND /admin/.
+
+If an admin account already exists from before, you can reuse it —
+is_superuser implies is_staff, so it already has manager access.
+Or create a separate staff-only account:
+
+  fly ssh console
+  # then inside the shell:
+  python manage.py shell -c "
+  from django.contrib.auth.models import User
+  u = User.objects.create_user('manager', 'their@email.com', 'choose-a-password')
+  u.is_staff = True
+  u.first_name = 'Their'
+  u.last_name = 'Name'
+  u.save()
+  "
+
+
+4. LOAD SAMPLE ANIMALS (if not already done)
+---------------------------------------------
+  fly ssh console -C "python manage.py loaddata sample_pets"
+
+Puts 5 placeholder animals on the site so the Adopt page isn't empty.
+Replace them with real animals via /admin/ → Animals.
+
+
+5. CUSTOM DOMAIN (if using medinacountyspca.com)
+-------------------------------------------------
+  fly certs add medinacountyspca.com
+  fly certs add www.medinacountyspca.com
+
+  fly secrets set \
+    ALLOWED_HOSTS="medina-county-spca.fly.dev,medinacountyspca.com,www.medinacountyspca.com" \
+    CSRF_TRUSTED_ORIGINS="https://medina-county-spca.fly.dev,https://medinacountyspca.com,https://www.medinacountyspca.com"
+
+Then update the DNS at your registrar:
+  CNAME  www   →  medina-county-spca.fly.dev
+  A/ALIAS @    →  (IP shown by `fly ips list`)
+
+fly certs check medinacountyspca.com   ← confirms SSL is provisioned
+
+
+6. DROP IN THE REAL LOGO
+-------------------------
+Copy their logo file to:  static/images/logo.svg   (or logo.png)
+
+If PNG:  also update the two <img> tags in website/templates/website/base.html
+         that reference logo.svg to use logo.png instead.
+
+Then rebuild and deploy:
+  python manage.py collectstatic --noinput
+  fly deploy
+
+
+7. SMOKE TEST (5 minutes)
+--------------------------
+[ ] Home page loads, counters animate, no broken images
+[ ] /adopt/ shows animals
+[ ] /volunteer/ shows the volunteer page with Apply button
+[ ] /portal/log-hours/ loads without logging in (the kiosk page)
+[ ] /portal/apply/ loads the application form
+[ ] Submit a test application → confirm it appears in /portal/manager/applications/
+[ ] Approve the test application → confirm the approval email arrives
+[ ] Log in as the test volunteer at /portal/login/
+[ ] /admin/ accessible with the superuser account
+
+
+8. HAND OFF TO CLIENT
+----------------------
+Send them these four things:
+
+  1. The site URL (and custom domain once DNS propagates)
+
+  2. Manager portal login:
+       URL:       https://your-site.com/portal/login/
+       Username:  (what you set in step 3)
+       Password:  (what you set in step 3)
+       Admin URL: https://your-site.com/admin/  (for adding animals)
+
+  3. Kiosk URL to bookmark on the shelter computer:
+       https://your-site.com/portal/log-hours/
+
+  4. The file MANAGER_GUIDE.txt from this repo — it explains every
+     feature in plain language with no technical jargon.
+
+
+THAT'S IT.
