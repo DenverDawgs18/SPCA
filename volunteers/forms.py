@@ -100,7 +100,49 @@ class HourLogKioskForm(forms.Form):
 
 
 # ---------------------------------------------------------------------------
-# Shift form (admin)
+# Volunteer self-schedule form
+# ---------------------------------------------------------------------------
+
+class VolunteerScheduleForm(forms.Form):
+    date = forms.DateField(
+        widget=forms.DateInput(attrs={"type": "date"}),
+        label="Date",
+    )
+    start_time = forms.TimeField(
+        widget=forms.TimeInput(attrs={"type": "time"}),
+        label="Start time",
+    )
+    end_time = forms.TimeField(
+        widget=forms.TimeInput(attrs={"type": "time"}),
+        label="End time",
+    )
+    activity_type = forms.ChoiceField(
+        choices=ACTIVITY_CHOICES,
+        label="Activity",
+    )
+    notes = forms.CharField(
+        widget=forms.Textarea(attrs={"rows": 2}),
+        required=False,
+        label="Notes (optional)",
+    )
+
+    def clean_date(self):
+        d = self.cleaned_data.get("date")
+        if d and d < timezone.now().date():
+            raise forms.ValidationError("Date cannot be in the past.")
+        return d
+
+    def clean(self):
+        cleaned = super().clean()
+        start = cleaned.get("start_time")
+        end = cleaned.get("end_time")
+        if start and end and end <= start:
+            self.add_error("end_time", "End time must be after start time.")
+        return cleaned
+
+
+# ---------------------------------------------------------------------------
+# Shift form (manager-created shifts / special events)
 # ---------------------------------------------------------------------------
 
 class ShiftForm(forms.ModelForm):
