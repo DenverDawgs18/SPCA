@@ -178,3 +178,26 @@ class SiteSettingsForm(forms.Form):
         label="Minimum logs in window",
         help_text="Number of hour logs required within the window to be considered active.",
     )
+
+
+# ---------------------------------------------------------------------------
+# Volunteer CSV import form
+# ---------------------------------------------------------------------------
+
+class VolunteerImportForm(forms.Form):
+    csv_file = forms.FileField(
+        label="CSV file",
+        help_text=(
+            "Required columns: first_name, last_name, email. "
+            "Optional columns: phone, notes. "
+            "First row must be a header row."
+        ),
+    )
+
+    def clean_csv_file(self):
+        f = self.cleaned_data["csv_file"]
+        if not f.name.lower().endswith(".csv"):
+            raise forms.ValidationError("Please upload a .csv file.")
+        if f.size > 2 * 1024 * 1024:
+            raise forms.ValidationError("File must be under 2 MB.")
+        return f

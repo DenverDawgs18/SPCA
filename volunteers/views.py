@@ -5,6 +5,8 @@ URL namespace: 'volunteers'
 All manager views require is_staff.
 """
 
+import csv
+import io
 from functools import wraps
 
 from django.contrib import messages
@@ -34,6 +36,7 @@ from .forms import (
     ManagerNotesForm,
     ShiftForm,
     SiteSettingsForm,
+    VolunteerImportForm,
 )
 from .models import (
     AdminNotificationPreference,
@@ -704,4 +707,100 @@ def mgr_settings(request):
         "settings": settings_obj,
         "pref": pref,
         "pending_count": VolunteerApplication.objects.filter(status="pending").count(),
+    })
+
+
+# ---------------------------------------------------------------------------
+# CSV volunteer import
+# ---------------------------------------------------------------------------
+
+# Columns we recognise (normalised: lowercase, underscores)
+_REQUIRED_COLS = {"first_name", "last_name", "email"}
+_OPTIONAL_COLS = {"phone", "notes"}
+
+
+def _normalise_header(h):
+    return h.strip().lower().replace(" ", "_").replace("-", "_")
+
+
+@_require_manager
+def mgr_import_volunteers(request):
+    pending_count = VolunteerApplication.objects.filter(status="pending").count()
+
+    if request.method != "POST":
+        return render(request, "volunteers/manager/import_volunteers.html", {
+            "form": VolunteerImportForm(),
+            "pending_count": pending_count,
+        })
+
+    form = VolunteerImportForm(request.POST, request.FILES)
+    if not form.is_valid():
+        return render(request, "volunteers/manager/import_volunteers.html", {
+            "form": form,
+            "pending_count": pending_count,
+        })
+
+    raw = request.FILES["csv_file"].read()
+    try:
+        text = raw.decode("utf-8-sig")  # handle Excel BOM
+    except UnicodeDecodeError:
+        text = raw.decode("latin-1")
+
+    reader = csv.DictReader(io.StringIO(text))
+    headers = {_normalise_header(h) for h in (reader.fieldnames or [])}
+    missing = _REQUIRED_COLS - headers
+    if missing:
+        form.add_error(
+            "csv_file",
+            f"Missing required column(s): {', '.join(sorted(missing))}. "
+            "Found: " + ", ".join(sorted(headers)) + "."
+        )
+        return render(request, "volunteers/manager/import_volunteers.html", {
+            "form": form,
+            "pending_count": pending_count,
+        })
+
+    created, skipped, errors = [], [], []
+
+    for row_num, raw_row in enumerate(reader, start=2):
+        row = {_normalise_header(k): (v or "").strip() for k, v in raw_row.items()}
+
+        first = row.get("first_name", "")
+        last  = row.get("last_name", "")
+        email = row.get("email", "").lower()
+        phone = row.get("phone", "")
+        notes = row.get("notes", "")
+
+        if not email:
+            errors.append({"row": row_num, "name": f"{first} {last}".strip() or "(blank)", "reason": "Email is blank."})
+            continue
+
+        if not first or not last:
+            errors.append({"row": row_num, "name": email, "reason": "first_name or last_name is blank."})
+            continue
+
+        if User.objects.filter(email__iexact=email).exists():
+            skipped.append({"row": row_num, "name": f"{first} {last}", "email": email,
+                            "reason": "A user with this email already exists."})
+            continue
+
+        try:
+            user = User.objects.create_user(
+                username=email,
+                email=email,
+                first_name=first,
+                last_name=last,
+                password=None,
+            )
+            user.set_unusable_password()
+            user.save()
+            Volunteer.objects.create(user=user, is_active=True, notes=notes)
+            created.append({"name": f"{first} {last}", "email": email})
+        except Exception as exc:
+            errors.append({"row": row_num, "name": f"{first} {last}", "reason": str(exc)})
+
+    return render(request, "volunteers/manager/import_volunteers.html", {
+        "form": VolunteerImportForm(),
+        "results": {"created": created, "skipped": skipped, "errors": errors},
+        "pending_count": pending_count,
     })

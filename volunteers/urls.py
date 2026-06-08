@@ -33,6 +33,7 @@ urlpatterns = [
     path("manager/applications/<int:app_id>/approve/", views.mgr_approve, name="mgr_approve"),
     path("manager/applications/<int:app_id>/deny/", views.mgr_deny, name="mgr_deny"),
     path("manager/volunteers/", views.mgr_volunteers, name="mgr_volunteers"),
+    path("manager/volunteers/import/", views.mgr_import_volunteers, name="mgr_import_volunteers"),
     path("manager/volunteers/<int:vol_id>/", views.mgr_volunteer_detail, name="mgr_volunteer_detail"),
     path("manager/volunteers/<int:vol_id>/toggle-active/", views.mgr_toggle_active, name="mgr_toggle_active"),
     path("manager/shifts/", views.mgr_shifts, name="mgr_shifts"),

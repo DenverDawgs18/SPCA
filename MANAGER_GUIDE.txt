@@ -1,0 +1,217 @@
+MEDINA COUNTY SPCA — VOLUNTEER PORTAL MANAGER GUIDE
+=====================================================
+A plain-language reference for managers and administrators.
+No technical knowledge required.
+
+
+GETTING STARTED
+---------------
+Your volunteer portal lives at a separate URL from the public website.
+Ask your IT contact or web developer for the exact address; it will look
+something like:
+
+    https://your-site.com/portal/login/
+
+Bookmark that link. Use your staff username and password to log in.
+If you forget your password, ask another manager or your IT contact to
+reset it through the Django admin panel.
+
+Once you are logged in you will see the Manager Portal — a dark sidebar
+on the left and a dashboard in the middle. Every page shares the same
+sidebar so navigation is always one click away.
+
+
+DASHBOARD
+---------
+The first screen you see after logging in shows four numbers at the top:
+
+  - Pending Applications  — volunteers waiting for review
+  - Total Volunteers      — everyone in the system
+  - Active Volunteers     — people considered currently active
+  - Shifts Today          — shifts scheduled for today
+
+Below the numbers is a table of recent hour logs and a row of quick-action
+buttons. This is a good place to start each day.
+
+
+APPLICATIONS
+------------
+When someone fills out the volunteer application form on the website, their
+submission lands here. A red badge on the sidebar shows how many are waiting.
+
+REVIEWING AN APPLICATION
+  1. Click "Applications" in the sidebar.
+  2. Click any applicant's name to open their full submission.
+  3. Read through their answers and then choose one of two actions:
+
+     Approve — Creates a volunteer account for the person and emails them a
+     link to set their own password. Once they click the link and choose a
+     password they can log in to the volunteer portal and sign up for shifts.
+
+     Deny — Opens a text box where you can write a brief reason. That reason
+     is included in the email sent to the applicant. Be respectful; they will
+     read it.
+
+     Both actions happen immediately when you click the button. There is no
+     undo, so take a moment before clicking.
+
+EMAIL NOTIFICATIONS FOR NEW APPLICATIONS
+  Go to Settings (sidebar) and toggle "New application notifications" on or
+  off. When turned on, you will receive an email every time someone submits
+  a new application. Each manager controls their own preference independently.
+
+
+VOLUNTEERS
+----------
+"Volunteers" in the sidebar shows every person who has been approved (or
+imported). You can filter by Active, Inactive, or All, and search by name
+or email.
+
+VOLUNTEER DETAIL PAGE
+  Click a volunteer's name to see their full profile:
+    - Contact details pulled from their application
+    - Total hours logged
+    - Recent hour logs
+    - Upcoming shift sign-ups
+    - An internal Notes field (not visible to the volunteer)
+    - An Active / Deactivate toggle
+
+ACTIVATE / DEACTIVATE
+  Clicking "Deactivate" prevents the volunteer from signing up for new shifts.
+  It does not delete their account or erase their history. Click "Activate" to
+  restore their access at any time.
+
+ACTIVITY STATUS
+  The volunteer list shows a status badge:
+    Active   — logged hours at least the minimum number of times in the
+               look-back window (configured in Settings).
+    Inactive — account is still on, but they have not logged recently.
+    Deactivated — a manager has manually turned off their access.
+
+IMPORTING EXISTING VOLUNTEERS FROM A CSV FILE
+  If you are migrating from another system and already have a list of
+  volunteer names and emails, you can import them all at once instead of
+  entering each person manually.
+
+  1. Open your existing list in Excel, Google Sheets, or any spreadsheet app.
+  2. Make sure there are (at minimum) three columns with these exact names in
+     the header row:
+
+       first_name    last_name    email
+
+     You may also include:
+
+       phone         notes
+
+     Column names can be upper or lower case. Spaces in column names are fine
+     (e.g., "First Name" works the same as "first_name").
+
+  3. Export / Save As CSV (.csv file).
+  4. In the portal, click "Import from CSV" just below "Volunteers" in the
+     sidebar, then upload your file and click "Upload and Import."
+  5. The results page will show:
+       - Green: volunteers successfully created.
+       - Yellow: rows skipped because that email is already in the system.
+       - Red: rows that could not be imported (usually a blank name or email).
+  6. Imported volunteers do not have a password yet. Open each person's
+     volunteer detail page and use the "Send password-set link" button (or
+     ask them to use the Forgot Password flow) to let them set their own
+     password.
+
+
+SHIFTS
+------
+Shifts are scheduled work sessions that volunteers can sign up for.
+
+CREATING A SHIFT
+  1. Click "Shifts" in the sidebar, then "Create New Shift."
+  2. Fill in the title, date, start time, end time, activity type, and capacity
+     (maximum number of volunteers who can sign up).
+  3. Click Save. The shift immediately appears on the volunteer-facing schedule.
+
+MANAGING A SHIFT
+  Click any shift title to open its detail page. From there you can:
+    - See who has signed up.
+    - Edit the shift details.
+    - Cancel the shift (removes it from the schedule; existing sign-ups are
+      not automatically notified, so send a group email if needed).
+
+Volunteers sign themselves up and can cancel their own sign-ups from their
+portal. You do not need to manage sign-ups manually.
+
+
+HOUR LOGS
+---------
+Volunteers log their own hours at the kiosk page. Managers can also view,
+filter, and delete logs.
+
+VIEWING LOGS
+  Click "Hour Logs" in the sidebar. You can filter by volunteer name, date
+  range, or activity type. Click "Export CSV" (if available) to download the
+  full log list.
+
+DELETING A LOG
+  Find the row and click the red Delete button on the right. Deletions are
+  permanent.
+
+THE KIOSK PAGE
+  The hour-logging kiosk at /portal/log-hours/ does not require a volunteer
+  to log in. It is designed to be open in a browser on a shared shelter
+  computer. Volunteers walk up, pick their name from the drop-down, fill in
+  the form, and click Submit. No passwords involved.
+
+  Bookmark /portal/log-hours/ on the kiosk computer and set it as the
+  browser's home page.
+
+
+SEND GROUP EMAIL
+----------------
+Use this to send a single message to all, active, or inactive volunteers.
+
+  1. Click "Send Email" in the sidebar.
+  2. Choose who to send to from the "Send to" drop-down.
+  3. Write a subject and message body.
+  4. Click "Send." The email goes out immediately and a record is saved so
+     you can see what was sent and when.
+
+Keep messages clear and concise. Recipients see the email from whatever
+address is configured in Settings (ask your IT contact to set this).
+
+
+SETTINGS
+--------
+Click "Settings" in the sidebar to adjust two things:
+
+INACTIVITY THRESHOLD
+  Defines when a volunteer is flagged as "inactive" on the volunteer list.
+  The defaults are: fewer than 2 hour logs in the past 90 days.
+  Change these numbers and click "Save Settings" to update the rule.
+
+EMAIL NOTIFICATIONS
+  Toggle your personal preference for receiving emails when new applications
+  arrive. Other managers have their own toggle; changing yours does not affect
+  theirs.
+
+
+TIPS FOR MANAGERS
+-----------------
+- There is no "are you sure?" prompt for approving applications, so read
+  through the submission before clicking Approve or Deny.
+- The Notes field on each volunteer detail page is only visible to managers.
+  Use it for things like "prefers cat socialization" or "needs a ride."
+- If a volunteer loses access to their email and cannot reset their password,
+  a Django admin (your IT contact) can log in to the admin panel and set a
+  new password manually.
+- Shifts, hour logs, and email records are never automatically deleted.
+  Everything is kept for your records.
+
+
+NEED HELP?
+----------
+This portal was built specifically for Medina County SPCA. For technical
+issues — server errors, login problems, email not sending — contact your
+web developer.
+
+For questions about the application process or volunteer policies, that
+is entirely up to your organization's guidelines. The software just records
+what you decide.

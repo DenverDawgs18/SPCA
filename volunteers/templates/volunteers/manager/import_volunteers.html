@@ -1,0 +1,137 @@
+{% extends "website/base.html" %}
+{% load static %}
+
+{% block title %}Import Volunteers — Manager Portal{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/volunteer.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div class="portal-layout">
+  <aside class="portal-sidebar">
+    {% include "volunteers/_mgr_sidebar.html" %}
+  </aside>
+  <main class="portal-main">
+    <div class="portal-page-header">
+      <h1>Import Volunteers from CSV</h1>
+    </div>
+
+    {% if messages %}
+    <ul class="messages-list">
+      {% for m in messages %}<li class="{{ m.tags }}">{{ m }}</li>{% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if results %}
+    <div class="portal-section">
+      <h2>Import Results</h2>
+
+      {% if results.created %}
+      <div class="alert alert-success" style="margin-bottom:1rem;">
+        <strong>{{ results.created|length }} volunteer{{ results.created|length|pluralize }} imported successfully.</strong>
+      </div>
+      <table class="data-table" style="margin-bottom:1.5rem;">
+        <thead>
+          <tr><th>Name</th><th>Email</th></tr>
+        </thead>
+        <tbody>
+          {% for r in results.created %}
+          <tr><td>{{ r.name }}</td><td>{{ r.email }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% endif %}
+
+      {% if results.skipped %}
+      <div class="alert alert-warning" style="margin-bottom:1rem;">
+        <strong>{{ results.skipped|length }} row{{ results.skipped|length|pluralize }} skipped</strong> — email already in the system.
+      </div>
+      <table class="data-table" style="margin-bottom:1.5rem;">
+        <thead>
+          <tr><th>Row</th><th>Name</th><th>Email</th><th>Reason</th></tr>
+        </thead>
+        <tbody>
+          {% for r in results.skipped %}
+          <tr>
+            <td>{{ r.row }}</td>
+            <td>{{ r.name }}</td>
+            <td>{{ r.email }}</td>
+            <td style="color:var(--text-muted);">{{ r.reason }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% endif %}
+
+      {% if results.errors %}
+      <div class="alert alert-error" style="margin-bottom:1rem;">
+        <strong>{{ results.errors|length }} row{{ results.errors|length|pluralize }} could not be imported.</strong>
+      </div>
+      <table class="data-table" style="margin-bottom:1.5rem;">
+        <thead>
+          <tr><th>Row</th><th>Name</th><th>Reason</th></tr>
+        </thead>
+        <tbody>
+          {% for r in results.errors %}
+          <tr>
+            <td>{{ r.row }}</td>
+            <td>{{ r.name }}</td>
+            <td style="color:var(--pill-inactive-fg);">{{ r.reason }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% endif %}
+
+      {% if not results.created and not results.skipped and not results.errors %}
+      <p style="color:var(--text-muted);">The file was empty or contained no data rows.</p>
+      {% endif %}
+
+      <a href="{% url 'volunteers:mgr_volunteers' %}" class="btn btn-outline btn-sm">View All Volunteers</a>
+    </div>
+    {% endif %}
+
+    <div class="portal-section" style="max-width:560px;">
+      <h2>Upload CSV File</h2>
+      <p style="color:var(--text-muted);margin-bottom:1.25rem;font-size:0.9rem;">
+        Upload a CSV of your existing volunteers to add them to the system in bulk.
+        Imported volunteers will not have a password — send them a password-set link from their volunteer detail page after importing.
+      </p>
+
+      <div class="import-format-box">
+        <strong style="font-size:0.85rem;">Required CSV format</strong>
+        <pre style="margin:8px 0 0;font-size:0.8rem;background:#f8fafc;border:1px solid var(--card-border);border-radius:5px;padding:10px;overflow-x:auto;">first_name,last_name,email,phone,notes
+Jane,Smith,jane@example.com,555-0101,Long-time cat volunteer
+Bob,Jones,bob@example.com,,</pre>
+        <ul style="margin:8px 0 0;font-size:0.82rem;color:var(--text-muted);padding-left:1.25rem;">
+          <li><strong>Required:</strong> first_name, last_name, email</li>
+          <li><strong>Optional:</strong> phone, notes</li>
+          <li>Column names are case-insensitive; spaces treated as underscores</li>
+          <li>Rows where the email already exists are skipped (not duplicated)</li>
+          <li>Maximum file size: 2 MB</li>
+        </ul>
+      </div>
+
+      <form method="post" enctype="multipart/form-data" style="margin-top:1.5rem;" novalidate>
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="{{ form.csv_file.id_for_label }}">{{ form.csv_file.label }}</label>
+          {{ form.csv_file }}
+          {% if form.csv_file.errors %}
+          <div class="field-error">{{ form.csv_file.errors.0 }}</div>
+          {% endif %}
+          <p style="font-size:0.8rem;color:var(--text-muted);margin:4px 0 0;">{{ form.csv_file.help_text }}</p>
+        </div>
+        <button type="submit" class="btn btn-primary">Upload and Import</button>
+        <a href="{% url 'volunteers:mgr_volunteers' %}" class="btn btn-outline" style="margin-left:8px;">Cancel</a>
+      </form>
+    </div>
+
+  </main>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/volunteer.js' %}"></script>
+{% endblock %}

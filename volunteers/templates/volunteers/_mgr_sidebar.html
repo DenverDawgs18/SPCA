@@ -13,8 +13,11 @@
     <span class="sidebar-badge">{{ pending_count }}</span>
     {% endif %}
   </a>
-  <a href="{% url 'volunteers:mgr_volunteers' %}" class="{% if 'volunteer' in request.resolver_match.url_name and 'application' not in request.resolver_match.url_name %}active{% endif %}">
+  <a href="{% url 'volunteers:mgr_volunteers' %}" class="{% if 'volunteer' in request.resolver_match.url_name and 'application' not in request.resolver_match.url_name and request.resolver_match.url_name != 'mgr_import_volunteers' %}active{% endif %}">
     <span class="sidebar-icon">&#128100;</span> Volunteers
+  </a>
+  <a href="{% url 'volunteers:mgr_import_volunteers' %}" class="{% if request.resolver_match.url_name == 'mgr_import_volunteers' %}active{% endif %}" style="font-size:0.82rem;padding-left:2.75rem;opacity:0.85;">
+    &#8593; Import from CSV
   </a>
   <a href="{% url 'volunteers:mgr_shifts' %}" class="{% if 'shift' in request.resolver_match.url_name %}active{% endif %}">
     <span class="sidebar-icon">&#128197;</span> Shifts
