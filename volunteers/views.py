@@ -465,7 +465,7 @@ def mgr_volunteers(request):
 
     volunteers = list(qs)
     for v in volunteers:
-        v._is_inactive = v.is_inactive()
+        v.inactivity_flag = v.is_inactive()
 
     return render(request, "volunteers/manager/volunteers.html", {
         "volunteers": volunteers,

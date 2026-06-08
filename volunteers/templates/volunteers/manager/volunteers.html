@@ -48,7 +48,7 @@
           <td>
             {% if not vol.is_active %}
             <span class="status-pill inactive">Deactivated</span>
-            {% elif vol._is_inactive %}
+            {% elif vol.inactivity_flag %}
             <span class="status-pill pending">Inactive</span>
             {% else %}
             <span class="status-pill active">Active</span>
