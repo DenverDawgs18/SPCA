@@ -18,7 +18,11 @@ That's one deploy. Migrations run automatically as part of fly deploy
 
 2. SET EMAIL SECRETS ON FLY
 ----------------------------
-The volunteer portal sends real emails in production. Pick one option.
+Email is only needed for automatic notifications: application received,
+approved, and denied. Group emails to volunteers do NOT need this — managers
+compose them in the portal and send from their own Gmail.
+
+Pick one option for the automatic notifications:
 
 Option A — SendGrid (recommended, free up to 100 emails/day)
   Sign up at sendgrid.com, create an API key with "Mail Send" permission, then:
@@ -43,7 +47,7 @@ Option B — Gmail App Password
   fly secrets set DEFAULT_FROM_EMAIL="Medina County SPCA <theiraddress@gmail.com>"
 
 Skip this step if you want to test everything first and add email later.
-Without it, the site works fine — emails just don't go out.
+Without it the site works fine — auto-notifications just won't go out.
 
 
 3. CREATE THE FIRST MANAGER ACCOUNT
@@ -115,7 +119,8 @@ Then rebuild and deploy:
 [ ] /portal/log-hours/ loads without logging in (the kiosk page)
 [ ] /portal/apply/ loads the application form
 [ ] Submit a test application → confirm it appears in /portal/manager/applications/
-[ ] Approve the test application → confirm the approval email arrives
+[ ] Approve the test application (approval email goes out if SMTP is configured)
+[ ] Try Send Email in manager portal → confirm the copy-paste screen appears
 [ ] Log in as the test volunteer at /portal/login/
 [ ] /admin/ accessible with the superuser account
 

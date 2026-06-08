@@ -167,15 +167,21 @@ THE KIOSK PAGE
 SEND GROUP EMAIL
 ----------------
 Use this to send a single message to all, active, or inactive volunteers.
+Emails go out from your own Gmail account, so you always control them.
 
   1. Click "Send Email" in the sidebar.
   2. Choose who to send to from the "Send to" drop-down.
-  3. Write a subject and message body.
-  4. Click "Send." The email goes out immediately and a record is saved so
-     you can see what was sent and when.
+  3. Write a subject and message body, then click "Prepare Email."
+  4. The portal shows three copy buttons — BCC addresses, Subject, and Body.
+  5. Open Gmail, start a new message, and paste each field:
+       - Paste the addresses into the BCC field (not To, so recipients
+         don't see each other's email addresses).
+       - Paste the subject into the Subject line.
+       - Paste the body into the message body.
+  6. Review and click Send in Gmail.
 
-Keep messages clear and concise. Recipients see the email from whatever
-address is configured in Settings (ask your IT contact to set this).
+The portal keeps a log of every email that was prepared, including the
+date, subject, and how many recipients were included.
 
 
 SETTINGS

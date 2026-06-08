@@ -5,6 +5,102 @@
 
 {% block extra_head %}
 <link rel="stylesheet" href="{% static 'css/volunteer.css' %}" />
+<style>
+.copy-field-wrap {
+  position: relative;
+}
+.copy-field-wrap textarea,
+.copy-field-wrap input[type="text"] {
+  padding-right: 90px;
+}
+.copy-btn {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--primary, #1a2744);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: opacity 0.15s;
+  white-space: nowrap;
+}
+.copy-btn:hover { opacity: 0.8; }
+.copy-btn.copied { background: #065f46; }
+.copy-field-wrap.multiline { position: relative; }
+.copy-field-wrap.multiline .copy-btn {
+  top: 10px;
+  transform: none;
+}
+.copy-field-wrap.multiline textarea {
+  padding-right: 8px;
+  padding-top: 38px;
+}
+.copy-field-wrap.multiline .copy-btn {
+  top: 8px;
+  right: 8px;
+}
+.email-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 1.25rem;
+}
+.email-step-num {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--primary, #1a2744);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2px;
+}
+.email-step-body label {
+  display: block;
+  font-weight: 600;
+  font-size: 0.88rem;
+  margin-bottom: 5px;
+  color: var(--primary, #1a2744);
+}
+.email-step-body { flex: 1; }
+.prepared-banner {
+  background: #d1fae5;
+  border: 1px solid #6ee7b7;
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.prepared-banner strong { color: #065f46; }
+.prepared-banner p { margin: 0; color: #065f46; font-size: 0.9rem; }
+.gmail-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #EA4335;
+  color: #fff;
+  padding: 0.55rem 1.1rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.88rem;
+  text-decoration: none;
+  margin-top: 0.75rem;
+  transition: opacity 0.15s;
+}
+.gmail-btn:hover { opacity: 0.85; color: #fff; }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -17,74 +113,135 @@
       <h1>Send Group Email</h1>
     </div>
 
-    <div class="detail-grid">
-      <div class="detail-main">
-        <div class="portal-section" style="max-width:640px;">
-          <form method="post" novalidate>
-            {% csrf_token %}
+    {% if messages %}
+    <ul class="messages-list">
+      {% for m in messages %}<li class="{{ m.tags }}">{{ m }}</li>{% endfor %}
+    </ul>
+    {% endif %}
 
-            <div class="form-group">
-              <label for="{{ form.recipient_filter.id_for_label }}">Send To</label>
-              {{ form.recipient_filter }}
-              <div class="recipient-preview" id="recipient-preview">
-                <span id="recipient-count-text">Loading...</span>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label for="{{ form.subject.id_for_label }}">Subject <span class="required">*</span></label>
-              {{ form.subject }}
-              {% if form.subject.errors %}<div class="field-error">{{ form.subject.errors.0 }}</div>{% endif %}
-            </div>
-
-            <div class="form-group">
-              <label for="{{ form.body.id_for_label }}">Message <span class="required">*</span></label>
-              {{ form.body }}
-              {% if form.body.errors %}<div class="field-error">{{ form.body.errors.0 }}</div>{% endif %}
-            </div>
-
-            <button type="submit" class="btn btn-primary"
-                    onclick="return confirm('Send this email to all selected volunteers?')">Send Email</button>
-          </form>
-        </div>
-      </div>
-
-      <div class="detail-sidebar-col">
-        <div class="portal-section action-box">
-          <h3>Recipient Counts</h3>
-          <ul style="list-style:none;padding:0;margin:0;">
-            <li style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border);">
-              <span>All volunteers</span>
-              <strong id="count-all">{{ all_count }}</strong>
-            </li>
-            <li style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border);">
-              <span>Active only</span>
-              <strong id="count-active">{{ active_count }}</strong>
-            </li>
-            <li style="display:flex;justify-content:space-between;padding:4px 0;">
-              <span>Inactive only</span>
-              <strong id="count-inactive">{{ inactive_count }}</strong>
-            </li>
-          </ul>
-        </div>
-
-        {% if recent_emails %}
-        <div class="portal-section action-box">
-          <h3>Recent Emails Sent</h3>
-          {% for rec in recent_emails %}
-          <div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:0.85rem;">
-            <div><strong>{{ rec.subject|truncatechars:40 }}</strong></div>
-            <div style="color:var(--text-muted);">
-              {{ rec.sent_at|date:"N j, Y" }} &bull;
-              {{ rec.recipient_count }} recipient{{ rec.recipient_count|pluralize }} &bull;
-              {{ rec.get_recipient_filter_display|default:rec.recipient_filter }}
-            </div>
-          </div>
-          {% endfor %}
-        </div>
-        {% endif %}
+    {% if prepared %}
+    {# ── Step 2: copy-paste screen ─────────────────────────── #}
+    <div class="prepared-banner">
+      <div>
+        <strong>Ready to send — {{ prepared.count }} recipient{{ prepared.count|pluralize }}</strong>
+        <p>Copy each field below into a new Gmail message, then hit Send.</p>
       </div>
     </div>
+
+    <div class="portal-section" style="max-width:680px;">
+      <h2>Your email is ready</h2>
+      <p style="color:var(--text-muted);font-size:0.88rem;margin-bottom:1.5rem;">
+        Open Gmail (or any email app), start a new message, and paste each field.
+        Put the addresses in the <strong>BCC</strong> field so recipients don't see each other.
+      </p>
+
+      <div class="email-step">
+        <div class="email-step-num">1</div>
+        <div class="email-step-body">
+          <label>BCC — paste all {{ prepared.count }} address{{ prepared.count|pluralize:"es" }} here</label>
+          <div class="copy-field-wrap">
+            <textarea id="copy-bcc" rows="3" readonly
+              style="width:100%;font-family:monospace;font-size:0.82rem;resize:none;background:#f8fafc;box-sizing:border-box;border:1px solid var(--card-border);border-radius:6px;padding:0.55rem 90px 0.55rem 0.75rem;">{{ prepared.emails_csv }}</textarea>
+            <button class="copy-btn" onclick="copyField('copy-bcc', this)">Copy</button>
+          </div>
+          <p style="font-size:0.78rem;color:var(--text-muted);margin:4px 0 0;">
+            Use BCC (blind carbon copy) so volunteers can't see each other's addresses.
+          </p>
+        </div>
+      </div>
+
+      <div class="email-step">
+        <div class="email-step-num">2</div>
+        <div class="email-step-body">
+          <label>Subject</label>
+          <div class="copy-field-wrap">
+            <input type="text" id="copy-subject" readonly value="{{ prepared.subject }}"
+              style="width:100%;background:#f8fafc;box-sizing:border-box;" />
+            <button class="copy-btn" onclick="copyField('copy-subject', this)">Copy</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="email-step">
+        <div class="email-step-num">3</div>
+        <div class="email-step-body">
+          <label>Message body</label>
+          <div class="copy-field-wrap multiline">
+            <button class="copy-btn" onclick="copyField('copy-body', this)">Copy</button>
+            <textarea id="copy-body" rows="10" readonly
+              style="width:100%;font-size:0.88rem;resize:vertical;background:#f8fafc;box-sizing:border-box;border:1px solid var(--card-border);border-radius:6px;padding:0.55rem 0.75rem;">{{ prepared.body }}</textarea>
+          </div>
+        </div>
+      </div>
+
+      <a href="https://mail.google.com/mail/u/0/#compose" target="_blank" rel="noopener" class="gmail-btn">
+        Open Gmail &rarr;
+      </a>
+
+      <div style="margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--card-border);">
+        <p style="font-size:0.82rem;color:var(--text-muted);margin:0 0 8px;">
+          This email has been logged. Compose another email below.
+        </p>
+      </div>
+    </div>
+    {% endif %}
+
+    {# ── Compose form (always visible, reset after prepare) ── #}
+    <div class="portal-section" style="max-width:640px;">
+      <h2>{% if prepared %}Compose Another Email{% else %}Compose Email{% endif %}</h2>
+      <form method="post" novalidate>
+        {% csrf_token %}
+
+        <div class="form-group">
+          <label for="{{ form.recipient_filter.id_for_label }}">Send To</label>
+          {{ form.recipient_filter }}
+          <p style="font-size:0.8rem;color:var(--text-muted);margin:4px 0 0;" id="recipient-count-preview">
+            {# filled by JS #}
+          </p>
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.subject.id_for_label }}">Subject</label>
+          {{ form.subject }}
+          {% if form.subject.errors %}<div class="field-error">{{ form.subject.errors.0 }}</div>{% endif %}
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.body.id_for_label }}">Message</label>
+          {{ form.body }}
+          {% if form.body.errors %}<div class="field-error">{{ form.body.errors.0 }}</div>{% endif %}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Prepare Email</button>
+      </form>
+    </div>
+
+    {% if recent_emails %}
+    <div class="portal-section" style="max-width:640px;">
+      <h2>Recent Emails Logged</h2>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Subject</th>
+            <th>Date</th>
+            <th>Recipients</th>
+            <th>Sent To</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for rec in recent_emails %}
+          <tr>
+            <td>{{ rec.subject|truncatechars:50 }}</td>
+            <td>{{ rec.sent_at|date:"N j, Y" }}</td>
+            <td>{{ rec.recipient_count }}</td>
+            <td style="color:var(--text-muted);">{{ rec.recipient_filter }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+
   </main>
 </div>
 {% endblock %}
@@ -92,28 +249,41 @@
 {% block extra_js %}
 <script src="{% static 'js/volunteer.js' %}"></script>
 <script>
-// Update recipient count preview based on filter selection
-(function() {
-  var counts = {
-    'all': {{ all_count }},
-    'active': {{ active_count }},
-    'inactive': {{ inactive_count }}
-  };
-  var select = document.querySelector('[name="recipient_filter"]');
-  var preview = document.getElementById('recipient-count-text');
-
+// Recipient count preview
+(function () {
+  var counts = { all: {{ all_count }}, active: {{ active_count }}, inactive: {{ inactive_count }} };
+  var sel = document.querySelector('[name="recipient_filter"]');
+  var preview = document.getElementById('recipient-count-preview');
   function update() {
-    var val = select ? select.value : 'all';
-    var count = counts[val] || 0;
-    if (preview) {
-      preview.textContent = count + ' volunteer' + (count !== 1 ? 's' : '') + ' will receive this email.';
-    }
+    if (!sel || !preview) return;
+    var n = counts[sel.value] || 0;
+    preview.textContent = n + ' volunteer' + (n !== 1 ? 's' : '') + ' will be included.';
   }
-
-  if (select) {
-    select.addEventListener('change', update);
-    update();
-  }
+  if (sel) { sel.addEventListener('change', update); update(); }
 })();
+
+// One-click copy
+function copyField(id, btn) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  var text = el.tagName === 'TEXTAREA' || el.tagName === 'INPUT' ? el.value : el.textContent;
+  navigator.clipboard.writeText(text).then(function () {
+    var orig = btn.textContent;
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(function () { btn.textContent = orig; btn.classList.remove('copied'); }, 2000);
+  }).catch(function () {
+    el.select();
+    document.execCommand('copy');
+  });
+}
+
+{% if prepared %}
+// Scroll to the prepared section on load
+document.addEventListener('DOMContentLoaded', function () {
+  var banner = document.querySelector('.prepared-banner');
+  if (banner) banner.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+{% endif %}
 </script>
 {% endblock %}

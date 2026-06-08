@@ -631,6 +631,8 @@ def mgr_group_email(request):
     inactive_count = inactive_vols.count()
 
     form = GroupEmailForm(request.POST or None)
+    prepared = None
+
     if request.method == "POST" and form.is_valid():
         subject = form.cleaned_data["subject"]
         body = form.cleaned_data["body"]
@@ -647,9 +649,6 @@ def mgr_group_email(request):
             recipients_qs.exclude(user__email="").values_list("user__email", flat=True)
         )
 
-        from_email = None  # use default
-        send_group_email(subject, body, recipient_emails, from_email)
-
         GroupEmailRecord.objects.create(
             subject=subject,
             body=body,
@@ -657,13 +656,23 @@ def mgr_group_email(request):
             recipient_count=len(recipient_emails),
             recipient_filter=recipient_filter,
         )
-        messages.success(request, f"Email sent to {len(recipient_emails)} volunteer(s).")
-        return redirect("volunteers:mgr_group_email")
+
+        filter_labels = {"all": "All volunteers", "active": "Active volunteers", "inactive": "Inactive volunteers"}
+        prepared = {
+            "subject": subject,
+            "body": body,
+            "emails": recipient_emails,
+            "emails_csv": ", ".join(recipient_emails),
+            "count": len(recipient_emails),
+            "filter_label": filter_labels.get(recipient_filter, recipient_filter),
+        }
+        form = GroupEmailForm()  # reset form for a fresh compose after
 
     recent_emails = GroupEmailRecord.objects.all()[:10]
 
     return render(request, "volunteers/manager/group_email.html", {
         "form": form,
+        "prepared": prepared,
         "all_count": all_count,
         "active_count": active_count,
         "inactive_count": inactive_count,
