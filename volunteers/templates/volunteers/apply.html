@@ -1,0 +1,186 @@
+{% extends "website/base.html" %}
+{% load static %}
+
+{% block title %}Apply to Volunteer — Medina County SPCA{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/volunteer.css' %}" />
+{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="/">Home</a><span>›</span> <a href="/volunteer/">Volunteer</a> <span>›</span> Apply</div>
+    <h1>Volunteer Application</h1>
+    <p>Complete this form to apply to volunteer with the Medina County SPCA. You'll receive a confirmation email right away.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="apply-notice">
+      <strong>Note:</strong> Your account will be created after your application is reviewed and approved. You'll receive an email with login instructions if approved.
+    </div>
+
+    <form method="post" action="{% url 'volunteers:apply' %}" novalidate class="apply-form">
+      {% csrf_token %}
+
+      {% if form.non_field_errors %}
+      <div class="alert alert-error">
+        {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+      </div>
+      {% endif %}
+
+      <!-- Section: Personal Information -->
+      <div class="form-section">
+        <h2 class="form-section-title">Personal Information</h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="{{ form.first_name.id_for_label }}">First Name <span class="required">*</span></label>
+            {{ form.first_name }}
+            {% if form.first_name.errors %}<div class="field-error">{{ form.first_name.errors.0 }}</div>{% endif %}
+          </div>
+          <div class="form-group">
+            <label for="{{ form.last_name.id_for_label }}">Last Name <span class="required">*</span></label>
+            {{ form.last_name }}
+            {% if form.last_name.errors %}<div class="field-error">{{ form.last_name.errors.0 }}</div>{% endif %}
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="{{ form.email.id_for_label }}">Email Address <span class="required">*</span></label>
+            {{ form.email }}
+            {% if form.email.errors %}<div class="field-error">{{ form.email.errors.0 }}</div>{% endif %}
+          </div>
+          <div class="form-group">
+            <label for="{{ form.phone.id_for_label }}">Phone Number <span class="required">*</span></label>
+            {{ form.phone }}
+            {% if form.phone.errors %}<div class="field-error">{{ form.phone.errors.0 }}</div>{% endif %}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.address.id_for_label }}">Street Address <span class="required">*</span></label>
+          {{ form.address }}
+          {% if form.address.errors %}<div class="field-error">{{ form.address.errors.0 }}</div>{% endif %}
+        </div>
+
+        <div class="form-row form-row-3">
+          <div class="form-group">
+            <label for="{{ form.city.id_for_label }}">City <span class="required">*</span></label>
+            {{ form.city }}
+            {% if form.city.errors %}<div class="field-error">{{ form.city.errors.0 }}</div>{% endif %}
+          </div>
+          <div class="form-group">
+            <label for="{{ form.state.id_for_label }}">State <span class="required">*</span></label>
+            {{ form.state }}
+            {% if form.state.errors %}<div class="field-error">{{ form.state.errors.0 }}</div>{% endif %}
+          </div>
+          <div class="form-group">
+            <label for="{{ form.zip_code.id_for_label }}">ZIP Code <span class="required">*</span></label>
+            {{ form.zip_code }}
+            {% if form.zip_code.errors %}<div class="field-error">{{ form.zip_code.errors.0 }}</div>{% endif %}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.date_of_birth.id_for_label }}">Date of Birth <span class="required">*</span></label>
+          {{ form.date_of_birth }}
+          {% if form.date_of_birth.errors %}<div class="field-error">{{ form.date_of_birth.errors.0 }}</div>{% endif %}
+        </div>
+      </div>
+
+      <!-- Section: Application Questions -->
+      <div class="form-section">
+        <h2 class="form-section-title">About You</h2>
+
+        <div class="form-group">
+          <label for="{{ form.why_volunteer.id_for_label }}">Why do you want to volunteer with the SPCA? <span class="required">*</span></label>
+          {{ form.why_volunteer }}
+          {% if form.why_volunteer.errors %}<div class="field-error">{{ form.why_volunteer.errors.0 }}</div>{% endif %}
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.animal_experience.id_for_label }}">Describe your experience with animals <span class="required">*</span></label>
+          {{ form.animal_experience }}
+          {% if form.animal_experience.errors %}<div class="field-error">{{ form.animal_experience.errors.0 }}</div>{% endif %}
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.skills.id_for_label }}">Special skills or relevant experience <small style="font-weight:400;">(optional)</small></label>
+          {{ form.skills }}
+          <span class="field-help">e.g. vet tech, dog trainer, carpentry, marketing</span>
+        </div>
+      </div>
+
+      <!-- Section: Availability -->
+      <div class="form-section">
+        <h2 class="form-section-title">Availability</h2>
+        <p style="margin-bottom:16px;color:var(--text-muted);">Check all times you are generally available to volunteer.</p>
+        <div class="availability-grid">
+          {% for choice in form.availability %}
+          <label class="checkbox-label">
+            {{ choice.tag }}
+            <span>{{ choice.choice_label }}</span>
+          </label>
+          {% endfor %}
+        </div>
+        {% if form.availability.errors %}<div class="field-error">{{ form.availability.errors.0 }}</div>{% endif %}
+      </div>
+
+      <!-- Section: Emergency Contact -->
+      <div class="form-section">
+        <h2 class="form-section-title">Emergency Contact</h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="{{ form.emergency_contact_name.id_for_label }}">Contact Name <span class="required">*</span></label>
+            {{ form.emergency_contact_name }}
+            {% if form.emergency_contact_name.errors %}<div class="field-error">{{ form.emergency_contact_name.errors.0 }}</div>{% endif %}
+          </div>
+          <div class="form-group">
+            <label for="{{ form.emergency_contact_phone.id_for_label }}">Contact Phone <span class="required">*</span></label>
+            {{ form.emergency_contact_phone }}
+            {% if form.emergency_contact_phone.errors %}<div class="field-error">{{ form.emergency_contact_phone.errors.0 }}</div>{% endif %}
+          </div>
+        </div>
+        <div class="form-group" style="max-width:280px;">
+          <label for="{{ form.emergency_contact_relationship.id_for_label }}">Relationship <span class="required">*</span></label>
+          {{ form.emergency_contact_relationship }}
+          {% if form.emergency_contact_relationship.errors %}<div class="field-error">{{ form.emergency_contact_relationship.errors.0 }}</div>{% endif %}
+        </div>
+      </div>
+
+      <!-- Section: Additional -->
+      <div class="form-section">
+        <h2 class="form-section-title">Additional Information</h2>
+        <div class="form-group" style="max-width:180px;">
+          <label for="{{ form.t_shirt_size.id_for_label }}">T-Shirt Size</label>
+          {{ form.t_shirt_size }}
+        </div>
+
+        <div class="form-group">
+          <label class="checkbox-label checkbox-label-lg">
+            {{ form.is_over_18 }}
+            <span>{{ form.is_over_18.label }}</span>
+          </label>
+          {% if form.is_over_18.errors %}<div class="field-error">{{ form.is_over_18.errors.0 }}</div>{% endif %}
+        </div>
+
+        <div class="form-group">
+          <label class="checkbox-label checkbox-label-lg">
+            {{ form.agrees_to_background_check }}
+            <span>{{ form.agrees_to_background_check.label }}</span>
+          </label>
+          {% if form.agrees_to_background_check.errors %}<div class="field-error">{{ form.agrees_to_background_check.errors.0 }}</div>{% endif %}
+        </div>
+      </div>
+
+      <div class="form-submit">
+        <button type="submit" class="btn btn-primary btn-lg">Submit Application</button>
+        <p class="form-submit-note">We'll send a confirmation email right away. You'll hear back about approval within a few business days.</p>
+      </div>
+    </form>
+  </div>
+</section>
+{% endblock %}

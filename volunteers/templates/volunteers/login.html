@@ -1,0 +1,44 @@
+{% extends "website/base.html" %}
+{% load static %}
+
+{% block title %}Volunteer Login — Medina County SPCA{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/volunteer.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <img src="{% static 'images/logo.svg' %}" alt="Medina County SPCA"
+           onerror="this.style.display='none'" style="height:48px;margin-bottom:8px;" />
+    </div>
+    <h1 class="auth-title">Volunteer Login</h1>
+    <p class="auth-sub">Access your volunteer dashboard, schedule shifts, and log hours.</p>
+
+    <form method="post" action="{% url 'volunteers:login' %}" novalidate>
+      {% csrf_token %}
+      {% if next %}<input type="hidden" name="next" value="{{ next }}" />{% endif %}
+
+      <div class="form-group">
+        <label for="id_username">Email address</label>
+        <input type="text" name="username" id="id_username" autocomplete="username"
+               class="form-control" placeholder="you@example.com" required />
+      </div>
+
+      <div class="form-group">
+        <label for="id_password">Password</label>
+        <input type="password" name="password" id="id_password" autocomplete="current-password"
+               class="form-control" placeholder="••••••••" required />
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+    </form>
+
+    <div class="auth-links">
+      <p>Don't have an account? <a href="{% url 'volunteers:apply' %}">Apply to volunteer</a></p>
+    </div>
+  </div>
+</div>
+{% endblock %}

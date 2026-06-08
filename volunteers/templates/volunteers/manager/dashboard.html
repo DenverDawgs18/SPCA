@@ -1,0 +1,93 @@
+{% extends "website/base.html" %}
+{% load static %}
+
+{% block title %}Manager Dashboard — Volunteer Portal{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/volunteer.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div class="portal-layout">
+  <aside class="portal-sidebar">
+    {% include "volunteers/_mgr_sidebar.html" %}
+  </aside>
+  <main class="portal-main">
+    <div class="portal-page-header">
+      <h1>Manager Dashboard</h1>
+      <p style="color:var(--text-muted);">Overview of volunteer portal activity.</p>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat-card stat-card--amber">
+        <div class="stat-number">{{ pending_count }}</div>
+        <div class="stat-label">Pending Applications</div>
+        <a href="{% url 'volunteers:mgr_applications' %}" class="stat-link">Review &rarr;</a>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">{{ total_volunteers }}</div>
+        <div class="stat-label">Total Volunteers</div>
+        <a href="{% url 'volunteers:mgr_volunteers' %}" class="stat-link">View All &rarr;</a>
+      </div>
+      <div class="stat-card stat-card--green">
+        <div class="stat-number">{{ active_volunteers }}</div>
+        <div class="stat-label">Active Volunteers</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">{{ todays_shifts }}</div>
+        <div class="stat-label">Shifts Today</div>
+        <a href="{% url 'volunteers:mgr_shifts' %}" class="stat-link">Manage &rarr;</a>
+      </div>
+    </div>
+
+    <div class="portal-section">
+      <div class="section-heading-row">
+        <h2>Recent Hour Logs</h2>
+        <a href="{% url 'volunteers:mgr_hour_logs' %}" class="btn btn-outline btn-sm">View All</a>
+      </div>
+      {% if recent_logs %}
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Volunteer</th>
+            <th>Date</th>
+            <th>Hours</th>
+            <th>Activity</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for log in recent_logs %}
+          <tr>
+            <td>{{ log.volunteer_name }}</td>
+            <td>{{ log.date|date:"N j, Y" }}</td>
+            <td>{{ log.hours }}</td>
+            <td>{{ log.get_activity_type_display }}</td>
+            <td style="color:var(--text-muted);">{{ log.notes|truncatechars:50 }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p style="color:var(--text-muted);">No hour logs yet.</p>
+      {% endif %}
+    </div>
+
+    <div class="portal-section">
+      <div class="section-heading-row">
+        <h2>Quick Actions</h2>
+      </div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <a href="{% url 'volunteers:mgr_applications' %}" class="btn btn-primary">Review Applications {% if pending_count %}({{ pending_count }}){% endif %}</a>
+        <a href="{% url 'volunteers:mgr_shift_create' %}" class="btn btn-outline">Create New Shift</a>
+        <a href="{% url 'volunteers:mgr_group_email' %}" class="btn btn-outline">Send Group Email</a>
+        <a href="{% url 'volunteers:log_hours' %}" class="btn btn-outline">Kiosk: Log Hours</a>
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/volunteer.js' %}"></script>
+{% endblock %}

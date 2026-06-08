@@ -1,0 +1,108 @@
+{% extends "website/base.html" %}
+{% load static %}
+
+{% block title %}{{ shift.title }} — Manager Portal{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/volunteer.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div class="portal-layout">
+  <aside class="portal-sidebar">
+    {% include "volunteers/_mgr_sidebar.html" %}
+  </aside>
+  <main class="portal-main">
+    <div class="portal-page-header">
+      <div>
+        <a href="{% url 'volunteers:mgr_shifts' %}" class="back-link">&larr; Back to Shifts</a>
+        <h1>{{ shift.title }}</h1>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <a href="{% url 'volunteers:mgr_shift_edit' shift.pk %}" class="btn btn-outline">Edit Shift</a>
+        {% if not shift.is_cancelled %}
+        <form method="post" action="{% url 'volunteers:mgr_shift_delete' shift.pk %}" style="margin:0;">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-outline" style="color:var(--red);border-color:var(--red);"
+                  onclick="return confirm('Cancel this shift?')">Cancel Shift</button>
+        </form>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="detail-grid">
+      <div class="detail-main">
+        <div class="portal-section">
+          <h2>Shift Details</h2>
+          <dl class="profile-dl">
+            <dt>Date</dt><dd>{{ shift.date|date:"D, N j, Y" }}</dd>
+            <dt>Time</dt><dd>{{ shift.start_time|time:"g:i A" }} – {{ shift.end_time|time:"g:i A" }} ({{ shift.duration_hours }}h)</dd>
+            <dt>Activity</dt><dd>{{ shift.get_activity_type_display }}</dd>
+            <dt>Capacity</dt><dd>{{ shift.signup_count }} / {{ shift.capacity }} signed up</dd>
+            <dt>Status</dt>
+            <dd>
+              {% if shift.is_cancelled %}
+              <span class="status-pill denied">Cancelled</span>
+              {% elif shift.is_full %}
+              <span class="status-pill inactive">Full</span>
+              {% else %}
+              <span class="status-pill active">Open</span>
+              {% endif %}
+            </dd>
+          </dl>
+          {% if shift.description %}
+          <p style="margin-top:12px;">{{ shift.description }}</p>
+          {% endif %}
+        </div>
+
+        <div class="portal-section">
+          <h2>Signed Up Volunteers ({{ signups|length }})</h2>
+          {% if signups %}
+          <table class="data-table">
+            <thead>
+              <tr><th>Volunteer</th><th>Email</th><th>Signed Up</th></tr>
+            </thead>
+            <tbody>
+              {% for su in signups %}
+              <tr>
+                <td><a href="{% url 'volunteers:mgr_volunteer_detail' su.volunteer.pk %}">{{ su.volunteer.full_name }}</a></td>
+                <td>{{ su.volunteer.email }}</td>
+                <td>{{ su.signed_up_at|date:"N j, Y g:i A" }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% else %}
+          <p style="color:var(--text-muted);">No volunteers signed up yet.</p>
+          {% endif %}
+        </div>
+
+        {% if hour_logs %}
+        <div class="portal-section">
+          <h2>Hour Logs for This Shift</h2>
+          <table class="data-table">
+            <thead>
+              <tr><th>Volunteer</th><th>Date</th><th>Hours</th><th>Activity</th></tr>
+            </thead>
+            <tbody>
+              {% for log in hour_logs %}
+              <tr>
+                <td>{{ log.volunteer_name }}</td>
+                <td>{{ log.date|date:"N j, Y" }}</td>
+                <td>{{ log.hours }}</td>
+                <td>{{ log.get_activity_type_display }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/volunteer.js' %}"></script>
+{% endblock %}

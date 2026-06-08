@@ -1,0 +1,24 @@
+{% extends "website/base.html" %}
+{% load static %}
+
+{% block title %}Application Submitted — Medina County SPCA{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/volunteer.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div class="auth-wrap">
+  <div class="auth-card success-card">
+    <div class="success-icon">&#10003;</div>
+    <h1>Application Submitted!</h1>
+    <p>Thank you for applying to volunteer with the Medina County SPCA. We've received your application and will review it shortly.</p>
+    <p style="margin-top:16px;">Watch your inbox — you'll receive a confirmation email at the address you provided. If your application is approved, we'll send you a link to set your password and access the volunteer portal.</p>
+    <p style="margin-top:16px;color:var(--text-muted);font-size:0.9rem;">Questions? Contact us at <a href="mailto:info@medinacountyspca.com">info@medinacountyspca.com</a> or <a href="tel:+13307237722">(330) 723-7722</a>.</p>
+    <div style="margin-top:32px;display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+      <a href="/" class="btn btn-primary">Return to Home</a>
+      <a href="/volunteer/" class="btn btn-outline">Learn More About Volunteering</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

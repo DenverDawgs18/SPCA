@@ -1,8 +1,6 @@
 # Deployment Guide — Medina County SPCA
 
-The website runs as a single Django application on Fly.io with a managed Postgres database.
-
-The volunteer portal code is archived in `_volunteer_portal/` and is not part of this deployment. See `_volunteer_portal/README.md` if you ever want to re-activate it.
+The website runs as a single Django application on Fly.io with a managed Postgres database. It includes the full volunteer portal at `/portal/`.
 
 ---
 
@@ -214,6 +212,56 @@ For a small nonprofit, costs should be near **$0–$3/month**.
 
 ---
 
+## Email Setup
+
+The volunteer portal sends transactional emails (application confirmations, approvals, denials) and supports bulk volunteer emails from the manager portal.
+
+### Local development
+
+In development, emails are printed to the console (no SMTP needed):
+
+```
+EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend
+```
+
+### Production (Fly.io)
+
+We recommend **SendGrid** (generous free tier) or **Gmail SMTP** with an App Password.
+
+#### Option A — SendGrid
+
+1. Create a free SendGrid account at sendgrid.com
+2. Generate an API key with "Mail Send" permission
+3. Set Fly secrets:
+
+```bash
+fly secrets set EMAIL_BACKEND="django.core.mail.backends.smtp.EmailBackend"
+fly secrets set EMAIL_HOST="smtp.sendgrid.net"
+fly secrets set EMAIL_PORT="587"
+fly secrets set EMAIL_USE_TLS="True"
+fly secrets set EMAIL_HOST_USER="apikey"
+fly secrets set EMAIL_HOST_PASSWORD="<your-sendgrid-api-key>"
+fly secrets set DEFAULT_FROM_EMAIL="Medina County SPCA <noreply@medinacountyspca.com>"
+```
+
+#### Option B — Gmail SMTP (App Password)
+
+1. Enable 2-Step Verification on the Google account
+2. Create an App Password at myaccount.google.com/apppasswords
+3. Set Fly secrets:
+
+```bash
+fly secrets set EMAIL_BACKEND="django.core.mail.backends.smtp.EmailBackend"
+fly secrets set EMAIL_HOST="smtp.gmail.com"
+fly secrets set EMAIL_PORT="587"
+fly secrets set EMAIL_USE_TLS="True"
+fly secrets set EMAIL_HOST_USER="your-gmail@gmail.com"
+fly secrets set EMAIL_HOST_PASSWORD="<your-app-password>"
+fly secrets set DEFAULT_FROM_EMAIL="Medina County SPCA <your-gmail@gmail.com>"
+```
+
+---
+
 ## Architecture
 
 ```
@@ -225,6 +273,7 @@ Fly.io (HTTPS)
   ▼
 Gunicorn (Django)
   ├── /          → Main website (website app)
+  ├── /portal/   → Volunteer portal (volunteers app)
   ├── /admin/    → Django admin
   └── /static/   → WhiteNoise serves CSS/JS/images
          │

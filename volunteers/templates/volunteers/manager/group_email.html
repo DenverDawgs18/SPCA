@@ -1,0 +1,119 @@
+{% extends "website/base.html" %}
+{% load static %}
+
+{% block title %}Send Group Email — Manager Portal{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/volunteer.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div class="portal-layout">
+  <aside class="portal-sidebar">
+    {% include "volunteers/_mgr_sidebar.html" %}
+  </aside>
+  <main class="portal-main">
+    <div class="portal-page-header">
+      <h1>Send Group Email</h1>
+    </div>
+
+    <div class="detail-grid">
+      <div class="detail-main">
+        <div class="portal-section" style="max-width:640px;">
+          <form method="post" novalidate>
+            {% csrf_token %}
+
+            <div class="form-group">
+              <label for="{{ form.recipient_filter.id_for_label }}">Send To</label>
+              {{ form.recipient_filter }}
+              <div class="recipient-preview" id="recipient-preview">
+                <span id="recipient-count-text">Loading...</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="{{ form.subject.id_for_label }}">Subject <span class="required">*</span></label>
+              {{ form.subject }}
+              {% if form.subject.errors %}<div class="field-error">{{ form.subject.errors.0 }}</div>{% endif %}
+            </div>
+
+            <div class="form-group">
+              <label for="{{ form.body.id_for_label }}">Message <span class="required">*</span></label>
+              {{ form.body }}
+              {% if form.body.errors %}<div class="field-error">{{ form.body.errors.0 }}</div>{% endif %}
+            </div>
+
+            <button type="submit" class="btn btn-primary"
+                    onclick="return confirm('Send this email to all selected volunteers?')">Send Email</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="detail-sidebar-col">
+        <div class="portal-section action-box">
+          <h3>Recipient Counts</h3>
+          <ul style="list-style:none;padding:0;margin:0;">
+            <li style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border);">
+              <span>All volunteers</span>
+              <strong id="count-all">{{ all_count }}</strong>
+            </li>
+            <li style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border);">
+              <span>Active only</span>
+              <strong id="count-active">{{ active_count }}</strong>
+            </li>
+            <li style="display:flex;justify-content:space-between;padding:4px 0;">
+              <span>Inactive only</span>
+              <strong id="count-inactive">{{ inactive_count }}</strong>
+            </li>
+          </ul>
+        </div>
+
+        {% if recent_emails %}
+        <div class="portal-section action-box">
+          <h3>Recent Emails Sent</h3>
+          {% for rec in recent_emails %}
+          <div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:0.85rem;">
+            <div><strong>{{ rec.subject|truncatechars:40 }}</strong></div>
+            <div style="color:var(--text-muted);">
+              {{ rec.sent_at|date:"N j, Y" }} &bull;
+              {{ rec.recipient_count }} recipient{{ rec.recipient_count|pluralize }} &bull;
+              {{ rec.get_recipient_filter_display|default:rec.recipient_filter }}
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/volunteer.js' %}"></script>
+<script>
+// Update recipient count preview based on filter selection
+(function() {
+  var counts = {
+    'all': {{ all_count }},
+    'active': {{ active_count }},
+    'inactive': {{ inactive_count }}
+  };
+  var select = document.querySelector('[name="recipient_filter"]');
+  var preview = document.getElementById('recipient-count-text');
+
+  function update() {
+    var val = select ? select.value : 'all';
+    var count = counts[val] || 0;
+    if (preview) {
+      preview.textContent = count + ' volunteer' + (count !== 1 ? 's' : '') + ' will receive this email.';
+    }
+  }
+
+  if (select) {
+    select.addEventListener('change', update);
+    update();
+  }
+})();
+</script>
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends "website/base.html" %}
+{% load static %}
+
+{% block title %}Settings — Manager Portal{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/volunteer.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div class="portal-layout">
+  <aside class="portal-sidebar">
+    {% include "volunteers/_mgr_sidebar.html" %}
+  </aside>
+  <main class="portal-main">
+    <div class="portal-page-header">
+      <h1>Settings</h1>
+    </div>
+
+    <div class="portal-section" style="max-width:520px;">
+      <h2>Inactivity Threshold</h2>
+      <p style="color:var(--text-muted);margin-bottom:16px;">
+        A volunteer is considered <em>inactive</em> if they have fewer than the minimum number of hour logs within the look-back window.
+        Currently: <strong>&lt; {{ settings.inactivity_min_visits }} logs in {{ settings.inactivity_days }} days</strong>.
+      </p>
+      <form method="post" novalidate>
+        {% csrf_token %}
+        <input type="hidden" name="action" value="save_settings" />
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="{{ form.inactivity_days.id_for_label }}">Look-back Window (days)</label>
+            {{ form.inactivity_days }}
+            {% if form.inactivity_days.errors %}<div class="field-error">{{ form.inactivity_days.errors.0 }}</div>{% endif %}
+            <span class="field-help">{{ form.inactivity_days.help_text }}</span>
+          </div>
+          <div class="form-group">
+            <label for="{{ form.inactivity_min_visits.id_for_label }}">Minimum Logs Required</label>
+            {{ form.inactivity_min_visits }}
+            {% if form.inactivity_min_visits.errors %}<div class="field-error">{{ form.inactivity_min_visits.errors.0 }}</div>{% endif %}
+            <span class="field-help">{{ form.inactivity_min_visits.help_text }}</span>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save Settings</button>
+      </form>
+    </div>
+
+    <div class="portal-section" style="max-width:520px;">
+      <h2>Notification Preferences</h2>
+      <p style="color:var(--text-muted);margin-bottom:16px;">
+        Control whether you receive email notifications when new volunteer applications arrive.
+      </p>
+      <div class="pref-row">
+        <div>
+          <strong>New application notifications</strong>
+          <p style="font-size:0.85rem;color:var(--text-muted);margin:4px 0 0;">
+            Receive an email when a new volunteer application is submitted.
+          </p>
+        </div>
+        <form method="post" style="margin:0;">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="toggle_notification" />
+          <button type="submit" class="btn {% if pref.notify_new_application %}btn-primary{% else %}btn-outline{% endif %} btn-sm">
+            {% if pref.notify_new_application %}Enabled — Click to Disable{% else %}Disabled — Click to Enable{% endif %}
+          </button>
+        </form>
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/volunteer.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,141 @@
+{% extends "website/base.html" %}
+{% load static %}
+
+{% block title %}{{ volunteer.full_name }} — Manager Portal{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/volunteer.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div class="portal-layout">
+  <aside class="portal-sidebar">
+    {% include "volunteers/_mgr_sidebar.html" %}
+  </aside>
+  <main class="portal-main">
+    <div class="portal-page-header">
+      <div>
+        <a href="{% url 'volunteers:mgr_volunteers' %}" class="back-link">&larr; Back to Volunteers</a>
+        <h1>{{ volunteer.full_name }}</h1>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        {% if not volunteer.is_active %}
+        <span class="status-pill inactive">Deactivated</span>
+        {% elif is_inactive %}
+        <span class="status-pill pending">Inactive</span>
+        {% else %}
+        <span class="status-pill active">Active</span>
+        {% endif %}
+        <form method="post" action="{% url 'volunteers:mgr_toggle_active' volunteer.pk %}" style="margin:0;">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-outline btn-sm">
+            {% if volunteer.is_active %}Deactivate{% else %}Reactivate{% endif %}
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div class="detail-grid">
+      <div class="detail-main">
+
+        <div class="portal-section">
+          <h2>Volunteer Info</h2>
+          <div class="stat-row stat-row--compact">
+            <div class="stat-card">
+              <div class="stat-number">{{ total_hours }}</div>
+              <div class="stat-label">Total Hours</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number">{{ upcoming_signups|length }}</div>
+              <div class="stat-label">Upcoming Shifts</div>
+            </div>
+          </div>
+          <dl class="profile-dl" style="margin-top:16px;">
+            <dt>Email</dt><dd><a href="mailto:{{ volunteer.email }}">{{ volunteer.email }}</a></dd>
+            <dt>Phone</dt><dd>{{ volunteer.phone|default:"—" }}</dd>
+            {% if volunteer.application %}
+            <dt>Applied</dt><dd>{{ volunteer.application.submitted_at|date:"N j, Y" }}</dd>
+            {% if volunteer.application.emergency_contact_name %}
+            <dt>Emergency Contact</dt>
+            <dd>
+              {{ volunteer.application.emergency_contact_name }}
+              ({{ volunteer.application.emergency_contact_relationship|default:"" }})
+              — {{ volunteer.application.emergency_contact_phone }}
+            </dd>
+            {% endif %}
+            {% endif %}
+            <dt>Member Since</dt><dd>{{ volunteer.created_at|date:"N j, Y" }}</dd>
+          </dl>
+        </div>
+
+        <div class="portal-section">
+          <h2>Upcoming Shifts</h2>
+          {% if upcoming_signups %}
+          <table class="data-table">
+            <thead><tr><th>Shift</th><th>Date</th><th>Time</th></tr></thead>
+            <tbody>
+              {% for su in upcoming_signups %}
+              <tr>
+                <td><a href="{% url 'volunteers:mgr_shift_detail' su.shift.pk %}">{{ su.shift.title }}</a></td>
+                <td>{{ su.shift.date|date:"N j, Y" }}</td>
+                <td>{{ su.shift.start_time|time:"g:i A" }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% else %}
+          <p style="color:var(--text-muted);">No upcoming shifts.</p>
+          {% endif %}
+        </div>
+
+        <div class="portal-section">
+          <h2>Recent Hour Logs</h2>
+          {% if recent_logs %}
+          <table class="data-table">
+            <thead>
+              <tr><th>Date</th><th>Hours</th><th>Activity</th><th>Notes</th></tr>
+            </thead>
+            <tbody>
+              {% for log in recent_logs %}
+              <tr>
+                <td>{{ log.date|date:"N j, Y" }}</td>
+                <td>{{ log.hours }}</td>
+                <td>{{ log.get_activity_type_display }}</td>
+                <td style="color:var(--text-muted);">{{ log.notes|truncatechars:60 }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% else %}
+          <p style="color:var(--text-muted);">No hour logs yet.</p>
+          {% endif %}
+        </div>
+
+      </div>
+
+      <div class="detail-sidebar-col">
+        <div class="portal-section action-box">
+          <h3>Manager Notes</h3>
+          <form method="post">
+            {% csrf_token %}
+            {{ notes_form }}
+            <button type="submit" class="btn btn-primary btn-sm" style="margin-top:8px;">Save Notes</button>
+          </form>
+        </div>
+
+        {% if volunteer.application %}
+        <div class="portal-section action-box">
+          <h3>Application</h3>
+          <a href="{% url 'volunteers:mgr_application_detail' volunteer.application.pk %}"
+             class="btn btn-outline btn-sm btn-block">View Application</a>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/volunteer.js' %}"></script>
+{% endblock %}

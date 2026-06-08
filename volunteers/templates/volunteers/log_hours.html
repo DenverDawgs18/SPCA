@@ -1,0 +1,74 @@
+{% extends "website/base.html" %}
+{% load static %}
+
+{% block title %}Log Hours — Medina County SPCA{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/volunteer.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div class="kiosk-page">
+  <div class="kiosk-wrap">
+
+    <div class="kiosk-header">
+      <img src="{% static 'images/logo.svg' %}" alt="Medina County SPCA"
+           onerror="this.style.display='none'" style="height:48px;margin-bottom:12px;" />
+      <h1>Log Your Hours</h1>
+      <p>Select your name and fill in the details below.</p>
+    </div>
+
+    {% if success_name %}
+    <div class="kiosk-success">
+      <div class="kiosk-success-icon">&#10003;</div>
+      <h2>Hours logged for {{ success_name }}!</h2>
+      <p>Thank you for your time and dedication. Your hours have been recorded.</p>
+    </div>
+    {% endif %}
+
+    <form method="post" action="{% url 'volunteers:log_hours' %}" novalidate class="kiosk-form">
+      {% csrf_token %}
+
+      <div class="form-group kiosk-field">
+        <label for="{{ form.volunteer.id_for_label }}">Your Name</label>
+        {{ form.volunteer }}
+        {% if form.volunteer.errors %}<div class="field-error">{{ form.volunteer.errors.0 }}</div>{% endif %}
+      </div>
+
+      <div class="form-row">
+        <div class="form-group kiosk-field">
+          <label for="{{ form.date.id_for_label }}">Date</label>
+          {{ form.date }}
+          {% if form.date.errors %}<div class="field-error">{{ form.date.errors.0 }}</div>{% endif %}
+        </div>
+        <div class="form-group kiosk-field">
+          <label for="{{ form.hours.id_for_label }}">Hours</label>
+          {{ form.hours }}
+          {% if form.hours.errors %}<div class="field-error">{{ form.hours.errors.0 }}</div>{% endif %}
+        </div>
+      </div>
+
+      <div class="form-group kiosk-field">
+        <label for="{{ form.activity_type.id_for_label }}">Activity Type</label>
+        {{ form.activity_type }}
+        {% if form.activity_type.errors %}<div class="field-error">{{ form.activity_type.errors.0 }}</div>{% endif %}
+      </div>
+
+      <div class="form-group kiosk-field">
+        <label for="{{ form.notes.id_for_label }}">Notes <span style="font-weight:400;font-size:0.85rem;">(optional)</span></label>
+        {{ form.notes }}
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block kiosk-submit">
+        Submit Hours
+      </button>
+    </form>
+
+    <p class="kiosk-footer">Staff login: <a href="{% url 'volunteers:login' %}">Volunteer Portal</a></p>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/volunteer.js' %}"></script>
+{% endblock %}

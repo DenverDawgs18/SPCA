@@ -1,0 +1,84 @@
+{% extends "website/base.html" %}
+{% load static %}
+
+{% block title %}My Shifts — Volunteer Portal{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/volunteer.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div class="portal-layout">
+  <aside class="portal-sidebar">
+    {% include "volunteers/_vol_sidebar.html" %}
+  </aside>
+  <main class="portal-main">
+    <div class="portal-page-header">
+      <h1>My Shifts</h1>
+    </div>
+
+    <div class="portal-section">
+      <h2>Upcoming</h2>
+      {% if upcoming %}
+      <div class="shift-grid">
+        {% for signup in upcoming %}
+        <div class="shift-card shift-card--signed-up">
+          <div class="shift-card-header">
+            <strong>{{ signup.shift.title }}</strong>
+            <span class="shift-activity-badge">{{ signup.shift.get_activity_type_display }}</span>
+          </div>
+          <div class="shift-card-meta">
+            <span>{{ signup.shift.date|date:"D, N j, Y" }}</span>
+            <span>{{ signup.shift.start_time|time:"g:i A" }} – {{ signup.shift.end_time|time:"g:i A" }}</span>
+          </div>
+          {% if signup.shift.description %}
+          <p class="shift-description">{{ signup.shift.description }}</p>
+          {% endif %}
+          <div class="shift-card-footer">
+            <form method="post" action="{% url 'volunteers:shift_cancel' signup.shift.pk %}">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-outline btn-sm" onclick="return confirm('Cancel this shift signup?')">Cancel Signup</button>
+            </form>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p style="color:var(--text-muted);">No upcoming shifts. <a href="{% url 'volunteers:schedule' %}">Browse available shifts</a>.</p>
+      {% endif %}
+    </div>
+
+    <div class="portal-section">
+      <h2>Past Shifts</h2>
+      {% if past %}
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Shift</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Activity</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for signup in past %}
+          <tr>
+            <td>{{ signup.shift.title }}</td>
+            <td>{{ signup.shift.date|date:"N j, Y" }}</td>
+            <td>{{ signup.shift.start_time|time:"g:i A" }} – {{ signup.shift.end_time|time:"g:i A" }}</td>
+            <td>{{ signup.shift.get_activity_type_display }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p style="color:var(--text-muted);">No past shifts on record.</p>
+      {% endif %}
+    </div>
+  </main>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/volunteer.js' %}"></script>
+{% endblock %}

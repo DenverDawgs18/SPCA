@@ -1,0 +1,26 @@
+{% load static %}
+<nav class="sidebar-nav">
+  <div class="sidebar-header">
+    <span class="sidebar-title">Volunteer Portal</span>
+    {% if request.user.is_authenticated %}
+    <span class="sidebar-user">{{ request.user.get_full_name|default:request.user.username }}</span>
+    {% endif %}
+  </div>
+  <a href="{% url 'volunteers:dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+    <span class="sidebar-icon">&#9632;</span> Dashboard
+  </a>
+  <a href="{% url 'volunteers:schedule' %}" class="{% if request.resolver_match.url_name == 'schedule' %}active{% endif %}">
+    <span class="sidebar-icon">&#128197;</span> Browse Shifts
+  </a>
+  <a href="{% url 'volunteers:my_shifts' %}" class="{% if request.resolver_match.url_name == 'my_shifts' %}active{% endif %}">
+    <span class="sidebar-icon">&#10003;</span> My Shifts
+  </a>
+  <a href="{% url 'volunteers:profile' %}" class="{% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
+    <span class="sidebar-icon">&#9786;</span> Profile
+  </a>
+  <div class="sidebar-divider"></div>
+  <form method="post" action="{% url 'volunteers:logout' %}" style="margin:0;">
+    {% csrf_token %}
+    <button type="submit" class="sidebar-logout-btn">Sign Out</button>
+  </form>
+</nav>

@@ -1,0 +1,76 @@
+{% extends "website/base.html" %}
+{% load static %}
+
+{% block title %}Volunteers — Manager Portal{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/volunteer.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div class="portal-layout">
+  <aside class="portal-sidebar">
+    {% include "volunteers/_mgr_sidebar.html" %}
+  </aside>
+  <main class="portal-main">
+    <div class="portal-page-header">
+      <h1>Volunteers</h1>
+    </div>
+
+    <form method="get" class="filter-bar">
+      <input type="text" name="q" value="{{ search }}" placeholder="Search by name or email..." class="form-control filter-search" />
+      <div class="filter-tabs">
+        <a href="?status=all{% if search %}&q={{ search }}{% endif %}" class="filter-tab {% if status_filter == 'all' %}active{% endif %}">All</a>
+        <a href="?status=active{% if search %}&q={{ search }}{% endif %}" class="filter-tab {% if status_filter == 'active' %}active{% endif %}">Active</a>
+        <a href="?status=inactive{% if search %}&q={{ search }}{% endif %}" class="filter-tab {% if status_filter == 'inactive' %}active{% endif %}">Inactive</a>
+      </div>
+      <button type="submit" class="btn btn-outline btn-sm">Search</button>
+    </form>
+
+    {% if volunteers %}
+    <table class="data-table sortable">
+      <thead>
+        <tr>
+          <th data-sort>Name</th>
+          <th data-sort>Email</th>
+          <th data-sort>Phone</th>
+          <th data-sort>Status</th>
+          <th data-sort>Total Hours</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for vol in volunteers %}
+        <tr>
+          <td><a href="{% url 'volunteers:mgr_volunteer_detail' vol.pk %}">{{ vol.full_name }}</a></td>
+          <td>{{ vol.email }}</td>
+          <td>{{ vol.phone }}</td>
+          <td>
+            {% if not vol.is_active %}
+            <span class="status-pill inactive">Deactivated</span>
+            {% elif vol._is_inactive %}
+            <span class="status-pill pending">Inactive</span>
+            {% else %}
+            <span class="status-pill active">Active</span>
+            {% endif %}
+          </td>
+          <td>{{ vol.total_hours }}</td>
+          <td>
+            <a href="{% url 'volunteers:mgr_volunteer_detail' vol.pk %}" class="btn btn-outline btn-sm">View</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+      <p>No volunteers found{% if search %} matching "{{ search }}"{% endif %}.</p>
+    </div>
+    {% endif %}
+  </main>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/volunteer.js' %}"></script>
+{% endblock %}

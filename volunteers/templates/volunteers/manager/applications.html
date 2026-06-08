@@ -1,0 +1,91 @@
+{% extends "website/base.html" %}
+{% load static %}
+
+{% block title %}Applications — Manager Portal{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/volunteer.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div class="portal-layout">
+  <aside class="portal-sidebar">
+    {% include "volunteers/_mgr_sidebar.html" %}
+  </aside>
+  <main class="portal-main">
+    <div class="portal-page-header">
+      <h1>Applications</h1>
+    </div>
+
+    <div class="portal-section">
+      <h2>Pending Review
+        {% if pending %}<span class="sidebar-badge" style="background:var(--amber);margin-left:8px;">{{ pending|length }}</span>{% endif %}
+      </h2>
+      {% if pending %}
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Submitted</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for app in pending %}
+          <tr>
+            <td><a href="{% url 'volunteers:mgr_application_detail' app.pk %}">{{ app.full_name }}</a></td>
+            <td>{{ app.email }}</td>
+            <td>{{ app.phone }}</td>
+            <td>{{ app.submitted_at|date:"N j, Y" }}</td>
+            <td>
+              <a href="{% url 'volunteers:mgr_application_detail' app.pk %}" class="btn btn-primary btn-sm">Review</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <div class="empty-state">
+        <p>No pending applications. You're all caught up!</p>
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="portal-section">
+      <h2>Recently Reviewed</h2>
+      {% if reviewed %}
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Status</th>
+            <th>Reviewed</th>
+            <th>Reviewed By</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for app in reviewed %}
+          <tr>
+            <td><a href="{% url 'volunteers:mgr_application_detail' app.pk %}">{{ app.full_name }}</a></td>
+            <td>{{ app.email }}</td>
+            <td><span class="status-pill {{ app.status }}">{{ app.get_status_display }}</span></td>
+            <td>{{ app.reviewed_at|date:"N j, Y" }}</td>
+            <td>{{ app.reviewed_by.get_full_name|default:app.reviewed_by.username|default:"—" }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p style="color:var(--text-muted);">No reviewed applications yet.</p>
+      {% endif %}
+    </div>
+  </main>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/volunteer.js' %}"></script>
+{% endblock %}

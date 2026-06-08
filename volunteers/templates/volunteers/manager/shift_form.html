@@ -1,0 +1,84 @@
+{% extends "website/base.html" %}
+{% load static %}
+
+{% block title %}{{ action }} Shift — Manager Portal{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/volunteer.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div class="portal-layout">
+  <aside class="portal-sidebar">
+    {% include "volunteers/_mgr_sidebar.html" %}
+  </aside>
+  <main class="portal-main">
+    <div class="portal-page-header">
+      <div>
+        <a href="{% url 'volunteers:mgr_shifts' %}" class="back-link">&larr; Back to Shifts</a>
+        <h1>{{ action }} Shift</h1>
+      </div>
+    </div>
+
+    <div class="portal-section" style="max-width:640px;">
+      <form method="post" novalidate>
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+        <div class="alert alert-error">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        <div class="form-group">
+          <label for="{{ form.title.id_for_label }}">Shift Title <span class="required">*</span></label>
+          {{ form.title }}
+          {% if form.title.errors %}<div class="field-error">{{ form.title.errors.0 }}</div>{% endif %}
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="{{ form.date.id_for_label }}">Date <span class="required">*</span></label>
+            {{ form.date }}
+            {% if form.date.errors %}<div class="field-error">{{ form.date.errors.0 }}</div>{% endif %}
+          </div>
+          <div class="form-group">
+            <label for="{{ form.activity_type.id_for_label }}">Activity Type <span class="required">*</span></label>
+            {{ form.activity_type }}
+            {% if form.activity_type.errors %}<div class="field-error">{{ form.activity_type.errors.0 }}</div>{% endif %}
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="{{ form.start_time.id_for_label }}">Start Time <span class="required">*</span></label>
+            {{ form.start_time }}
+            {% if form.start_time.errors %}<div class="field-error">{{ form.start_time.errors.0 }}</div>{% endif %}
+          </div>
+          <div class="form-group">
+            <label for="{{ form.end_time.id_for_label }}">End Time <span class="required">*</span></label>
+            {{ form.end_time }}
+            {% if form.end_time.errors %}<div class="field-error">{{ form.end_time.errors.0 }}</div>{% endif %}
+          </div>
+          <div class="form-group">
+            <label for="{{ form.capacity.id_for_label }}">Capacity <span class="required">*</span></label>
+            {{ form.capacity }}
+            {% if form.capacity.errors %}<div class="field-error">{{ form.capacity.errors.0 }}</div>{% endif %}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.description.id_for_label }}">Description <small style="font-weight:400;">(optional)</small></label>
+          {{ form.description }}
+        </div>
+
+        <div style="display:flex;gap:12px;margin-top:8px;">
+          <button type="submit" class="btn btn-primary">{{ action }} Shift</button>
+          <a href="{% url 'volunteers:mgr_shifts' %}" class="btn btn-outline">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </main>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/volunteer.js' %}"></script>
+{% endblock %}

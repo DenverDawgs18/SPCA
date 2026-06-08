@@ -1,0 +1,91 @@
+{% extends "website/base.html" %}
+{% load static %}
+
+{% block title %}My Profile — Volunteer Portal{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/volunteer.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div class="portal-layout">
+  <aside class="portal-sidebar">
+    {% include "volunteers/_vol_sidebar.html" %}
+  </aside>
+  <main class="portal-main">
+    <div class="portal-page-header">
+      <h1>My Profile</h1>
+    </div>
+
+    <div class="portal-section">
+      <h2>Personal Information</h2>
+      <dl class="profile-dl">
+        <dt>Name</dt><dd>{{ volunteer.full_name }}</dd>
+        <dt>Email</dt><dd>{{ volunteer.email }}</dd>
+        {% if volunteer.application %}
+        <dt>Phone</dt><dd>{{ volunteer.application.phone }}</dd>
+        <dt>Address</dt>
+        <dd>
+          {{ volunteer.application.address }}<br>
+          {{ volunteer.application.city }}, {{ volunteer.application.state }} {{ volunteer.application.zip_code }}
+        </dd>
+        {% if volunteer.application.t_shirt_size %}
+        <dt>T-Shirt Size</dt><dd>{{ volunteer.application.t_shirt_size }}</dd>
+        {% endif %}
+        {% if volunteer.application.availability %}
+        <dt>Availability</dt>
+        <dd>
+          {% for slot in volunteer.application.availability_display %}
+          <span class="avail-chip">{{ slot }}</span>
+          {% endfor %}
+        </dd>
+        {% endif %}
+        {% if volunteer.application.skills %}
+        <dt>Skills</dt><dd>{{ volunteer.application.skills }}</dd>
+        {% endif %}
+        {% endif %}
+      </dl>
+    </div>
+
+    <div class="portal-section">
+      <h2>Emergency Contact &amp; Contact Info</h2>
+      <form method="post" action="{% url 'volunteers:profile' %}">
+        {% csrf_token %}
+        {% if volunteer.application %}
+        <div class="form-row">
+          <div class="form-group">
+            <label>Phone Number</label>
+            <input type="text" name="phone" value="{{ volunteer.application.phone }}" class="form-control" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Emergency Contact Name</label>
+            <input type="text" name="emergency_contact_name" value="{{ volunteer.application.emergency_contact_name }}" class="form-control" />
+          </div>
+          <div class="form-group">
+            <label>Emergency Contact Phone</label>
+            <input type="text" name="emergency_contact_phone" value="{{ volunteer.application.emergency_contact_phone }}" class="form-control" />
+          </div>
+        </div>
+        <div class="form-group" style="max-width:280px;">
+          <label>Relationship</label>
+          <input type="text" name="emergency_contact_relationship" value="{{ volunteer.application.emergency_contact_relationship }}" class="form-control" />
+        </div>
+        {% endif %}
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+      </form>
+    </div>
+
+    <div class="portal-section">
+      <h2>Account</h2>
+      <p style="color:var(--text-muted);">Member since {{ volunteer.created_at|date:"N j, Y" }}</p>
+      <p style="color:var(--text-muted);">Total hours logged: <strong>{{ volunteer.total_hours }}</strong></p>
+    </div>
+  </main>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/volunteer.js' %}"></script>
+{% endblock %}

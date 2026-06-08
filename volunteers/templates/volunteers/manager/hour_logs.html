@@ -1,0 +1,87 @@
+{% extends "website/base.html" %}
+{% load static %}
+
+{% block title %}Hour Logs — Manager Portal{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/volunteer.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div class="portal-layout">
+  <aside class="portal-sidebar">
+    {% include "volunteers/_mgr_sidebar.html" %}
+  </aside>
+  <main class="portal-main">
+    <div class="portal-page-header">
+      <h1>Hour Logs</h1>
+    </div>
+
+    <form method="get" class="filter-bar">
+      <input type="text" name="q" value="{{ search }}" placeholder="Search by volunteer name..."
+             class="form-control filter-search" />
+      <input type="date" name="date" value="{{ date_filter }}" class="form-control" style="max-width:160px;" />
+      <button type="submit" class="btn btn-outline btn-sm">Filter</button>
+      {% if search or date_filter %}
+      <a href="{% url 'volunteers:mgr_hour_logs' %}" class="btn btn-outline btn-sm">Clear</a>
+      {% endif %}
+    </form>
+
+    {% if page_obj %}
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Volunteer</th>
+          <th>Date</th>
+          <th>Hours</th>
+          <th>Activity</th>
+          <th>Notes</th>
+          <th>Logged At</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for log in page_obj %}
+        <tr>
+          <td>{{ log.volunteer_name }}</td>
+          <td>{{ log.date|date:"N j, Y" }}</td>
+          <td>{{ log.hours }}</td>
+          <td>{{ log.get_activity_type_display }}</td>
+          <td style="color:var(--text-muted);">{{ log.notes|truncatechars:60 }}</td>
+          <td style="color:var(--text-muted);font-size:0.82rem;">{{ log.logged_at|date:"N j g:i A" }}</td>
+          <td>
+            <form method="post" action="{% url 'volunteers:mgr_hour_log_delete' log.pk %}" style="margin:0;">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-outline btn-sm"
+                      style="color:var(--red);border-color:var(--red);"
+                      onclick="return confirm('Delete this log? This cannot be undone.')">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    {% if page_obj.has_other_pages %}
+    <div class="pagination">
+      {% if page_obj.has_previous %}
+      <a href="?page={{ page_obj.previous_page_number }}{% if search %}&q={{ search }}{% endif %}{% if date_filter %}&date={{ date_filter }}{% endif %}" class="btn btn-outline btn-sm">&larr; Previous</a>
+      {% endif %}
+      <span class="page-info">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+      {% if page_obj.has_next %}
+      <a href="?page={{ page_obj.next_page_number }}{% if search %}&q={{ search }}{% endif %}{% if date_filter %}&date={{ date_filter }}{% endif %}" class="btn btn-outline btn-sm">Next &rarr;</a>
+      {% endif %}
+    </div>
+    {% endif %}
+    {% else %}
+    <div class="empty-state">
+      <p>No hour logs found{% if search %} matching "{{ search }}"{% endif %}.</p>
+    </div>
+    {% endif %}
+  </main>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/volunteer.js' %}"></script>
+{% endblock %}
