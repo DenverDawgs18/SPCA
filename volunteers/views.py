@@ -26,7 +26,6 @@ from .email import (
     send_application_approved,
     send_application_denied,
     send_application_received,
-    send_group_email,
 )
 from .forms import (
     ApplicationForm,
@@ -94,11 +93,20 @@ def vol_login(request):
     if request.method == "POST":
         username = request.POST.get("username", "").strip()
         password = request.POST.get("password", "")
+
+        # Allow login with email address — look up the username first
+        if "@" in username:
+            try:
+                matched = User.objects.get(email__iexact=username)
+                username = matched.username
+            except User.DoesNotExist:
+                pass
+
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
             return redirect(next_url or "volunteers:dashboard")
-        messages.error(request, "Invalid email or password. Please try again.")
+        messages.error(request, "Invalid username/email or password. Please try again.")
 
     return render(request, "volunteers/login.html", {"next": next_url})
 
