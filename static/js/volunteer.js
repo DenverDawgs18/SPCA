@@ -1,125 +1,115 @@
-/**
- * volunteer.js — Medina County SPCA Volunteer Portal
- */
+/* Volunteer portal JS */
 
 (function () {
-  'use strict';
+  "use strict";
 
-  /* ------------------------------------------------------------------
-     Auto-set today's date on any input.js-today
-     ------------------------------------------------------------------ */
-  function setTodayDates() {
-    var today = new Date();
-    var yyyy = today.getFullYear();
-    var mm = String(today.getMonth() + 1).padStart(2, '0');
-    var dd = String(today.getDate()).padStart(2, '0');
-    var isoDate = yyyy + '-' + mm + '-' + dd;
-
-    document.querySelectorAll('input.js-today').forEach(function (el) {
-      if (!el.value) {
-        el.value = isoDate;
-      }
+  // Auto-set today's date on date inputs with data-today attribute
+  function initDateDefaults() {
+    var today = new Date().toISOString().slice(0, 10);
+    document.querySelectorAll('input[data-today]').forEach(function (inp) {
+      if (!inp.value) inp.value = today;
     });
   }
 
-  /* ------------------------------------------------------------------
-     Sortable table columns
-     Click a <th data-sort> to sort the tbody rows.
-     Toggles asc/desc on successive clicks.
-     ------------------------------------------------------------------ */
-  function initSortableTables() {
-    document.querySelectorAll('table.sortable').forEach(function (table) {
-      var headers = table.querySelectorAll('th[data-sort]');
-      headers.forEach(function (th, colIndex) {
-        th.addEventListener('click', function () {
-          var ascending = !th.classList.contains('sorted-asc');
+  // Recipient count preview on group email page
+  function initRecipientCount() {
+    var select = document.getElementById('id_recipient_filter');
+    var preview = document.getElementById('recipient-count-preview');
+    if (!select || !preview) return;
 
-          // Reset other headers
-          headers.forEach(function (h) {
-            h.classList.remove('sorted-asc', 'sorted-desc');
-          });
-          th.classList.add(ascending ? 'sorted-asc' : 'sorted-desc');
-
-          var tbody = table.querySelector('tbody');
-          if (!tbody) return;
-
-          var rows = Array.from(tbody.querySelectorAll('tr'));
-          rows.sort(function (a, b) {
-            var aText = (a.cells[colIndex] ? a.cells[colIndex].textContent : '').trim().toLowerCase();
-            var bText = (b.cells[colIndex] ? b.cells[colIndex].textContent : '').trim().toLowerCase();
-
-            // Numeric sort if both look like numbers
-            var aNum = parseFloat(aText);
-            var bNum = parseFloat(bText);
-            if (!isNaN(aNum) && !isNaN(bNum)) {
-              return ascending ? aNum - bNum : bNum - aNum;
-            }
-
-            // String sort
-            if (aText < bText) return ascending ? -1 : 1;
-            if (aText > bText) return ascending ? 1 : -1;
-            return 0;
-          });
-
-          rows.forEach(function (row) {
-            tbody.appendChild(row);
-          });
+    function fetchCount() {
+      var url = preview.dataset.url + '?filter=' + encodeURIComponent(select.value);
+      fetch(url)
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          preview.textContent = 'Estimated recipients: ' + data.count;
+        })
+        .catch(function () {
+          preview.textContent = '';
         });
+    }
+
+    select.addEventListener('change', fetchCount);
+    fetchCount(); // run on load
+  }
+
+  // Dismissible alerts
+  function initAlertDismiss() {
+    document.querySelectorAll('.alert-dismiss').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var el = btn.closest('.alert, li');
+        if (el) el.remove();
       });
     });
   }
 
-  /* ------------------------------------------------------------------
-     Recipient count preview on group email page
-     (The inline script in group_email.html handles the primary update;
-      this is a fallback initialiser in case that script is absent.)
-     ------------------------------------------------------------------ */
-  function initEmailRecipientPreview() {
-    var select = document.querySelector('[name="recipient_filter"]');
-    var preview = document.getElementById('recipient-count-text');
-    if (!select || !preview || preview.textContent.trim() !== '') return;
+  // Sortable tables — click any column header to toggle asc/desc
+  function initSortableTables() {
+    document.querySelectorAll('.data-table.sortable thead th').forEach(function (th, colIdx) {
+      th.style.cursor = 'pointer';
+      th.title = 'Click to sort';
+      var ascending = true;
 
-    // Try to read counts from data attributes if present
-    var countAll = parseInt(document.getElementById('count-all') && document.getElementById('count-all').textContent, 10) || 0;
-    var countActive = parseInt(document.getElementById('count-active') && document.getElementById('count-active').textContent, 10) || 0;
-    var countInactive = parseInt(document.getElementById('count-inactive') && document.getElementById('count-inactive').textContent, 10) || 0;
+      th.addEventListener('click', function () {
+        var table = th.closest('table');
+        var tbody = table.querySelector('tbody');
+        if (!tbody) return;
 
-    var counts = { all: countAll, active: countActive, inactive: countInactive };
+        var rows = Array.from(tbody.querySelectorAll('tr'));
+        rows.sort(function (a, b) {
+          var aText = (a.cells[colIdx] ? a.cells[colIdx].textContent : '').trim();
+          var bText = (b.cells[colIdx] ? b.cells[colIdx].textContent : '').trim();
+          var aNum = parseFloat(aText);
+          var bNum = parseFloat(bText);
+          if (!isNaN(aNum) && !isNaN(bNum)) {
+            return ascending ? aNum - bNum : bNum - aNum;
+          }
+          return ascending ? aText.localeCompare(bText) : bText.localeCompare(aText);
+        });
 
-    function update() {
-      var val = select.value;
-      var count = counts[val] !== undefined ? counts[val] : '?';
-      preview.textContent = count + ' volunteer' + (count !== 1 ? 's' : '') + ' will receive this email.';
-    }
+        rows.forEach(function (row) { tbody.appendChild(row); });
+        ascending = !ascending;
 
-    select.addEventListener('change', update);
-    update();
-  }
-
-  /* ------------------------------------------------------------------
-     Flash-message auto-dismiss (optional: fade out after 6 seconds)
-     ------------------------------------------------------------------ */
-  function initMessageAutoDismiss() {
-    var alerts = document.querySelectorAll('.alert');
-    alerts.forEach(function (el) {
-      setTimeout(function () {
-        el.style.transition = 'opacity 0.6s ease';
-        el.style.opacity = '0';
-        setTimeout(function () {
-          if (el.parentNode) el.parentNode.removeChild(el);
-        }, 600);
-      }, 6000);
+        table.querySelectorAll('thead th').forEach(function (t) { delete t.dataset.sort; });
+        th.dataset.sort = ascending ? 'desc' : 'asc';
+      });
     });
   }
 
-  /* ------------------------------------------------------------------
-     Init
-     ------------------------------------------------------------------ */
-  document.addEventListener('DOMContentLoaded', function () {
-    setTodayDates();
-    initSortableTables();
-    initEmailRecipientPreview();
-    initMessageAutoDismiss();
-  });
+  // Confirm before submit on forms with data-confirm attribute
+  function initConfirmForms() {
+    document.querySelectorAll('form[data-confirm]').forEach(function (form) {
+      form.addEventListener('submit', function (e) {
+        if (!window.confirm(form.dataset.confirm)) {
+          e.preventDefault();
+        }
+      });
+    });
+  }
 
+  // Kiosk: focus the volunteer select on load
+  function initKioskSelect() {
+    var sel = document.getElementById('id_volunteer');
+    if (sel && document.querySelector('.kiosk-page')) {
+      sel.focus();
+    }
+  }
+
+  // Scroll active sidebar link into view on mobile
+  function initSidebarScroll() {
+    var active = document.querySelector('.sidebar-nav a.active');
+    if (active && window.innerWidth <= 768) {
+      active.scrollIntoView({ block: 'nearest', inline: 'center' });
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    initDateDefaults();
+    initRecipientCount();
+    initAlertDismiss();
+    initSortableTables();
+    initConfirmForms();
+    initKioskSelect();
+    initSidebarScroll();
+  });
 })();
