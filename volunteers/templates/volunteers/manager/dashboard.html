@@ -79,7 +79,7 @@
       </div>
       <div style="display:flex;gap:12px;flex-wrap:wrap;">
         <a href="{% url 'volunteers:mgr_applications' %}" class="btn btn-primary">Review Applications {% if pending_count %}({{ pending_count }}){% endif %}</a>
-        <a href="{% url 'volunteers:mgr_shift_create' %}" class="btn btn-outline">Create New Shift</a>
+        <a href="{% url 'volunteers:mgr_shifts' %}" class="btn btn-outline">View All Shifts</a>
         <a href="{% url 'volunteers:mgr_group_email' %}" class="btn btn-outline">Send Group Email</a>
         <a href="{% url 'volunteers:log_hours' %}" class="btn btn-outline">Kiosk: Log Hours</a>
       </div>
