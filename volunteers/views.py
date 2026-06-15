@@ -36,9 +36,10 @@ from .forms import (
     ShiftForm,
     SiteSettingsForm,
     VolunteerImportForm,
+    VolunteerOrientationForm,
     VolunteerScheduleForm,
 )
-from .models import ACTIVITY_CHOICES
+from .models import ACTIVITY_CHOICES, CS_OFFENSE_CHOICES, DISQUALIFYING_OFFENSES
 from .models import (
     AdminNotificationPreference,
     GroupEmailRecord,
@@ -325,13 +326,28 @@ def mgr_dashboard(request):
 
 @_require_manager
 def mgr_applications(request):
-    pending = VolunteerApplication.objects.filter(status="pending").order_by("submitted_at")
+    type_filter = request.GET.get("type", "all")
+
+    pending_qs = VolunteerApplication.objects.filter(status="pending").order_by("submitted_at")
+    if type_filter == "cs":
+        pending_qs = pending_qs.filter(is_community_service=True)
+    elif type_filter == "regular":
+        pending_qs = pending_qs.filter(is_community_service=False)
+
+    pending = list(pending_qs)
+    for app in pending:
+        app.disqualified_flag = app.is_disqualified_cs
+
     reviewed = VolunteerApplication.objects.exclude(status="pending").order_by("-reviewed_at")[:20]
+
+    cs_pending_count = VolunteerApplication.objects.filter(status="pending", is_community_service=True).count()
 
     return render(request, "volunteers/manager/applications.html", {
         "pending": pending,
         "reviewed": reviewed,
-        "pending_count": pending.count(),
+        "pending_count": pending_qs.model.objects.filter(status="pending").count(),
+        "cs_pending_count": cs_pending_count,
+        "type_filter": type_filter,
     })
 
 
@@ -394,7 +410,9 @@ def mgr_approve(request, app_id):
     volunteer, _ = Volunteer.objects.get_or_create(user=user)
     if not volunteer.application:
         volunteer.application = application
-        volunteer.save()
+    if application.is_community_service:
+        volunteer.volunteer_type = "cs"
+    volunteer.save()
 
     # Build set-password URL
     uid = urlsafe_base64_encode(force_bytes(user.pk))
@@ -499,6 +517,20 @@ def mgr_toggle_active(request, vol_id):
     volunteer.save()
     state = "activated" if volunteer.is_active else "deactivated"
     messages.success(request, f"{volunteer.full_name} has been {state}.")
+    return redirect("volunteers:mgr_volunteer_detail", vol_id=vol_id)
+
+
+@_require_manager
+def mgr_volunteer_orientation(request, vol_id):
+    if request.method != "POST":
+        return redirect("volunteers:mgr_volunteer_detail", vol_id=vol_id)
+    volunteer = get_object_or_404(Volunteer, pk=vol_id)
+    form = VolunteerOrientationForm(request.POST, instance=volunteer)
+    if form.is_valid():
+        form.save()
+        messages.success(request, "Orientation info updated.")
+    else:
+        messages.error(request, "Please correct the errors.")
     return redirect("volunteers:mgr_volunteer_detail", vol_id=vol_id)
 
 

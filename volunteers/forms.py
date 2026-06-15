@@ -4,6 +4,7 @@ from django.utils import timezone
 from .models import (
     VolunteerApplication, Volunteer, Shift, HourLog,
     AVAILABILITY_OPTIONS, SHIRT_SIZES, ACTIVITY_CHOICES,
+    CS_OFFENSE_CHOICES,
 )
 
 
@@ -27,6 +28,11 @@ class ApplicationForm(forms.ModelForm):
             "why_volunteer", "animal_experience", "skills", "availability",
             "emergency_contact_name", "emergency_contact_phone", "emergency_contact_relationship",
             "t_shirt_size", "is_over_18", "agrees_to_background_check",
+            "is_community_service",
+            "cs_offense_category",
+            "cs_offense_description",
+            "cs_hours_required",
+            "cs_organization",
         ]
         widgets = {
             "date_of_birth": forms.DateInput(attrs={"type": "date"}),
@@ -35,10 +41,17 @@ class ApplicationForm(forms.ModelForm):
             "skills": forms.Textarea(attrs={"rows": 3}),
             "is_over_18": forms.CheckboxInput(),
             "agrees_to_background_check": forms.CheckboxInput(),
+            "cs_offense_description": forms.Textarea(attrs={"rows": 3}),
+            "is_community_service": forms.CheckboxInput(attrs={"id": "id_is_community_service"}),
         }
         labels = {
             "is_over_18": "I confirm I am 18 years of age or older",
             "agrees_to_background_check": "I agree to a background check as part of the volunteer process",
+            "is_community_service": "This is a court-ordered community service placement",
+            "cs_offense_category": "Offense category",
+            "cs_offense_description": "Additional details (optional)",
+            "cs_hours_required": "Total hours required by court",
+            "cs_organization": "Referring court or organization",
         }
 
     def clean_is_over_18(self):
@@ -52,6 +65,15 @@ class ApplicationForm(forms.ModelForm):
         if not value:
             raise forms.ValidationError("You must agree to a background check to proceed.")
         return value
+
+    def clean(self):
+        cleaned = super().clean()
+        if cleaned.get("is_community_service"):
+            if not cleaned.get("cs_offense_category"):
+                self.add_error("cs_offense_category", "Please select an offense category.")
+            if not cleaned.get("cs_organization"):
+                self.add_error("cs_organization", "Please enter the referring court or organization.")
+        return cleaned
 
 
 # ---------------------------------------------------------------------------
@@ -243,3 +265,21 @@ class VolunteerImportForm(forms.Form):
         if f.size > 2 * 1024 * 1024:
             raise forms.ValidationError("File must be under 2 MB.")
         return f
+
+
+# ---------------------------------------------------------------------------
+# Orientation date form (manager)
+# ---------------------------------------------------------------------------
+
+class VolunteerOrientationForm(forms.ModelForm):
+    class Meta:
+        model = Volunteer
+        fields = ["orientation_date", "orientation_completed", "volunteer_type"]
+        widgets = {
+            "orientation_date": forms.DateInput(attrs={"type": "date"}),
+        }
+        labels = {
+            "orientation_date": "Orientation date",
+            "orientation_completed": "Orientation completed",
+            "volunteer_type": "Volunteer type",
+        }

@@ -19,6 +19,21 @@ ACTIVITY_CHOICES = [
     ("other", "Other"),
 ]
 
+CS_OFFENSE_CHOICES = [
+    ("traffic", "Traffic / OVI"),
+    ("drug", "Drug / Substance"),
+    ("theft", "Theft / Shoplifting / Robbery"),
+    ("assault", "Assault / Disorderly Conduct"),
+    ("animal_cruelty", "Animal Cruelty / Abuse"),
+    ("property", "Property / Vandalism"),
+    ("minor", "Minor in Possession"),
+    ("domestic", "Domestic / Family"),
+    ("financial", "Financial / Fraud"),
+    ("other", "Other"),
+]
+
+DISQUALIFYING_OFFENSES = {"theft", "animal_cruelty"}
+
 SHIRT_SIZES = [("XS", "XS"), ("S", "S"), ("M", "M"), ("L", "L"), ("XL", "XL"), ("XXL", "XXL")]
 
 AVAILABILITY_OPTIONS = [
@@ -108,6 +123,13 @@ class VolunteerApplication(models.Model):
     is_over_18 = models.BooleanField(default=False)
     agrees_to_background_check = models.BooleanField(default=False)
 
+    # Community service fields
+    is_community_service = models.BooleanField(default=False)
+    cs_offense_category = models.CharField(max_length=50, choices=CS_OFFENSE_CHOICES, blank=True)
+    cs_offense_description = models.TextField(blank=True, help_text="Additional detail about the offense or placement")
+    cs_hours_required = models.PositiveIntegerField(null=True, blank=True, help_text="Total community service hours required by the court")
+    cs_organization = models.CharField(max_length=200, blank=True, help_text="Referring court or organization name")
+
     # Status
     status = models.CharField(max_length=20, choices=APPLICATION_STATUS, default="pending")
     submitted_at = models.DateTimeField(auto_now_add=True)
@@ -136,6 +158,10 @@ class VolunteerApplication(models.Model):
     def availability_display(self):
         mapping = dict(AVAILABILITY_OPTIONS)
         return [mapping[k] for k in self.availability if k in mapping]
+
+    @property
+    def is_disqualified_cs(self):
+        return self.cs_offense_category in DISQUALIFYING_OFFENSES
 
 
 # ---------------------------------------------------------------------------
@@ -169,6 +195,13 @@ class Volunteer(models.Model):
     is_active = models.BooleanField(default=True)
     notes = models.TextField(blank=True, help_text="Internal manager notes — not visible to the volunteer.")
     created_at = models.DateTimeField(auto_now_add=True)
+    volunteer_type = models.CharField(
+        max_length=20,
+        choices=[("regular", "Regular"), ("cs", "Community Service")],
+        default="regular",
+    )
+    orientation_date = models.DateField(null=True, blank=True)
+    orientation_completed = models.BooleanField(default=False)
 
     class Meta:
         ordering = ["user__last_name", "user__first_name"]
