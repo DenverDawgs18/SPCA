@@ -130,6 +130,33 @@
              class="btn btn-outline btn-sm btn-block">View Application</a>
         </div>
         {% endif %}
+
+        <div class="portal-section">
+          <h3>Orientation</h3>
+          <form method="post" action="{% url 'volunteers:mgr_volunteer_orientation' volunteer.pk %}">
+            {% csrf_token %}
+            <div class="form-group" style="margin-bottom:8px;">
+              <label style="font-size:0.82rem;font-weight:600;">Type</label>
+              <select name="volunteer_type" class="form-control" style="font-size:0.85rem;">
+                <option value="regular" {% if volunteer.volunteer_type == "regular" %}selected{% endif %}>Regular</option>
+                <option value="cs" {% if volunteer.volunteer_type == "cs" %}selected{% endif %}>Community Service</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom:8px;">
+              <label style="font-size:0.82rem;font-weight:600;">Orientation Date</label>
+              <input type="date" name="orientation_date" class="form-control" style="font-size:0.85rem;"
+                     value="{{ volunteer.orientation_date|date:'Y-m-d'|default:'' }}" />
+            </div>
+            <div class="form-group" style="margin-bottom:12px;">
+              <label class="checkbox-label" style="font-size:0.85rem;">
+                <input type="checkbox" name="orientation_completed" value="1"
+                       {% if volunteer.orientation_completed %}checked{% endif %} />
+                <span>Orientation completed</span>
+              </label>
+            </div>
+            <button type="submit" class="btn btn-outline btn-sm btn-block">Save Orientation</button>
+          </form>
+        </div>
       </div>
     </div>
   </main>

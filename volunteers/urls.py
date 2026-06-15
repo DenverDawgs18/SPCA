@@ -35,6 +35,7 @@ urlpatterns = [
     path("manager/volunteers/import/", views.mgr_import_volunteers, name="mgr_import_volunteers"),
     path("manager/volunteers/<int:vol_id>/", views.mgr_volunteer_detail, name="mgr_volunteer_detail"),
     path("manager/volunteers/<int:vol_id>/toggle-active/", views.mgr_toggle_active, name="mgr_toggle_active"),
+    path("manager/volunteers/<int:vol_id>/orientation/", views.mgr_volunteer_orientation, name="mgr_volunteer_orientation"),
     path("manager/shifts/", views.mgr_shifts, name="mgr_shifts"),
     path("manager/shifts/create/", views.mgr_shift_create, name="mgr_shift_create"),
     path("manager/shifts/<int:shift_id>/", views.mgr_shift_detail, name="mgr_shift_detail"),

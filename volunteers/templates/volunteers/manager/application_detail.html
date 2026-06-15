@@ -81,6 +81,29 @@
           <p>&#10003; Agreed to background check: <strong>{% if application.agrees_to_background_check %}Yes{% else %}No{% endif %}</strong></p>
         </div>
 
+        {% if application.is_community_service %}
+        <div class="portal-section">
+          <h2>Community Service Placement</h2>
+          {% if application.is_disqualified_cs %}
+          <div class="alert alert-error" style="margin-bottom:1rem;">
+            <strong>Disqualifying offense:</strong> This applicant has indicated an offense in a category ({{ application.get_cs_offense_category_display }}) that is not eligible for SPCA community service placement.
+          </div>
+          {% endif %}
+          <dl class="profile-dl">
+            <dt>Offense Category</dt>
+            <dd>
+              {{ application.get_cs_offense_category_display|default:"—" }}
+              {% if application.is_disqualified_cs %}<span class="status-pill denied" style="font-size:0.75rem;margin-left:6px;">DISQUALIFYING</span>{% endif %}
+            </dd>
+            <dt>Hours Required</dt><dd>{{ application.cs_hours_required|default:"—" }}</dd>
+            <dt>Referring Organization</dt><dd>{{ application.cs_organization|default:"—" }}</dd>
+            {% if application.cs_offense_description %}
+            <dt>Additional Details</dt><dd>{{ application.cs_offense_description }}</dd>
+            {% endif %}
+          </dl>
+        </div>
+        {% endif %}
+
         {% if application.denial_reason %}
         <div class="portal-section">
           <h2>Denial Reason</h2>

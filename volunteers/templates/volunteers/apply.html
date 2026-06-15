@@ -176,6 +176,43 @@
         </div>
       </div>
 
+      <!-- Section: Community Service -->
+      <div class="form-section">
+        <h2 class="form-section-title">Community Service</h2>
+        <div class="form-group">
+          <label class="checkbox-label checkbox-label-lg">
+            {{ form.is_community_service }}
+            <span>{{ form.is_community_service.label }}</span>
+          </label>
+        </div>
+        <div id="cs-fields" style="display:none;">
+          <div class="apply-notice apply-notice--warning" style="margin-bottom:1rem;">
+            <strong>Note:</strong> Community service applicants convicted of theft or animal cruelty/abuse are not eligible to volunteer at the SPCA.
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="{{ form.cs_offense_category.id_for_label }}">Offense Category <span class="required">*</span></label>
+              {{ form.cs_offense_category }}
+              {% if form.cs_offense_category.errors %}<div class="field-error">{{ form.cs_offense_category.errors.0 }}</div>{% endif %}
+            </div>
+            <div class="form-group">
+              <label for="{{ form.cs_hours_required.id_for_label }}">Hours Required by Court</label>
+              {{ form.cs_hours_required }}
+              {% if form.cs_hours_required.errors %}<div class="field-error">{{ form.cs_hours_required.errors.0 }}</div>{% endif %}
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="{{ form.cs_organization.id_for_label }}">Referring Court or Organization <span class="required">*</span></label>
+            {{ form.cs_organization }}
+            {% if form.cs_organization.errors %}<div class="field-error">{{ form.cs_organization.errors.0 }}</div>{% endif %}
+          </div>
+          <div class="form-group">
+            <label for="{{ form.cs_offense_description.id_for_label }}">Additional Details <small style="font-weight:400;">(optional)</small></label>
+            {{ form.cs_offense_description }}
+          </div>
+        </div>
+      </div>
+
       <div class="form-submit">
         <button type="submit" class="btn btn-primary btn-lg">Submit Application</button>
         <p class="form-submit-note">We'll send a confirmation email right away. You'll hear back about approval within a few business days.</p>
@@ -183,4 +220,15 @@
     </form>
   </div>
 </section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+  var cb = document.getElementById('id_is_community_service');
+  var fields = document.getElementById('cs-fields');
+  function toggle() { fields.style.display = cb.checked ? '' : 'none'; }
+  if (cb) { cb.addEventListener('change', toggle); toggle(); }
+})();
+</script>
 {% endblock %}
