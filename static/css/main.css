@@ -1062,3 +1062,115 @@ h1, h2, h3, h4 {
   .animal-card-img-placeholder { animation: none; }
   .btn-primary::after, .btn-navy::after, .btn-green::after { display: none; }
 }
+
+/* ── News Grid ─────────────────────────────────────────────────── */
+.news-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+.news-card {
+  background: var(--card-bg, #fff);
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.news-card-img {
+  height: 180px;
+  background-size: cover;
+  background-position: center;
+  background-color: var(--bg-alt, #f1f5f9);
+}
+.news-card-img--placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  background: var(--bg-alt, #f1f5f9);
+}
+.news-card-body {
+  padding: 1.25rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.news-card-body h3 { font-size: 1.05rem; margin: 0; }
+.news-card-body p { color: var(--text-muted, #64748b); font-size: 0.9rem; flex: 1; }
+.news-card-date { font-size: 0.78rem; color: var(--text-muted, #64748b); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+
+/* ── Process Steps ──────────────────────────────────────────────── */
+.process-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+  margin-top: 1.5rem;
+}
+.process-step { text-align: center; }
+.step-num {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--primary, #1a2744);
+  color: #fff;
+  font-size: 1.3rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+}
+.process-step h3 { font-size: 1.05rem; margin-bottom: 8px; }
+.process-step p { font-size: 0.9rem; color: var(--text-muted, #64748b); }
+
+/* ── Integration placeholder ──────────────────────────────────────────── */
+.integration-placeholder {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: var(--bg-alt, #f8fafc);
+  border-radius: 12px;
+  border: 2px dashed var(--border, #e2e8f0);
+}
+.integration-placeholder-icon { font-size: 3rem; margin-bottom: 1rem; }
+.integration-placeholder h3 { margin-bottom: 8px; }
+.integration-placeholder p { color: var(--text-muted, #64748b); max-width: 480px; margin: 0 auto; }
+
+/* ── Loading spinner ───────────────────────────────────────────────────── */
+.loading-spinner {
+  width: 40px; height: 40px;
+  border: 3px solid var(--border, #e2e8f0);
+  border-top-color: var(--primary, #1a2744);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Zeffy embed ────────────────────────────────────────────────────────── */
+.zeffy-embed-wrap { min-height: 300px; }
+
+/* ── Filter tabs (website) ────────────────────────────────────────────────── */
+.filter-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.filter-tab {
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-muted, #64748b);
+  border: 1px solid var(--border, #e2e8f0);
+  text-decoration: none;
+  transition: all 0.15s;
+  background: transparent;
+}
+.filter-tab:hover, .filter-tab.active {
+  background: var(--primary, #1a2744);
+  color: #fff;
+  border-color: var(--primary, #1a2744);
+}
