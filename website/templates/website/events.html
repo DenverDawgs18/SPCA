@@ -1,0 +1,103 @@
+{% extends "website/base.html" %}
+{% load static %}
+
+{% block title %}News &amp; Events — Medina County SPCA{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="/">Home</a><span>›</span> News &amp; Events</div>
+    <h1>News &amp; Events</h1>
+    <p>Stay up to date with what's happening at the Medina County SPCA — events, news, and more.</p>
+  </div>
+</section>
+
+<!-- ===== UPCOMING EVENTS (Zeffy) ===== -->
+<section class="section" id="fundraisers">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">Get Involved</span>
+      <h2>Upcoming Events</h2>
+    </div>
+    {% if zeffy_org_id %}
+    <div class="zeffy-embed-wrap">
+      <!-- Zeffy event widget — loads all public events for this organization -->
+      <div id="zeffy-events"></div>
+      <script src="https://zeffy.com/js/embed.js" async></script>
+      <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          ZeffyEmbed.render({
+            type: "events",
+            orgId: "{{ zeffy_org_id }}",
+            containerId: "zeffy-events",
+            lang: "en",
+          });
+        });
+      </script>
+    </div>
+    {% else %}
+    <div class="integration-placeholder">
+      <div class="integration-placeholder-icon">🎉</div>
+      <h3>Events coming soon</h3>
+      <p>Our events calendar will appear here once it's connected. In the meantime, follow us on <a href="https://www.facebook.com/MedinaSPCA/" target="_blank" rel="noopener">Facebook</a> for updates on upcoming events.</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<!-- ===== NEWS ===== -->
+<section class="section section-alt" id="news">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">From the Shelter</span>
+      <h2>News &amp; Updates</h2>
+    </div>
+    {% if news %}
+    <div class="news-grid">
+      {% for post in news %}
+      <article class="news-card">
+        {% if post.image_url %}
+        <div class="news-card-img" style="background-image:url('{{ post.image_url }}')"></div>
+        {% else %}
+        <div class="news-card-img news-card-img--placeholder">🐾</div>
+        {% endif %}
+        <div class="news-card-body">
+          <span class="news-card-date">{{ post.published_at|date:"N j, Y"|default:"" }}</span>
+          <h3>{{ post.title }}</h3>
+          <p>{{ post.summary }}</p>
+          {% if post.body %}
+          <details style="margin-top:8px;">
+            <summary class="btn btn-outline btn-sm" style="display:inline-block;cursor:pointer;list-style:none;">Read More</summary>
+            <div style="margin-top:12px;line-height:1.7;">{{ post.body|safe }}</div>
+          </details>
+          {% endif %}
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <p>No news posts yet. Check back soon!</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<!-- ===== NEWSLETTER ===== -->
+<section class="section" id="newsletter">
+  <div class="container" style="text-align:center;max-width:560px;margin:0 auto;">
+    <span class="eyebrow">Stay Connected</span>
+    <h2>Newsletter Signup</h2>
+    <p style="color:var(--text-muted);margin-bottom:28px;">Get shelter updates, adoption spotlights, and event announcements delivered to your inbox — no spam, just animals.</p>
+    <!-- REAL INTEGRATION: Replace this with your actual newsletter signup form (Mailchimp, Constant Contact, etc.) -->
+    <form action="/contact/" method="get" class="newsletter-form">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">
+        <input type="email" name="newsletter_email" placeholder="your@email.com"
+               class="form-control" style="max-width:300px;" required />
+        <button type="submit" class="btn btn-primary">Subscribe</button>
+      </div>
+      <p style="font-size:0.8rem;color:var(--text-muted);margin-top:8px;">We respect your privacy. Unsubscribe any time.</p>
+    </form>
+  </div>
+</section>
+{% endblock %}

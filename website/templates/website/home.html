@@ -231,4 +231,65 @@
   </div>
 </section>
 
+<!-- ===== NEWS & EVENTS ===== -->
+<section class="section" id="news-events">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">Stay in the Loop</span>
+      <h2>News &amp; Events</h2>
+      <p>Updates from the shelter, upcoming fundraisers, and community events.</p>
+    </div>
+    <div class="news-grid">
+      {% if news %}
+        {% for post in news %}
+        <article class="news-card">
+          {% if post.image_url %}
+          <div class="news-card-img" style="background-image:url('{{ post.image_url }}')"></div>
+          {% else %}
+          <div class="news-card-img news-card-img--placeholder">🐾</div>
+          {% endif %}
+          <div class="news-card-body">
+            <span class="news-card-date">{{ post.published_at|date:"N j, Y"|default:"" }}</span>
+            <h3>{{ post.title }}</h3>
+            <p>{{ post.summary }}</p>
+            <a href="/events/#news" class="btn btn-outline btn-sm">Read More</a>
+          </div>
+        </article>
+        {% endfor %}
+      {% else %}
+      <article class="news-card">
+        <div class="news-card-img news-card-img--placeholder">📰</div>
+        <div class="news-card-body">
+          <span class="news-card-date">Coming soon</span>
+          <h3>News &amp; Updates</h3>
+          <p>Check back for news from the shelter, adoption success stories, and upcoming events.</p>
+          <a href="/events/" class="btn btn-outline btn-sm">View Events</a>
+        </div>
+      </article>
+      <article class="news-card">
+        <div class="news-card-img news-card-img--placeholder">🎉</div>
+        <div class="news-card-body">
+          <span class="news-card-date">Upcoming</span>
+          <h3>Events &amp; Fundraisers</h3>
+          <p>We host regular events to support the animals in our care. See what's coming up.</p>
+          <a href="/events/" class="btn btn-outline btn-sm">See Events</a>
+        </div>
+      </article>
+      <article class="news-card">
+        <div class="news-card-img news-card-img--placeholder">💌</div>
+        <div class="news-card-body">
+          <span class="news-card-date">Monthly</span>
+          <h3>Newsletter</h3>
+          <p>Sign up to get shelter updates, adoption spotlights, and event announcements delivered to your inbox.</p>
+          <a href="/events/#newsletter" class="btn btn-outline btn-sm">Subscribe</a>
+        </div>
+      </article>
+      {% endif %}
+    </div>
+    <div style="text-align:center;margin-top:32px;">
+      <a href="/events/" class="btn btn-navy">All News &amp; Events</a>
+    </div>
+  </div>
+</section>
+
 {% endblock %}

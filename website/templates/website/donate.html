@@ -24,14 +24,14 @@
           REAL LINK: Replace # with the organization's online donation processor URL.
           They may use PayPal, Stripe, Network for Good, Bloomerang, etc.
         -->
-        <a href="#" class="btn btn-navy">Donate Online</a>
+        <a href="#donate-form" class="btn btn-navy">Donate Online</a>
       </div>
       <div class="donate-card">
         <span class="donate-card-icon">🔁</span>
         <h3>Monthly Giving</h3>
         <p>A recurring gift helps us plan ahead for the animals in our care all year long. Even $10/month adds up.</p>
         <!-- REAL LINK: Link to recurring donation setup -->
-        <a href="#" class="btn btn-green">Become a Monthly Donor</a>
+        <a href="#donate-form" class="btn btn-green">Become a Monthly Donor</a>
       </div>
       <div class="donate-card">
         <span class="donate-card-icon">📦</span>
@@ -52,6 +52,47 @@
     </div>
   </div>
 </section>
+
+<!-- DonorPerfect donation form -->
+{% if dp_form_id %}
+<section class="section section-alt" id="donate-form">
+  <div class="container" style="max-width:800px;margin:0 auto;">
+    <div class="section-header">
+      <h2>Make a Donation</h2>
+    </div>
+    <iframe
+      src="https://www.donorperfect.com/give/{{ dp_form_id }}/"
+      width="100%" height="600" frameborder="0"
+      style="border-radius:8px;box-shadow:0 2px 12px rgba(0,0,0,0.08);"
+      title="Donation Form">
+    </iframe>
+  </div>
+</section>
+{% endif %}
+
+<!-- Zeffy fundraising events -->
+{% if zeffy_org_id %}
+<section class="section {% if not dp_form_id %}section-alt{% endif %}" id="fundraisers">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">Ways to Give</span>
+      <h2>Fundraise With Us</h2>
+    </div>
+    <div id="zeffy-fundraisers"></div>
+    <script src="https://zeffy.com/js/embed.js" async></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        ZeffyEmbed.render({
+          type: "fundraising",
+          orgId: "{{ zeffy_org_id }}",
+          containerId: "zeffy-fundraisers",
+          lang: "en",
+        });
+      });
+    </script>
+  </div>
+</section>
+{% endif %}
 
 <section class="section section-alt" id="wishlist">
   <div class="container">

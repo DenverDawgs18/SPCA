@@ -65,3 +65,21 @@ class ContactMessage(models.Model):
 
     def __str__(self):
         return f"{self.name} — {self.subject}"
+
+
+class NewsPost(models.Model):
+    title = models.CharField(max_length=200)
+    slug = models.SlugField(unique=True)
+    summary = models.TextField(help_text="Short preview shown on the homepage and listings.")
+    body = models.TextField(help_text="Full article body. HTML allowed.")
+    image_url = models.URLField(blank=True, help_text="Header image URL (optional).")
+    is_published = models.BooleanField(default=False)
+    published_at = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-published_at", "-created_at"]
+        verbose_name = "News Post"
+
+    def __str__(self):
+        return self.title

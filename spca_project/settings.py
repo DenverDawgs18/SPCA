@@ -100,7 +100,7 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# ── Email ──────────────────────────────────────────────────────────────────────
+# ── Email ──────────────────────────────────────────────────────────────────────────────
 EMAIL_BACKEND = os.environ.get(
     "EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend"
 )
@@ -113,7 +113,23 @@ DEFAULT_FROM_EMAIL = os.environ.get(
     "DEFAULT_FROM_EMAIL", "Medina County SPCA <noreply@medinacountyspca.com>"
 )
 
-# ── Auth redirects ─────────────────────────────────────────────────────────────
+# ── Auth redirects ─────────────────────────────────────────────────────────────────────────────
 LOGIN_URL = "/portal/login/"
 LOGIN_REDIRECT_URL = "/portal/dashboard/"
 LOGOUT_REDIRECT_URL = "/"
+
+# ── Third-party integrations ────────────────────────────────────────────────────────────────────────
+
+# ASM (Animal Shelter Manager) — sheltermanager.com
+ASM_ACCOUNT = os.environ.get("ASM_ACCOUNT", "tm2451")
+ASM_API_URL = "https://service.sheltermanager.com/asmservice"
+ASM_API_USERNAME = os.environ.get("ASM_API_USERNAME", "")
+ASM_API_PASSWORD = os.environ.get("ASM_API_PASSWORD", "")
+ASM_ADOPTION_FORM_ID = os.environ.get("ASM_ADOPTION_FORM_ID", "32")
+
+# Zeffy (free fundraising / event ticketing)
+ZEFFY_ORG_ID = os.environ.get("ZEFFY_ORG_ID", "")
+
+# DonorPerfect (online donations)
+DONOR_PERFECT_API_KEY = os.environ.get("DONOR_PERFECT_API_KEY", "")
+DONOR_PERFECT_FORM_ID = os.environ.get("DONOR_PERFECT_FORM_ID", "")

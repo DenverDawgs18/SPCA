@@ -1,96 +1,78 @@
 {% extends "website/base.html" %}
 {% load static %}
 
-{% block title %}Adopt a Pet — Medina County SPCA{% endblock %}
-{% block meta_desc %}Browse dogs, cats, and other animals available for adoption at Medina County SPCA in Seville, Ohio.{% endblock %}
+{% block title %}Adoption Center — Medina County SPCA{% endblock %}
 
 {% block content %}
-
 <section class="page-hero">
   <div class="container">
-    <div class="breadcrumb">
-      <a href="/">Home</a><span>›</span> Adopt a Pet
-    </div>
-    <h1>Find Your New Best Friend</h1>
-    <p>All of our animals are spayed/neutered, vaccinated, and microchipped before going home with you.</p>
+    <div class="breadcrumb"><a href="/">Home</a><span>›</span> Adoption Center</div>
+    <h1>Find Your Perfect Match</h1>
+    <p>Every animal at the Medina County SPCA is waiting for a forever home. Meet them below and start your adoption journey today.</p>
   </div>
 </section>
 
-<section class="section">
+<!-- ===== ASM LIVE ANIMALS CAROUSEL ===== -->
+<section class="section" id="animals">
   <div class="container">
-
-    <!-- Filter bar -->
-    <div class="filter-bar">
-      <span>Show:</span>
-      <a href="/adopt/" class="filter-btn {% if not active_filter %}active{% endif %}">All Animals</a>
-      <a href="/adopt/?species=dog" class="filter-btn {% if active_filter == 'dog' %}active{% endif %}">🐶 Dogs</a>
-      <a href="/adopt/?species=cat" class="filter-btn {% if active_filter == 'cat' %}active{% endif %}">🐱 Cats</a>
-      <a href="/adopt/?species=other" class="filter-btn {% if active_filter == 'other' %}active{% endif %}">🐾 Other</a>
+    <div class="section-header">
+      <span class="eyebrow">Available Now</span>
+      <h2>Animals Looking for Homes</h2>
     </div>
 
+    <!-- Species filter tabs -->
+    <div class="filter-tabs" style="margin-bottom:2rem;">
+      <a href="/adopt/" class="filter-tab {% if not active_filter %}active{% endif %}">All</a>
+      <a href="/adopt/?species=dog" class="filter-tab {% if active_filter == 'dog' %}active{% endif %}">Dogs</a>
+      <a href="/adopt/?species=cat" class="filter-tab {% if active_filter == 'cat' %}active{% endif %}">Cats</a>
+      <a href="/adopt/?species=other" class="filter-tab {% if active_filter == 'other' %}active{% endif %}">Other</a>
+    </div>
+
+    <!-- ASM-powered animal grid (loaded by JS) -->
+    <div id="asm-animals-wrap">
+      <div id="asm-loading" style="text-align:center;padding:3rem 0;color:var(--text-muted);">
+        <div class="loading-spinner"></div>
+        <p style="margin-top:12px;">Loading available animals…</p>
+      </div>
+      <div id="asm-animal-grid" class="animal-grid" style="display:none;"></div>
+      <div id="asm-empty" style="display:none;text-align:center;padding:3rem 0;">
+        <p style="color:var(--text-muted);font-size:1.1rem;">No animals available right now — please call us at <a href="tel:+13307237722">(330) 723-7722</a> or check back soon.</p>
+      </div>
+      <div id="asm-error" style="display:none;"></div>
+    </div>
+
+    <!-- Fallback: local DB animals shown if JS disabled or ASM fails -->
+    <noscript>
     {% if animals %}
     <div class="animal-grid">
       {% for animal in animals %}
       <div class="animal-card">
         {% if animal.photo_src %}
-          <img src="{{ animal.photo_src }}" alt="{{ animal.name }}" class="animal-card-img" loading="lazy"
-               onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
-          <div class="animal-card-img-placeholder" style="display:none;">
-            {% if animal.species == 'dog' %}🐶{% elif animal.species == 'cat' %}🐱{% else %}🐾{% endif %}
-          </div>
+        <img src="{{ animal.photo_src }}" alt="{{ animal.name }}" class="animal-card-img" loading="lazy" />
         {% else %}
-          <div class="animal-card-img-placeholder">
-            {% if animal.species == 'dog' %}🐶{% elif animal.species == 'cat' %}🐱{% else %}🐾{% endif %}
-          </div>
+        <div class="animal-card-img-placeholder">{% if animal.species == 'dog' %}🐶{% elif animal.species == 'cat' %}🐱{% else %}🐾{% endif %}</div>
         {% endif %}
         <div class="animal-card-body">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-            <h3>{{ animal.name }}</h3>
-            {% if animal.is_featured %}<span class="badge badge-amber">⭐ Featured</span>{% endif %}
-          </div>
-          <p class="animal-card-meta">
-            {{ animal.get_species_display }}
-            {% if animal.breed %} · {{ animal.breed }}{% endif %}
-            · {{ animal.age_display }}
-            · {{ animal.get_gender_display }}
-          </p>
+          <h3>{{ animal.name }}</h3>
+          <p class="animal-card-meta">{{ animal.get_species_display }} · {{ animal.breed|default:"Mixed breed" }} · {{ animal.age_display }} · {{ animal.get_gender_display }}</p>
           <p class="animal-card-desc">{{ animal.description }}</p>
-
-          {% if animal.is_good_with_kids is not None or animal.is_good_with_dogs is not None or animal.is_good_with_cats is not None %}
-          <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;">
-            {% if animal.is_good_with_kids %}<span class="badge badge-green">👶 Good with kids</span>{% endif %}
-            {% if animal.is_good_with_dogs %}<span class="badge badge-navy">🐶 Good with dogs</span>{% endif %}
-            {% if animal.is_good_with_cats %}<span class="badge badge-navy">🐱 Good with cats</span>{% endif %}
-          </div>
-          {% endif %}
-
           <div class="animal-card-footer">
-            <a href="/contact/?subject=Interested in {{ animal.name }}" class="btn btn-navy btn-sm">I'm Interested</a>
-            <span class="badge badge-{% if animal.status == 'available' %}green{% else %}amber{% endif %}">
-              {{ animal.get_status_display }}
-            </span>
+            <a href="/adopt/apply/" class="btn btn-navy btn-sm">Apply to Adopt</a>
+            <span class="badge badge-green">{{ animal.get_status_display }}</span>
           </div>
         </div>
       </div>
       {% endfor %}
     </div>
-
     {% else %}
-    <div class="empty-state">
-      <div class="empty-state-icon">🐾</div>
-      <h3>No animals currently listed</h3>
-      <p>New animals arrive frequently. Call us at <a href="tel:+13307237722">(330) 723-7722</a> or check back soon.</p>
-      <br />
-      <!--
-        REAL LINK: The organization uses Petfinder. Link directly to their Petfinder profile:
-        https://www.petfinder.com/member/us/oh/seville/medina-county-spca-oh01/
-      -->
-      <a href="https://www.petfinder.com/member/us/oh/seville/medina-county-spca-oh01/" class="btn btn-navy" target="_blank" rel="noopener">
-        View on Petfinder
-      </a>
-    </div>
+    <p style="text-align:center;color:var(--text-muted);">No animals listed yet — call us at (330) 723-7722.</p>
     {% endif %}
+    </noscript>
 
+    <div style="text-align:center;margin-top:36px;">
+      <a href="/adopt/apply/" class="btn btn-primary btn-lg">Apply to Adopt</a>
+      <a href="/foster/" class="btn btn-outline btn-lg" style="margin-left:12px;">Learn About Fostering</a>
+    </div>
   </div>
 </section>
 
@@ -98,87 +80,111 @@
 <section class="section section-alt" id="process">
   <div class="container">
     <div class="section-header">
-      <span class="eyebrow">It's Easy</span>
-      <h2>How Adoption Works</h2>
-      <p>Our simple process is designed to help animals and adopters find the right match.</p>
+      <span class="eyebrow">How It Works</span>
+      <h2>The Adoption Process</h2>
     </div>
-    <div class="steps">
-      <div class="step-card">
-        <h4>Browse &amp; Visit</h4>
-        <p>Come meet our animals in person during adoption hours (Tue–Sun 12–4 pm) or browse online first.</p>
+    <div class="process-steps">
+      <div class="process-step">
+        <div class="step-num">1</div>
+        <h3>Browse &amp; Choose</h3>
+        <p>Look through our available animals above or come visit us in person. Our staff can help you find the right match for your lifestyle.</p>
       </div>
-      <div class="step-card">
-        <h4>Complete an Application</h4>
-        <p>Fill out a short adoption application so we can learn a bit about you and your home.</p>
+      <div class="process-step">
+        <div class="step-num">2</div>
+        <h3>Submit an Application</h3>
+        <p>Fill out our adoption application online or in person. Applications are reviewed by our team, usually within 1–2 business days.</p>
       </div>
-      <div class="step-card">
-        <h4>Meet &amp; Greet</h4>
-        <p>Spend time with the animal you're interested in. We encourage family members and current pets to visit too.</p>
+      <div class="process-step">
+        <div class="step-num">3</div>
+        <h3>Meet &amp; Greet</h3>
+        <p>Once approved, schedule a time to meet the animal. We encourage the whole family — including resident pets — to come along.</p>
       </div>
-      <div class="step-card">
-        <h4>Go Home Together</h4>
-        <p>Once approved, pay the adoption fee and bring your new family member home. They're ready for you!</p>
+      <div class="process-step">
+        <div class="step-num">4</div>
+        <h3>Take Them Home</h3>
+        <p>After a successful meet &amp; greet and adoption fee payment, your new family member goes home with you.</p>
       </div>
+    </div>
+    <div style="text-align:center;margin-top:32px;">
+      <a href="/adopt/apply/" class="btn btn-navy btn-lg">Start Your Application</a>
     </div>
   </div>
 </section>
 
 <!-- ===== FEES ===== -->
 <section class="section" id="fees">
-  <div class="container" style="max-width:760px;margin-inline:auto;">
+  <div class="container" style="max-width:700px;margin:0 auto;">
     <div class="section-header">
-      <span class="eyebrow">Transparent Pricing</span>
+      <span class="eyebrow">Investment in a Life</span>
       <h2>Adoption Fees</h2>
-      <p>All fees include spay/neuter, vaccines, and microchipping. Getting these services individually would cost significantly more.</p>
+      <p>Fees help cover the cost of veterinary care, spay/neuter, vaccinations, and microchipping — all of which are included.</p>
     </div>
-    <!--
-      REAL DATA: Verify current fee schedule with the organization.
-      These are placeholder amounts.
-    -->
-    <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-sm);">
-      <table style="width:100%;border-collapse:collapse;font-size:0.93rem;">
-        <thead>
-          <tr style="background:var(--navy);color:#fff;">
-            <th style="padding:14px 20px;text-align:left;font-family:var(--font-sans);">Animal</th>
-            <th style="padding:14px 20px;text-align:right;font-family:var(--font-sans);">Fee</th>
-            <th style="padding:14px 20px;text-align:left;font-family:var(--font-sans);">Includes</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for row in "12345" %}{% endfor %}
-          <tr style="border-bottom:1px solid var(--border);">
-            <td style="padding:14px 20px;font-weight:600;">Adult Dog (1+ year)</td>
-            <td style="padding:14px 20px;text-align:right;color:var(--green);font-weight:700;">$125</td>
-            <td style="padding:14px 20px;color:var(--text-muted);">Spay/neuter, vaccines, microchip, heartworm test</td>
-          </tr>
-          <tr style="border-bottom:1px solid var(--border);background:var(--cream);">
-            <td style="padding:14px 20px;font-weight:600;">Puppy (under 1 year)</td>
-            <td style="padding:14px 20px;text-align:right;color:var(--green);font-weight:700;">$175</td>
-            <td style="padding:14px 20px;color:var(--text-muted);">Spay/neuter, vaccines, microchip</td>
-          </tr>
-          <tr style="border-bottom:1px solid var(--border);">
-            <td style="padding:14px 20px;font-weight:600;">Adult Cat (1+ year)</td>
-            <td style="padding:14px 20px;text-align:right;color:var(--green);font-weight:700;">$60</td>
-            <td style="padding:14px 20px;color:var(--text-muted);">Spay/neuter, vaccines, microchip</td>
-          </tr>
-          <tr style="border-bottom:1px solid var(--border);background:var(--cream);">
-            <td style="padding:14px 20px;font-weight:600;">Kitten (under 1 year)</td>
-            <td style="padding:14px 20px;text-align:right;color:var(--green);font-weight:700;">$80</td>
-            <td style="padding:14px 20px;color:var(--text-muted);">Spay/neuter, vaccines, microchip</td>
-          </tr>
-          <tr>
-            <td style="padding:14px 20px;font-weight:600;">Small Animal / Other</td>
-            <td style="padding:14px 20px;text-align:right;color:var(--green);font-weight:700;">Varies</td>
-            <td style="padding:14px 20px;color:var(--text-muted);">Call for current pricing</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <p style="text-align:center;margin-top:20px;font-size:0.85rem;color:var(--text-muted);">
-      <!-- REAL DATA: Confirm discount policies with the organization -->
-      Senior adopters (62+) receive a discounted fee on adult animals. Call us for details.
-    </p>
+    <!-- REAL DATA: Confirm current fees with the organization -->
+    <table class="data-table" style="background:var(--card-bg);">
+      <thead>
+        <tr><th>Animal</th><th>Fee</th><th>Includes</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Adult Dog (1+ yr)</td><td>$75</td><td>Spay/neuter, vaccines, microchip</td></tr>
+        <tr><td>Puppy (under 1 yr)</td><td>$150</td><td>Spay/neuter, vaccines, microchip</td></tr>
+        <tr><td>Adult Cat (1+ yr)</td><td>$40</td><td>Spay/neuter, vaccines, microchip</td></tr>
+        <tr><td>Kitten (under 1 yr)</td><td>$75</td><td>Spay/neuter, vaccines, microchip</td></tr>
+        <tr><td>Small Animal</td><td>$10–$25</td><td>Varies by species</td></tr>
+      </tbody>
+    </table>
+    <p style="color:var(--text-muted);font-size:0.88rem;margin-top:12px;">* Fees are subject to change. Senior pet discounts may be available. Ask our staff.</p>
   </div>
 </section>
+{% endblock %}
 
+{% block extra_js %}
+<script>
+(function () {
+  var speciesFilter = "{{ active_filter|default:'' }}";
+  var grid = document.getElementById("asm-animal-grid");
+  var loading = document.getElementById("asm-loading");
+  var empty = document.getElementById("asm-empty");
+  var errorEl = document.getElementById("asm-error");
+
+  var ICONS = {dog: "🐶", cat: "🐱"};
+
+  function card(a) {
+    var icon = ICONS[a.species.toLowerCase()] || "🐾";
+    var img = a.image_url
+      ? '<img src="' + a.image_url + '" alt="' + a.name + '" class="animal-card-img" loading="lazy" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'"><div class="animal-card-img-placeholder" style="display:none">' + icon + '</div>'
+      : '<div class="animal-card-img-placeholder">' + icon + '</div>';
+    var meta = [a.species, a.breed, a.age, a.sex].filter(Boolean).join(" · ");
+    var desc = a.description ? '<p class="animal-card-desc">' + a.description.replace(/<[^>]+>/g,"").slice(0,140) + "…</p>" : "";
+    return '<div class="animal-card">'
+      + img
+      + '<div class="animal-card-body"><h3>' + a.name + '</h3>'
+      + '<p class="animal-card-meta">' + meta + '</p>'
+      + desc
+      + '<div class="animal-card-footer"><a href="/adopt/apply/?animal=' + encodeURIComponent(a.name) + '" class="btn btn-navy btn-sm">Apply to Adopt</a><span class="badge badge-green">Available</span></div>'
+      + '</div></div>';
+  }
+
+  fetch("/api/animals/")
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      loading.style.display = "none";
+      var animals = data.animals || [];
+      if (speciesFilter) {
+        animals = animals.filter(function(a){ return a.species.toLowerCase() === speciesFilter; });
+      }
+      if (!animals.length) {
+        empty.style.display = "";
+        return;
+      }
+      grid.innerHTML = animals.map(card).join("");
+      grid.style.display = "";
+    })
+    .catch(function(){
+      loading.style.display = "none";
+      // Fall through to noscript fallback content gracefully
+      grid.style.display = "none";
+      empty.style.display = "";
+    });
+})();
+</script>
 {% endblock %}

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Animal, ContactMessage
+from .models import Animal, ContactMessage, NewsPost
 
 
 @admin.register(Animal)
@@ -18,3 +18,11 @@ class ContactMessageAdmin(admin.ModelAdmin):
     search_fields = ["name", "email", "subject"]
     list_editable = ["is_read"]
     readonly_fields = ["created_at"]
+
+
+@admin.register(NewsPost)
+class NewsPostAdmin(admin.ModelAdmin):
+    list_display = ["title", "is_published", "published_at"]
+    list_filter = ["is_published"]
+    search_fields = ["title", "summary"]
+    prepopulated_fields = {"slug": ("title",)}
