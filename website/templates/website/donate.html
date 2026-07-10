@@ -20,27 +20,18 @@
         <span class="donate-card-icon">💳</span>
         <h3>One-Time Donation</h3>
         <p>Give any amount and make an immediate impact. Online donations are processed securely.</p>
-        <!--
-          REAL LINK: Replace # with the organization's online donation processor URL.
-          They may use PayPal, Stripe, Network for Good, Bloomerang, etc.
-        -->
         <a href="#donate-form" class="btn btn-navy">Donate Online</a>
       </div>
       <div class="donate-card">
         <span class="donate-card-icon">🔁</span>
         <h3>Monthly Giving</h3>
         <p>A recurring gift helps us plan ahead for the animals in our care all year long. Even $10/month adds up.</p>
-        <!-- REAL LINK: Link to recurring donation setup -->
         <a href="#donate-form" class="btn btn-green">Become a Monthly Donor</a>
       </div>
       <div class="donate-card">
         <span class="donate-card-icon">📦</span>
         <h3>Amazon Wishlist</h3>
         <p>Send supplies directly to us from our Amazon Wishlist: food, cleaning supplies, toys, and more.</p>
-        <!--
-          REAL LINK: Replace # with the organization's Amazon Wishlist URL.
-          Find it on their website or ask the organization for the link.
-        -->
         <a href="#" class="btn btn-outline">View Wishlist</a>
       </div>
       <div class="donate-card">
@@ -113,10 +104,6 @@
         <a href="/contact/" class="btn btn-navy">Ask About Drop-Offs</a>
       </div>
       <div>
-        <!--
-          REAL IMAGE: Photo of donations or supply drop-off.
-          Path: {% static 'images/donations.jpg' %}
-        -->
         <img src="{% static 'images/donations.jpg' %}"
           onerror="this.src='https://placehold.co/640x420/1B3958/FFFFFF?text=Drop+in+static/images/donations.jpg'" alt="Donation drop-off" />
       </div>
@@ -124,24 +111,17 @@
   </div>
 </section>
 
-<!-- ===== MEMORIAL PAVERS ===== -->
 <section class="section" id="pavers">
   <div class="container">
     <div class="info-block">
       <div>
-        <!--
-          REAL IMAGE: A photo of the memorial paver pathway at the facility.
-          Path: {% static 'images/pavers.jpg' %}
-        -->
         <img src="{% static 'images/pavers.jpg' %}"
           onerror="this.src='https://placehold.co/640x420/2D6A4F/FFFFFF?text=Drop+in+static/images/pavers.jpg'" alt="Memorial pavers at Medina County SPCA" />
       </div>
       <div class="info-text">
         <span class="eyebrow" style="color:var(--amber);">Leave a Lasting Mark</span>
         <h2>Memorial Pavers</h2>
-        <p>
-          Honor a friend, family member, or beloved pet with a personalized engraved brick paver placed permanently on the grounds of our 13-acre property in Seville. Pavers are a meaningful gift that lives on long after you're gone.
-        </p>
+        <p>Honor a friend, family member, or beloved pet with a personalized engraved brick paver placed permanently on the grounds of our 13-acre property in Seville.</p>
         <p>Great for memorials, tributes, or simply showing your love for the animals we care for.</p>
         <h4 style="margin:18px 0 8px;font-size:1rem;">How to order</h4>
         <ol style="margin:0 0 20px 20px;color:var(--text-muted);line-height:1.8;">
@@ -150,11 +130,6 @@
           <li>If you'd like us to notify someone of your order, include their name and contact info.</li>
         </ol>
         <div style="display:flex;gap:12px;flex-wrap:wrap;">
-          <!--
-            REAL LINK: Replace # with the actual paver order form PDF download link.
-            The form is referenced on the "More Ways to Give" page of the current site.
-            Contact the org at info@medinacountyspca.com to obtain it.
-          -->
           <a href="#" class="btn btn-navy">Download Order Form</a>
           <a href="/contact/?subject=Memorial+Paver+Order" class="btn btn-outline">Contact Us About Pavers</a>
         </div>
@@ -172,10 +147,6 @@
       <h2>Fundraising Events</h2>
       <p>Our fundraising events are a great way to support the SPCA while having fun with fellow animal lovers.</p>
     </div>
-    <!--
-      REAL DATA: Replace placeholder events with actual upcoming events.
-      Consider connecting this to a Django Event model for easy management.
-    -->
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;max-width:900px;margin-inline:auto;">
       <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:var(--radius-lg);padding:24px;">
         <p style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--amber);margin-bottom:6px;">Upcoming</p>
