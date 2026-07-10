@@ -100,7 +100,7 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# ── Email ──────────────────────────────────────────────────────────────────────────────
+# ── Email ────────────────────────────────────────────────────────────────────────────────
 EMAIL_BACKEND = os.environ.get(
     "EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend"
 )
@@ -118,7 +118,7 @@ LOGIN_URL = "/portal/login/"
 LOGIN_REDIRECT_URL = "/portal/dashboard/"
 LOGOUT_REDIRECT_URL = "/"
 
-# ── Third-party integrations ────────────────────────────────────────────────────────────────────────
+# ── Third-party integrations ───────────────────────────────────────────────────────────────────────────
 
 # ASM (Animal Shelter Manager) — sheltermanager.com
 ASM_ACCOUNT = os.environ.get("ASM_ACCOUNT", "tm2451")
