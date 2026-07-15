@@ -28,7 +28,46 @@
       <a href="/adopt/?species=other" class="filter-tab {% if active_filter == 'other' %}active{% endif %}">Other</a>
     </div>
 
-    <!-- ASM-powered animal grid (loaded by JS) -->
+    {% if not asm_configured %}
+    <!-- ===== SAMPLE DATA — shown until ASM is connected ===== -->
+    <div class="sample-notice" style="background:var(--amber-light,#fffbeb);border:2px solid var(--amber,#f59e0b);border-radius:var(--radius);padding:14px 20px;margin-bottom:1.5rem;display:flex;align-items:center;gap:12px;">
+      <span style="font-size:1.4rem;">🔔</span>
+      <div>
+        <strong style="color:#92400e;">Sample animals — for demonstration only.</strong>
+        <span style="color:#78350f;font-size:0.9rem;"> These listings are placeholders to show how the page will look. Live adoptable animals will appear here once the shelter management system is connected.</span>
+      </div>
+    </div>
+    {% if animals %}
+    <div class="animal-grid">
+      {% for animal in animals %}
+      <div class="animal-card" style="opacity:0.92;">
+        {% if animal.photo_url %}
+        <img src="{{ animal.photo_url }}" alt="{{ animal.name }}" class="animal-card-img" loading="lazy"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="animal-card-img-placeholder" style="display:none">{% if animal.species == 'dog' %}🐶{% elif animal.species == 'cat' %}🐱{% else %}🐾{% endif %}</div>
+        {% else %}
+        <div class="animal-card-img-placeholder">{% if animal.species == 'dog' %}🐶{% elif animal.species == 'cat' %}🐱{% else %}🐾{% endif %}</div>
+        {% endif %}
+        <div class="animal-card-body">
+          <h3>{{ animal.name }} <span style="font-size:0.65rem;font-weight:600;background:var(--amber,#f59e0b);color:#fff;padding:2px 7px;border-radius:4px;vertical-align:middle;">SAMPLE</span></h3>
+          <p class="animal-card-meta">{{ animal.get_species_display }} · {{ animal.breed|default:"Mixed breed" }} · {{ animal.age_display }} · {{ animal.get_gender_display }}</p>
+          <p class="animal-card-desc">{{ animal.description }}</p>
+          <div class="animal-card-footer">
+            <a href="/adopt/apply/" class="btn btn-navy btn-sm">Apply to Adopt</a>
+            <span class="badge badge-green">Available</span>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div style="text-align:center;padding:3rem 0;color:var(--text-muted);">
+      <p>No sample animals loaded yet. Run <code>python manage.py loaddata website/fixtures/sample_pets.json</code> to add them.</p>
+    </div>
+    {% endif %}
+
+    {% else %}
+    <!-- ===== ASM-powered animal grid (loaded by JS) ===== -->
     <div id="asm-animals-wrap">
       <div id="asm-loading" style="text-align:center;padding:3rem 0;color:var(--text-muted);">
         <div class="loading-spinner"></div>
@@ -38,36 +77,8 @@
       <div id="asm-empty" style="display:none;text-align:center;padding:3rem 0;">
         <p style="color:var(--text-muted);font-size:1.1rem;">No animals available right now — please call us at <a href="tel:+13307237722">(330) 723-7722</a> or check back soon.</p>
       </div>
-      <div id="asm-error" style="display:none;"></div>
     </div>
-
-    <!-- Fallback: local DB animals shown if JS disabled or ASM fails -->
-    <noscript>
-    {% if animals %}
-    <div class="animal-grid">
-      {% for animal in animals %}
-      <div class="animal-card">
-        {% if animal.photo_src %}
-        <img src="{{ animal.photo_src }}" alt="{{ animal.name }}" class="animal-card-img" loading="lazy" />
-        {% else %}
-        <div class="animal-card-img-placeholder">{% if animal.species == 'dog' %}🐶{% elif animal.species == 'cat' %}🐱{% else %}🐾{% endif %}</div>
-        {% endif %}
-        <div class="animal-card-body">
-          <h3>{{ animal.name }}</h3>
-          <p class="animal-card-meta">{{ animal.get_species_display }} · {{ animal.breed|default:"Mixed breed" }} · {{ animal.age_display }} · {{ animal.get_gender_display }}</p>
-          <p class="animal-card-desc">{{ animal.description }}</p>
-          <div class="animal-card-footer">
-            <a href="/adopt/apply/" class="btn btn-navy btn-sm">Apply to Adopt</a>
-            <span class="badge badge-green">{{ animal.get_status_display }}</span>
-          </div>
-        </div>
-      </div>
-      {% endfor %}
-    </div>
-    {% else %}
-    <p style="text-align:center;color:var(--text-muted);">No animals listed yet — call us at (330) 723-7722.</p>
     {% endif %}
-    </noscript>
 
     <div style="text-align:center;margin-top:36px;">
       <a href="/adopt/apply/" class="btn btn-primary btn-lg">Apply to Adopt</a>
@@ -138,13 +149,13 @@
 {% endblock %}
 
 {% block extra_js %}
+{% if asm_configured %}
 <script>
 (function () {
   var speciesFilter = "{{ active_filter|default:'' }}";
   var grid = document.getElementById("asm-animal-grid");
   var loading = document.getElementById("asm-loading");
   var empty = document.getElementById("asm-empty");
-  var errorEl = document.getElementById("asm-error");
 
   var ICONS = {dog: "🐶", cat: "🐱"};
 
@@ -181,10 +192,9 @@
     })
     .catch(function(){
       loading.style.display = "none";
-      // Fall through to noscript fallback content gracefully
-      grid.style.display = "none";
       empty.style.display = "";
     });
 })();
 </script>
+{% endif %}
 {% endblock %}
