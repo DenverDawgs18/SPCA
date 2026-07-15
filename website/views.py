@@ -28,7 +28,12 @@ def adopt(request):
     animals = Animal.objects.filter(status="available")
     if species in ("dog", "cat", "other"):
         animals = animals.filter(species=species)
-    return render(request, "website/adopt.html", {"animals": animals, "active_filter": species})
+    asm_configured = bool(settings.ASM_API_USERNAME)
+    return render(request, "website/adopt.html", {
+        "animals": animals,
+        "active_filter": species,
+        "asm_configured": asm_configured,
+    })
 
 
 def surrender(request):
