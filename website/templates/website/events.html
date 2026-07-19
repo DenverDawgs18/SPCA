@@ -1,14 +1,14 @@
 {% extends "website/base.html" %}
 {% load static %}
 
-{% block title %}News &amp; Events — Medina County SPCA{% endblock %}
+{% block title %}News &amp; Events - Medina County SPCA{% endblock %}
 
 {% block content %}
 <section class="page-hero">
   <div class="container">
-    <div class="breadcrumb"><a href="/">Home</a><span>›</span> News &amp; Events</div>
+    <div class="breadcrumb"><a href="/">Home</a><span>&rsaquo;</span> News &amp; Events</div>
     <h1>News &amp; Events</h1>
-    <p>Stay up to date with what's happening at the Medina County SPCA — events, news, and more.</p>
+    <p>Stay up to date with what's happening at the Medina County SPCA.</p>
   </div>
 </section>
 
@@ -21,7 +21,7 @@
     </div>
     {% if zeffy_org_id %}
     <div class="zeffy-embed-wrap">
-      <!-- Zeffy event widget — loads all public events for this organization -->
+      <!-- Zeffy event widget - loads all public events for this organization -->
       <div id="zeffy-events"></div>
       <script src="https://zeffy.com/js/embed.js" async></script>
       <script>
@@ -37,7 +37,7 @@
     </div>
     {% else %}
     <div class="integration-placeholder">
-      <div class="integration-placeholder-icon">🎉</div>
+      <div class="integration-placeholder-icon">&#127881;</div>
       <h3>Events coming soon</h3>
       <p>Our events calendar will appear here once it's connected. In the meantime, follow us on <a href="https://www.facebook.com/MedinaSPCA/" target="_blank" rel="noopener">Facebook</a> for updates on upcoming events.</p>
     </div>
@@ -59,7 +59,7 @@
         {% if post.image_url %}
         <div class="news-card-img" style="background-image:url('{{ post.image_url }}')"></div>
         {% else %}
-        <div class="news-card-img news-card-img--placeholder">🐾</div>
+        <div class="news-card-img news-card-img--placeholder">&#128062;</div>
         {% endif %}
         <div class="news-card-body">
           <span class="news-card-date">{{ post.published_at|date:"N j, Y"|default:"" }}</span>
@@ -83,21 +83,4 @@
   </div>
 </section>
 
-<!-- ===== NEWSLETTER ===== -->
-<section class="section" id="newsletter">
-  <div class="container" style="text-align:center;max-width:560px;margin:0 auto;">
-    <span class="eyebrow">Stay Connected</span>
-    <h2>Newsletter Signup</h2>
-    <p style="color:var(--text-muted);margin-bottom:28px;">Get shelter updates, adoption spotlights, and event announcements delivered to your inbox — no spam, just animals.</p>
-    <!-- REAL INTEGRATION: Replace this with your actual newsletter signup form (Mailchimp, Constant Contact, etc.) -->
-    <form action="/contact/" method="get" class="newsletter-form">
-      <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">
-        <input type="email" name="newsletter_email" placeholder="your@email.com"
-               class="form-control" style="max-width:300px;" required />
-        <button type="submit" class="btn btn-primary">Subscribe</button>
-      </div>
-      <p style="font-size:0.8rem;color:var(--text-muted);margin-top:8px;">We respect your privacy. Unsubscribe any time.</p>
-    </form>
-  </div>
-</section>
 {% endblock %}
